@@ -48,10 +48,10 @@ Edit `config.php` to change username and password and Database Connection.
 
 1. [wiringPi][] wiringPi
 
-[PHP]:(http://php.net/)
-[MySQL]:(http://www.mysql.com/)
-[Apache]:(http://httpd.apache.org/)
-[wiringPi]:(http://wiringpi.org/)
-[Bootstrap]:(http://getbootstrap.com/)
+[PHP]: (http://php.net/)
+[MySQL]: (http://www.mysql.com/)
+[Apache]: (http://httpd.apache.org/)
+[wiringPi]: (http://wiringpi.org/)
+[Bootstrap]: (http://getbootstrap.com/)
 
 
