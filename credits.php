@@ -42,8 +42,6 @@ incl('inc/init.php');
 
 	<?php incl('inc/footer.php'); ?>
 	
-	<div style="margin-bottom:60px;"></div>
-
 </div><!-- END .containter -->
 
 </body>
