@@ -1,6 +1,6 @@
-# BiotoPi, RaspberryPi Enviroment Controller #
+# BiotoPi #
 
-A RaspberryPi Controller and Datalogger for biotope and habitat (Reptile houses, Fish tanks and similar). 
+A RaspberryPi Enviroment Controller and Datalogger for biotope and habitat (Reptile houses, Fish tanks and similar). 
 
 
 ### About ###
@@ -8,12 +8,15 @@ A RaspberryPi Controller and Datalogger for biotope and habitat (Reptile houses,
 *  just a private project
 *  Version 0.1
 
+This Project is my personel testarea. I play arround by building small C-Programms witch will be executed from PHPs shell_exec() Command. The PHP Skripts will called from AJAX to reduce Pageload and get a possibility to have a polling event. Inside the PHP core, the dispatcher class will generate an instance of each Modulecall and assign all parameters to the Modulclass.
+
+At the moment there are a lots of chaos inside this code, but hey: this is an private Project, feel free to join.
 
 ### Dependencies ###
 
 *  [wiringPi][]
 *  [MySQL][]
-*  [PHP][]5
+*  [PHP][]
 *  Apache Webserver-[Apache][]
 
 ## Installation ##
@@ -27,26 +30,14 @@ Edit `config.php` to change username and password and Database Connection.
 
 ### How do I set it up? ###
 
-* Manuel Installation
-** Just Edit "base_url" in application/bootstrap.php to fits your Path
-** in .htaccess edit the "RewriteBase" to fits your Path 
-** chown to the Webserveruser application/cache and application/logs 
-** Edit the application/config/constants.php to setup the used Mailadress, Path and especially the Salt
-* Dependencies
-** PHP5.x 
-** MySQL
-** Installation via apt-get -y install mysql-server apache2 php5 php5-mysql php-httpl php5-dev libcurl4-gnutls-dev libmagic-dev php-pear php-http curl libcurl3 libcurl3-dev php5-curl php5-mcrypt php5-gd 
-** To install the PECL Stuff juyt type "pecl install pecl_http-1.7.6" and confirm with Enter
-** Enable the Apache rewrite Module by type "a2enmod rewrite" and hit again the Enter Button 
-** At last don't forget to restart apache after installing all Packages by "apachectl -k restart" and confirm with Enter 
-** Installation can be checked by the install.php File (if it exist under the name they will be automaticly loaded)
-* Database configuration
-** Setup Database, Database user and Password in application/config/database.php
+*  ToDo
 
 
 ### Credits ###
 
 1. [wiringPi][] wiringPi
+2. [Bootstrap][] Bootstrap
+
 
 [PHP]: http://php.net/
 [MySQL]: http://www.mysql.com/

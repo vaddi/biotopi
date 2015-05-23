@@ -21,9 +21,9 @@ incl('inc/init.php');
 	
 	<p><h3>C-Software <small>Die kleinen Helfer</small></h3>
 		<ul>
-			<li>BMP085 Barometer (<a href="inc/bin/sources/bmp085.c">bmp085.c</a>) <a href="https://ninedof.wordpress.com/2013/07/16/rpi-hc-sr04-ultrasonic-sensor-mini-project/">ninedof.wordpress.com</a></li>
+			<li>BMP085 Barometer (<a href="inc/bin/sources/bmp085.c">bmp085.c</a>) </li>
 			<li>DS18b20 Temperatursensor (<a href="inc/bin/sources/ds18b20.c">ds18b20.c</a>)  </li>
-			<li>HC-SR04 Füllstands ermittlung (<a href="inc/bin/sources/hc-sr04.c">hc-sr04.c</a>) </li>
+			<li>HC-SR04 Füllstands ermittlung (<a href="inc/bin/sources/hc-sr04.c">hc-sr04.c</a>) <a href="https://ninedof.wordpress.com/2013/07/16/rpi-hc-sr04-ultrasonic-sensor-mini-project/">ninedof.wordpress.com</a></li>
 			<li>DHT11 Luftfeuchte und Temperatur Sensor</li>
 			
 			<li>2004 LCD Display (mit i2c Ansteuerung)</li>
