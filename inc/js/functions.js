@@ -189,7 +189,7 @@ function hcsr04() {
 		})
 	
 		.fail(function( jqXHR, textStatus ) {
-			$( '#msg' ).html( "<p class='invalid'>BMP085 request failed: " + textStatus + "</p>");
+			$( '#msg' ).html( "<p class='invalid'>HC-SR04 request failed: " + textStatus + "</p>");
 		})
 		
 		.always(function() {
@@ -203,14 +203,96 @@ function hcsr04() {
 }
 
 
+function system() {
+	
+	var device = null;
+	var url_var = "inc/module/system.php"
+	
+//	$('.system').each(function(i){
+	
+//		device = $( this ).attr('id');
+//		console.log( i + "#" + device );
+//		var alt = device.split("_")[1];
+//		console.log( dev_arr );
+		
+		var url_append = "?sid=" + sid;
+		
+		// Send AJAX Request 
+		$.ajax({
+			url: url_var + url_append,
+			cache: false
+		})
+		
+		// Parse AJAX Response
+		.done(function( html ) {
+			
+			var jsonobj = eval("(" + html + ")");
+			var keys = Object.keys(jsonobj[0]);
+			
+			for( key in keys ) {
+				
+				name = keys[ key ];
+				value = jsonobj[ 0 ][ keys[ key ] ];
+				
+				if( name == "filep" ) {
+					$( "#" + name ).css( "width", value  );
+					var valueraw = value.slice(0,-1);
+					if( valueraw > 95 ) {
+						$( "#" + name ).addClass( 'progress-bar-danger' );
+					} else if( valueraw > 84 ) {
+						$( "#" + name ).addClass( 'progress-bar-warning' );
+					} else {
+						$( "#" + name ).addClass( 'progress-bar-success' );
+					}
+				}
+				
+				$( "#" + name ).html( value );
+//				console.log( jsonobj[ 0 ][ keys[ key ] ] );
+				
+			}			
+			
+			
+			
+//			var name = jsonobj[0][ 'name' ];
+//			var temp = jsonobj[0][ 'temp' ];
+//			var avg1 = jsonobj[0][ 'avg1' ];
+//			var avg5 = jsonobj[0][ 'avg5' ];
+//			var avg15 = jsonobj[0][ 'avg15' ];
+//			var scha = jsonobj[0][ 'scha' ];
+//			var scht = jsonobj[0][ 'scht' ];
+//			var memt = jsonobj[0][ 'memt' ];
+//			var memf = jsonobj[0][ 'memf' ];
+//			var mema = jsonobj[0][ 'mema' ];
+//			var filet = jsonobj[0][ 'filet' ];
+//			var fileu = jsonobj[0][ 'fileu' ];
+//			var filef = jsonobj[0][ 'filef' ];
+//			var filep = jsonobj[0][ 'filep' ];
+//			var netin = jsonobj[0][ 'netin' ];
+//			var netout = jsonobj[0][ 'netout' ];
+
+//			$( "#" + device ).html( distout );
+
+		})
+	
+		.fail(function( jqXHR, textStatus ) {
+			$( '#msg' ).html( "<p class='invalid'>System request failed: " + textStatus + "</p>");
+		});
+		
+//	});
+	
+}
+
+
+
 function polling( intervall ) {
 	
-	if( intervall == null ) intervall = 30000; 			// default intervall
+	if( intervall == null ) intervall = 60000; 			// default intervall 1 minute
 	
 	// Do Stuff on polling
 	ds18b20();
 	bmp085();
 	hcsr04();
+	system();
 	
 	// Repeat polling request 
 	if( intervall != 0 ) setTimeout( function(){ polling( intervall ) }, intervall );
@@ -227,7 +309,7 @@ $( window ).load( function() {
 // document.ready dont wait for images
 $( document ).ready( function() {
 	
-	polling( 5000 );
+	polling( 30000 );
 	
 });
 

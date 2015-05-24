@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-
 <?php 
 $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload; 
 incl('inc/init.php');
 ?>
-
 <html lang="<?= APPLANG ?>">
-
 <head>
 <?php incl('inc/head.php'); ?>
 </head>

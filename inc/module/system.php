@@ -1,0 +1,59 @@
+<?php
+
+//if( isset( $_GET['sid'] ) ) $client_sid = $_GET['sid'];
+
+//if( empty( session_id() ) ) session_start();
+//$this_sid = session_id();
+
+//if( $this_sid != $client_sid ) {
+//	// noID or wrongID, redirect to mainindex
+//	echo "<meta http-equiv='refresh' content='0; url=./' />";
+//} else {
+
+
+$hostname = shell_exec('hostname');
+$soc_temp = shell_exec( 'sudo vcgencmd measure_temp | grep -o "[0-9][0-9].[0-9]\+"' );
+$mem_total	= shell_exec( 'cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+"' );
+$mem_free	= shell_exec( 'cat /proc/meminfo | grep MemFree | grep -o "[0-9]\+"' );
+$mem_avail	= shell_exec( 'cat /proc/meminfo | grep MemAvailable | grep -o "[0-9]\+"' );
+$loadavgout = shell_exec('cat /proc/loadavg');
+$loadavgArr = explode(" ", $loadavgout);
+//$loadavg = substr( $output, 0, strpos( $output, " " ) ); 
+$schedulingArr = explode("/", $loadavgArr[3]);
+$filesysout = shell_exec('df -h | grep rootfs | tr -s " "');
+$netin = shell_exec( 'sudo ifconfig | grep -m 1 "RX bytes" | awk -F "[()]" \'{print $2}\'' );
+$netout = shell_exec( 'sudo ifconfig | grep -m 1 "RX bytes" | awk -F "[()]" \'{print $4}\'' );
+$filesysArr = explode( " ", $filesysout );
+$kernel	= shell_exec('uname -r');
+
+
+$retArr[0]['name'] = clean($hostname);			// Hostname
+$retArr[0]['temp'] = clean($soc_temp);			// SoC Temperatur
+$retArr[0]['avg1'] = $loadavgArr[0];				// average systemload last 1m
+$retArr[0]['avg5'] = $loadavgArr[1];				// average systemload last 5m
+$retArr[0]['avg15'] = $loadavgArr[2];				// average systemload last 15m
+$retArr[0]['scha'] = $schedulingArr[0];			// number of active tasks
+$retArr[0]['scht'] = $schedulingArr[1];			// number of total tasks
+$retArr[0]['memt'] = clean($mem_total);			// Total Memory in kB
+$retArr[0]['memf'] = clean($mem_free);			// Free Memory in kB
+$retArr[0]['mema'] = clean($mem_avail);			// Available Memory in kB
+$retArr[0]['filet'] = $filesysArr[1];				// Filesystem Total space
+$retArr[0]['fileu'] = $filesysArr[2];				// Filesystem Used space
+$retArr[0]['filef'] = $filesysArr[3];				// Filesystem Free space
+$retArr[0]['filep'] = $filesysArr[4];				// Filesystem Used space %
+$retArr[0]['netin'] = clean($netin);				// Network Device Received
+$retArr[0]['netout'] = clean($netout);			// Network Device Transmit
+
+print_r( json_encode( $retArr ) );
+
+//echo "<pre>";
+//print_r( $retArr );
+//echo "</pre>";
+
+//} // END else
+
+function clean( $string ) {
+	return str_replace("\n","",$string);
+}
+
+?>
