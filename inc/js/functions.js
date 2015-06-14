@@ -1,9 +1,6 @@
 
 
-
-
-function navigator( navId ) {
-	
+function getLoc() {
 	var path = window.location.pathname;
 	var pathArr = path.split("/");
 	var loc = pathArr[pathArr.length - 1];
@@ -13,6 +10,13 @@ function navigator( navId ) {
 		loc = path.slice(0, -1) + "/";
 	}
 	
+	return loc;
+}
+
+function navigator( navId ) {
+	
+	var loc = getLoc();
+		
 	$( navId ).find('a').each(function() {
 		$(this).parent().toggleClass('active', $(this).attr('href') == loc);
 	});
@@ -203,6 +207,74 @@ function hcsr04() {
 }
 
 
+
+function dht11() {
+	
+	var device = null;
+	var url_var = "inc/module/dht11.php"
+	
+	$('.dht11').each(function(i){
+		device = $( this ).attr('id');
+//		console.log( i + "#" + device );
+//		var alt = device.split("_")[1];
+//		console.log( dev_arr );
+		
+		var url_append = "?sid=" + sid;
+		
+		// Send AJAX Request 
+		$.ajax({
+			url: url_var + url_append,
+			cache: false
+		})
+		
+		// Parse AJAX Response
+		.done(function( html ) {
+			
+			
+			
+			var jsonobj = eval("(" + html + ")");
+			
+//			for( key in jsonobj ) {
+				var rf = jsonobj[0][ 'rf' ];
+				var temp = jsonobj[0][ 'temp' ] ;
+//				dist = Math.round(dist * 100) / 100;
+				if( temp != null ) {
+					var distout = "";
+					if( rf >= 95.0 ) {
+						distout = "<font color='#00f'>" + rf + "% " + temp + "°C</font>";
+					} else if( rf >= 30.0 ) {
+						distout = "<font color='#0f0'>" + rf + "% " + temp + "°C</font>";
+					} else {
+						distout = "<font color='#f00'>" + rf + "% " + temp + "°C</font>";
+					}
+				} else {
+					distout = "<font color='#f00'>DHT11 request fail</font>";
+				}
+				
+//				device = $( this ).attr('id');
+//				console.log( i + " " + device + " " + tempout );
+//				$( "#" + thisdev ).html( "<span style='font-size:100%;'>" + thisdev + "</span> - " + tempout + "°C" );
+				$( "#" + device ).html( distout );
+//			} // END for
+
+		})
+	
+		.fail(function( jqXHR, textStatus ) {
+			$( '#msg' ).html( "<p class='invalid'>DHT11 request failed: " + textStatus + "</p>");
+		})
+		
+		.always(function() {
+//			console.log( this );
+//			$( "#" + device ).html( tempout + "°C" );
+		});
+		
+//		console.log( "#" + device );
+	});
+	
+}
+
+
+
 function system() {
 	
 	var device = null;
@@ -284,18 +356,39 @@ function system() {
 
 
 
-function polling( intervall ) {
-	
-	if( intervall == null ) intervall = 60000; 			// default intervall 1 minute
+function pollFunctions() {
 	
 	// Do Stuff on polling
 	ds18b20();
 	bmp085();
 	hcsr04();
+	dht11();
 	system();
 	
+}
+
+
+function polling( intervall, page ) {
+	
+	if( intervall == null ) intervall = 60000; 			// default intervall 1 minute
+	var loc = getLoc();
+	
+	if( page != null || page != "" ) {
+		
+		// if page isset, do only on this page
+		if( loc == page ) pollFunctions();
+		
+	} else {
+		
+		// if page is unsetted, do polling on all sites
+		pollFunctions();
+		
+	}
+	
 	// Repeat polling request 
-	if( intervall != 0 ) setTimeout( function(){ polling( intervall ) }, intervall );
+	if( intervall != 0 ) setTimeout( function(){ polling( intervall, page ) }, intervall );
+	
+//	console.log( loc + " " + page );
 	
 }
 
@@ -309,7 +402,8 @@ $( window ).load( function() {
 // document.ready dont wait for images
 $( document ).ready( function() {
 	
-	polling( 30000 );
+	polling( 10000, "stats.php" );
+//	system();
 	
 });
 

@@ -53,10 +53,19 @@ incl('inc/init.php');
 					<td>28-000004cbaf9e</td>
 					<td id="28-000004cbaf9e" class="ds18b20"></td>
 		  	</tr>
-		  	
+		  	<tr>
+		  		<td>4</td>
+					<td>28-000004bfd99e</td>
+					<td id="28-000004bfd99e" class="ds18b20"></td>
+		  	</tr>
+		  	<tr>
+		  		<td>5</td>
+					<td>28-000004cd81ba</td>
+					<td id="28-000004cd81ba" class="ds18b20"></td>
+		  	</tr>
 			</tbody>
 		</table>
-	</div>
+	</div><!-- END .panel -->
 	
 	<div class="panel panel-default">
 		<!-- Default panel contents -->
@@ -88,7 +97,37 @@ incl('inc/init.php');
 		  	
 			</tbody>
 		</table>
-	</div>
+	</div><!-- END .panel -->
+	
+	<div class="panel panel-default">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<h4><span class="glyphicon glyphicon-tint" aria-hidden="false"></span> Relative Luftfeuchte</h4>
+		</div>
+		<div class="panel-body">
+		  <p>Anzeigen der <b>dht11</b> Abstandssensor Werte. Daten können via AJAX anhand der CSS id und class Eigenschaften aus dem C-Programm abgefragt werden. <br />
+		  	<br />GPIO Port: <b>7</b>
+		  	<br />Protokoll: <b>raw</b>
+		  </p>
+		</div>
+
+		<!-- Table -->
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>value</th>
+		  	</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td id="dht11" class="dht11"></td>
+		  	</tr>
+		  	
+			</tbody>
+		</table>
+	</div><!-- END .panel -->
 	
 	<div class="panel panel-default">
 		<!-- Default panel contents -->
@@ -118,7 +157,8 @@ incl('inc/init.php');
 		  	
 			</tbody>
 		</table>
-	</div>
+	</div><!-- END .panel -->
+	
 	
 	
 	<div class="panel panel-default">
@@ -220,19 +260,39 @@ incl('inc/init.php');
 			</tbody>
 		</table>
 		
-		<div class="well"  style="margin:20px;">
-			<h4>Dateisystem</h4>
-			<div class="progress">
-				<div id="filep" class="progress-bar system" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 5%;">
-					0%
-				</div>
-			</div>
+	</div><!-- END .panel -->
+	
+	
+	<div class="panel panel-default">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<h4><span class="glyphicon glyphicon-hdd" aria-hidden="false"> Dateisystem</h4>
+		</div>
+		<div class="panel-body">
+		  <p>Anzeigen der Systemwerte. Daten können via AJAX anhand der CSS id und class Eigenschaften abgefragt werden.
+		  </p>
 		</div>
 		
+		<!-- Table -->
+		<table class="table">
+			<tbody>
+				<tr>
+					<td style="width:50px;"><span class="glyphicon glyphicon-folder-open" aria-hidden="false"> /</td>
+					<td>
+						<div class="progress">
+							<div id="filep" class="progress-bar system" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 5%;">
+								0%
+							</div>
+						</div>
+					</td>
+					
+				</tr>
+			</tbody>
+		</table>
 		
-		
-		
-	</div>
+	</div><!-- END .panel -->
+	
+	
 	
 	
 	<?php incl('inc/footer.php'); ?>
