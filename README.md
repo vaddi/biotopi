@@ -46,4 +46,3 @@ Edit `config.php` to change username and password and Database Connection.
 [Bootstrap]: http://getbootstrap.com/
 
 
-
