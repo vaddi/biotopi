@@ -4,13 +4,20 @@
  *	DHT11 test
  */
 
+// pinsettings
+// raspberry DHT11
+//      3,3V 3,3V 
+//       GND GND
+//    GPIO27 Data (if change wiring, set the new DHTPIN!)
+
+
 #include <wiringPi.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#define MAXTIMINGS	85
-#define DHTPIN		2
+#define MAXTIMINGS	1000	
+#define DHTPIN		2  // wiringPi pin
 int dht11_dat[5] = { 0, 0, 0, 0, 0 };
 
 void read_dht11_dat()

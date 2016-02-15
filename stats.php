@@ -115,13 +115,13 @@ incl('inc/init.php');
 		<table class="table">
 			<thead>
 				<tr>
-					<th>#</th>
+					<th># <span class="tableHead" style="float:right"></span></th>
 					<th>value</th>
 		  	</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>1</td>
+					<td>1 <div style="float:right"><span id="dhthum-spark" class="system sparkline" data-width="100px" size="2.5" color="#0FF #09F #F00"></span><br /><span id="dhttemp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto"></span></div></td>
 					<td id="dht11" class="dht11"></td>
 		  	</tr>
 		  	
@@ -176,7 +176,7 @@ incl('inc/init.php');
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>name</th>
+					<th>name <span class="tableHead" style="float:right"></span></th>
 					<th>value</th>
 		  	</tr>
 			</thead>
@@ -188,17 +188,17 @@ incl('inc/init.php');
 		  	</tr>
 				<tr>
 					<td>2</td>
-					<td>Temperatur</td>
+					<td>Temperatur <span id="temp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
 					<td id="temp" class="system"></td>
 		  	</tr>
 				<tr>
 					<td>3</td>
-					<td>Auslastung 1m</td>
+					<td>Auslastung 1m <span id="avg1-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span></td>
 					<td id="avg1" class="system"></td>
 		  	</tr>
 				<tr>
 					<td>4</td>
-					<td>Auslastung 5m</td>
+					<td>Auslastung 5m <span id="avg5-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span></td>
 					<td id="avg5" class="system"></td>
 		  	</tr>
 				<tr>
@@ -221,11 +221,16 @@ incl('inc/init.php');
 					<td>Freier Speicher</td>
 					<td id="memf" class="system"></td>
 		  	</tr>
-				<tr>
 					<td>9</td>
-					<td>Verfügbarer Speicher</td>
+					<td>Verwendeter Speicher</td>
 					<td id="mema" class="system"></td>
 		  	</tr>
+		  	<tr>
+					<td>9</td>
+					<td>Prozentual belegter Speicher <span id="memp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
+					<td id="memp" class="system"></td>
+		  	</tr>
+				<tr>
 				<tr>
 					<td>10</td>
 					<td>Gesamtes Dateisystem</td>
@@ -243,20 +248,29 @@ incl('inc/init.php');
 		  	</tr>
 				<tr>
 					<td>13</td>
-					<td>Prozentual belegtes Dateisystem</td>
-					<td id="filepp" class="system"></td>
+					<td>Prozentual belegtes Dateisystem <span id="filep-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
+					<td id="filep" class="system"></td>
 		  	</tr>
 				<tr>
 					<td>14</td>
-					<td>Netzwerk Device Empfangen</td>
+					<td>Netzwerk Device Empfangen <span id="netin-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></td>
 					<td id="netin" class="system"></td>
 		  	</tr>
 		  	<tr>
 					<td>15</td>
-					<td>Netzwerk Device Gesendet</td>
+					<td>Netzwerk Device Gesendet <span id="netout-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></td>
 					<td id="netout" class="system"></td>
 		  	</tr>
-		  	
+		  	<tr>
+					<td>16</td>
+					<td>Apt updates (NonSecurity/Security)</td>
+					<td id="updates" class="system"></td>
+		  	</tr>
+		  	<tr>
+					<td>17</td>
+					<td>Check Runtime <span id="runtime-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></td>
+					<td id="runtime" class="system"></td>
+		  	</tr>
 			</tbody>
 		</table>
 		
@@ -271,16 +285,28 @@ incl('inc/init.php');
 		<div class="panel-body">
 		  <p>Anzeigen der Systemwerte. Daten können via AJAX anhand der CSS id und class Eigenschaften abgefragt werden.
 		  </p>
+		  
 		</div>
 		
 		<!-- Table -->
 		<table class="table">
 			<tbody>
 				<tr>
-					<td style="width:50px;"><span class="glyphicon glyphicon-folder-open" aria-hidden="false"> /</td>
+					<td style="width:100px;"><span class="glyphicon glyphicon-folder-open" aria-hidden="false"> /</td>
 					<td>
 						<div class="progress">
-							<div id="filep" class="progress-bar system" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 5%;">
+							<div id="filepbar" class="progress-bar system" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100.0" style="min-width: 2em; width: 5%;">
+								0%
+							</div>
+						</div>
+					</td>
+					
+				</tr>
+				<tr>
+					<td style="width:100px;"><span class="glyphicon glyphicon-inbox" aria-hidden="false"> ram</td>
+					<td>
+						<div class="progress">
+							<div id="mempbar" class="progress-bar system" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100.0" style="min-width: 2em; width: 5%;">
 								0%
 							</div>
 						</div>
@@ -292,6 +318,18 @@ incl('inc/init.php');
 		
 	</div><!-- END .panel -->
 	
+	
+	
+	<div class="panel panel-default">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<h4><span class="glyphicon glyphicon-fire" aria-hidden="false"> Irgendwas</h4>
+		</div>
+		<div class="panel-body">
+		  <p>Anzeigen von irgendeinem Text. Random Inine Sparklines <span id="sparkle" class="system sparkline" data-width="100px" size="2.5" color="auto"></span> generated from ajax request.</p>
+		</div>
+		<!-- #F00 #090 #00F -->
+	</div><!-- END .panel -->
 	
 	
 	

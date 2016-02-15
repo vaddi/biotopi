@@ -14,3 +14,4 @@
 <script type="text/javascript" src="inc/js/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="inc/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="inc/js/functions.js"></script>
+<script type="text/javascript" src="inc/js/sparkline.js"></script>

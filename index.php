@@ -2,6 +2,9 @@
 <?php 
 $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload; 
 incl('inc/init.php');
+// Check for installer file to help install some neccessary stuff
+$fload = 'install.php'; 
+if (file_exists($fload)) return include $fload;
 ?>
 <html lang="<?= APPLANG ?>">
 <head>

@@ -14,6 +14,7 @@
 		$device = $_GET['device'];
 		$retArr[0]['device'] = $device;
 		$retArr[0]['temp'] = getTemp( $device );
+		
 		print_r( json_encode( $retArr ) );
 		
 	} 
@@ -25,6 +26,7 @@ function getTemp( $device = null ) {
 	if( $device != null ) {
 		$absolutPath = realpath("../../");
 		$temp = shell_exec("$absolutPath/inc/bin/ds18b20 $device" );
+		
 		if( $temp != null ) {
 			 return $temp;
 		} else {

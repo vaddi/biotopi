@@ -24,7 +24,9 @@
 function getPa( $alt = null ) {
 	if( $alt != null ) {
 		$absolutPath = realpath("../../");
-		$altitude = shell_exec("sudo $absolutPath/inc/bin/bmp085 $alt" );
+		$altitude = shell_exec("sudo ".$absolutPath."/inc/bin/bmp085 $alt" );
+
+		error_log("Unknown: " . $altitude , 0);
 		if( $altitude != null ) {
 			return $altitude;
 		} else {

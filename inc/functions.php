@@ -18,6 +18,15 @@ function filter_html($html) {
 	return $html;
 }
 
+function arr2str( $array ) {
+	$str = "";
+	$curr = 0;
+	$total = count( $array );
+	foreach ($array as $key => $value) {
+		$str .= $value .  $curr++ >= $total ? "" : ", ";
+	}
+	return $str;
+}
 
 function genVidThumb( $video = null, $interval = null ) {
 	

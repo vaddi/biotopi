@@ -1,38 +1,158 @@
 
+//var temparray = [ "45", "50", "48", "50", "0", "6", "10", "0", "1", "2" ];
+var temparray = [ 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9 ];
+var tmparray = [ 50, 50, 50, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+var avg1array = [ 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 ];
+var avg5array = [ 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 ];
+var memparray = [ 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75 ];
+var netinarray = [ 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4 ];
+var netoutarray = [ 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2 ];
+var fileparray = [ 40, 40, 41, 41, 41, 41, 42, 42, 40, 40, 40, 41, 42, 43, 43, 43, 43, 43 ]
+var dhttemparray = [ 25.0, 25.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 25.0, 25.0, 24.0, 24.0 ];
+var dhthumarray = [ 37.0, 37.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 37.0, 36.0, 35.0, 35.0, 36.0, 36.0 ];
+var runtimearray = [ "0.5", "0.8", "0.9", "0.99", "1", "0.9", "0.8", "0.9", "0.8", "0.9" ];
+var intervall = 30000;
+var microintervall = 10000;
+
+function shifter( array, value, maximum ) {
+	if( maximum == null || maximum == "" ) maximum = array.length;
+	for(var i = 0; i < array.length; i++) { 
+		if( ( i + 1 ) < array.length ) {
+			array[i] = array[i + 1];
+		} else {
+			array[i] = value;
+		}
+	}
+	return array;
+}
+
+function arr2str( array ) {
+	var str = "";
+	for(var i = 0; i < array.length; i++) { 
+		str += array[i] + " ";
+	}
+//	console.log( str );
+	return str;
+}
+
+String.prototype.replaceArray = function(find, replace) {
+  var replaceString = this;
+  for (var i = 0; i < find.length; i++) {
+    replaceString = replaceString.replace(find[i], replace[i]);
+  }
+  return replaceString;
+};
 
 function getLoc() {
 	var path = window.location.pathname;
 	var pathArr = path.split("/");
 	var loc = pathArr[pathArr.length - 1];
-	
 	if( loc == "" ) {
 		path = window.location.href;
 		loc = path.slice(0, -1) + "/";
 	}
-	
 	return loc;
 }
 
 function navigator( navId ) {
 	
 	var loc = getLoc();
-		
+	
 	$( navId ).find('a').each(function() {
 		$(this).parent().toggleClass('active', $(this).attr('href') == loc);
 	});
 	
 }
 
+function htmlMsg( id, type, name, text ) {
+	if( id === null ) return;
+	if( type === null ) return;
+  if( name === null ) return;
+  if( text === null ) return;
+  
+  var typeVal = [ 'success', 'info', 'warning', 'danger' ];
+  
+  if( inArray( type, typeVal ) ) {
+		$( '#' + id ).html( '<div class="alert alert-' + type + ' fade in" style="width:320px;"><button class="close" data-dismiss="alert" aria-label="close">&times;</button><strong>' + name + '</strong> ' + text + '</div>' );
+		if( type == 'success' || type == 'info' || type == 'warning' ) 
+			window.setTimeout( function() { fadeOutEl( ".alert-" + type ); }, 5000);
+		
+  }
+}
+
+//window.setTimeout( function() {
+//        fadeOutEl( ".alert-success" );
+//}, 5000);
+
+//$(document).ready(function(){
+//        $(".close").click(function(){
+//                fadeOutEl( ".alert" );
+//        });
+//});
+
+function fadeOutEl( elclass ) {
+        $( elclass ).fadeTo( 500, 0 ).slideUp( 500, function() {
+                $( elclass ).remove();
+        });
+}
+
+function inArray(needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i] == needle) return true;
+    }
+    return false;
+}
+
+// Example
+//function skelet() {
+//	var device = null;
+//	var url_var = "inc/module/MODUL.php";			// Replace MODUL
+// 
+//	$('.MODUL').each(function(i){
+//	
+//		device = $( this ).attr('id');
+//		url_var += "?sid=" + sid;
+//		
+//		// ADD Data if neccessary
+//		
+//		// Send AJAX Request 
+//		$.ajax({
+//			url: url_var,
+//			cache: false
+//		})
+//		
+//		// Parse AJAX Response
+//		.done(function( html ) {
+//		
+//			var jsonobj = eval("(" + html + ")");
+//			
+//				var DATA = jsonobj[0][ 'DATA' ];		// Replace DATA
+//  
+//				if( DATA != null ) {								// Replace DATA
+//					DATA = DATA + "FORM";							// Replace DATA and FORM
+//				} else {
+//					DATA = "<font color='#f00'>MODUL request fail</font>";		// Replace DATA and MODUL
+//				}
+//				
+//				$( "#" + DATA ).html( DATA );		// Replace DATA 
+//				
+//		})
+//	
+//		.fail(function( jqXHR, textStatus ) {
+//			$( '#msg' ).html( "<p class='invalid'>MODUL request failed: " + textStatus + "</p>");		// Replace MODUL
+//		})
+//		
+//	});
+//	
+//}
+
 
 function ds18b20() {
-	
 	var device = null;
 	var url_var = "inc/module/ds18b20.php"
-	
 	$('.ds18b20').each(function(i){
 		device = $( this ).attr('id');
-//		console.log( i + "#" + device );
-		
 		var url_append = "?sid=" + sid + "&device=" + device;
 		
 		// Send AJAX Request 
@@ -43,12 +163,8 @@ function ds18b20() {
 		
 		// Parse AJAX Response
 		.done(function( html ) {
-			
-			
-			
 			var jsonobj = eval("(" + html + ")");
-			
-//			for( key in jsonobj ) {
+
 				var thisdev = jsonobj[0][ 'device' ];
 				var temp = jsonobj[0][ 'temp' ];
 				var tempout = "";
@@ -60,24 +176,15 @@ function ds18b20() {
 				} else {
 					tempout = "<font color='#00f'>" + temp + "</font>";
 				}
-//				device = $( this ).attr('id');
-//				console.log( i + " " + device + " " + tempout );
-//				$( "#" + thisdev ).html( "<span style='font-size:100%;'>" + thisdev + "</span> - " + tempout + "°C" );
-				$( "#" + thisdev ).html(  tempout );
-//			} // END for
 
+				$( "#" + thisdev ).html(  tempout );
+				
 		})
 	
 		.fail(function( jqXHR, textStatus ) {
 			$( '#msg' ).html( "<p class='invalid'>DS18b20 request failed: " + textStatus + "</p>");
 		})
 		
-		.always(function() {
-//			console.log( this );
-//			$( "#" + device ).html( tempout + "°C" );
-		});
-		
-//		console.log( "#" + device );
 	});
 	
 }
@@ -189,7 +296,7 @@ function hcsr04() {
 //				$( "#" + thisdev ).html( "<span style='font-size:100%;'>" + thisdev + "</span> - " + tempout + "°C" );
 				$( "#" + device ).html( distout );
 //			} // END for
-
+				
 		})
 	
 		.fail(function( jqXHR, textStatus ) {
@@ -209,16 +316,10 @@ function hcsr04() {
 
 
 function dht11() {
-	
 	var device = null;
 	var url_var = "inc/module/dht11.php"
-	
 	$('.dht11').each(function(i){
 		device = $( this ).attr('id');
-//		console.log( i + "#" + device );
-//		var alt = device.split("_")[1];
-//		console.log( dev_arr );
-		
 		var url_append = "?sid=" + sid;
 		
 		// Send AJAX Request 
@@ -229,34 +330,40 @@ function dht11() {
 		
 		// Parse AJAX Response
 		.done(function( html ) {
-			
-			
-			
 			var jsonobj = eval("(" + html + ")");
 			
-//			for( key in jsonobj ) {
 				var rf = jsonobj[0][ 'rf' ];
 				var temp = jsonobj[0][ 'temp' ] ;
-//				dist = Math.round(dist * 100) / 100;
+
 				if( temp != null ) {
+					dhttemparray = shifter( dhttemparray, temp );
+					dhthumarray = shifter( dhthumarray, rf );
+					
 					var distout = "";
-					if( rf >= 95.0 ) {
-						distout = "<font color='#00f'>" + rf + "% " + temp + "°C</font>";
-					} else if( rf >= 30.0 ) {
-						distout = "<font color='#0f0'>" + rf + "% " + temp + "°C</font>";
-					} else {
-						distout = "<font color='#f00'>" + rf + "% " + temp + "°C</font>";
-					}
+//					if( rf >= 60.0 ) {
+//						distout = "<font color='#00c'>" + rf + "%</font> <br /> ";
+//					} else if( rf >= 20.0 ) {
+//						distout = "<font color='#09f'>" + rf + "%</font> <br /> ";
+//					} else {
+//						distout = "<font color='#c00'>" + rf + "%</font> <br /> ";
+//					}
+//					
+//					if( temp >= 40.0 ) {
+//						distout += "<font color='#090'>" + temp + "°C</font>";
+//					} else if( temp >= 10.0 ) { 
+//						distout += "<font color='#f90'>" + temp + "°C</font>";
+//					} else {
+//						distout += "<font color='#f00'>" + temp + "°C</font>";
+//					}
+					distout = rf + "%<br />" + temp + "°C"
 				} else {
 					distout = "<font color='#f00'>DHT11 request fail</font>";
+					$( "#dhttemp-spark" ).html( arr2str( dhttemparray ) );
+					$( "#dhthum-spark" ).html( arr2str( dhthumarray ) );
 				}
 				
-//				device = $( this ).attr('id');
-//				console.log( i + " " + device + " " + tempout );
-//				$( "#" + thisdev ).html( "<span style='font-size:100%;'>" + thisdev + "</span> - " + tempout + "°C" );
 				$( "#" + device ).html( distout );
-//			} // END for
-
+				
 		})
 	
 		.fail(function( jqXHR, textStatus ) {
@@ -280,13 +387,6 @@ function system() {
 	var device = null;
 	var url_var = "inc/module/system.php"
 	
-//	$('.system').each(function(i){
-	
-//		device = $( this ).attr('id');
-//		console.log( i + "#" + device );
-//		var alt = device.split("_")[1];
-//		console.log( dev_arr );
-		
 		var url_append = "?sid=" + sid;
 		
 		// Send AJAX Request 
@@ -300,71 +400,160 @@ function system() {
 			
 			var jsonobj = eval("(" + html + ")");
 			var keys = Object.keys(jsonobj[0]);
+			var memt = 0;
 			
 			for( key in keys ) {
 				
 				name = keys[ key ];
 				value = jsonobj[ 0 ][ keys[ key ] ];
 				
+				// progressbar filesystem usage
 				if( name == "filep" ) {
-					$( "#" + name ).css( "width", value  );
+					$( "#" + name + "bar" ).css( "width", value  );
 					var valueraw = value.slice(0,-1);
 					if( valueraw > 95 ) {
-						$( "#" + name ).addClass( 'progress-bar-danger' );
+						$( "#" + name + "bar" ).addClass( 'progress-bar-danger' );
 					} else if( valueraw > 84 ) {
-						$( "#" + name ).addClass( 'progress-bar-warning' );
+						$( "#" + name + "bar" ).addClass( 'progress-bar-warning' );
 					} else {
-						$( "#" + name ).addClass( 'progress-bar-success' );
+						$( "#" + name + "bar" ).addClass( 'progress-bar-success' );
 					}
-				}
+					$( "#" + name + "bar").html( value ); 
+				} 
+				
+				// progressbar memory usage
+				if( name == "memp" ) {
+					var valueraw = value.slice(0,-1);
+					$( "#" + name + "bar" ).css( "width", valueraw + "%"  );
+					if( valueraw > 95 ) {
+						$( "#" + name + "bar" ).addClass( 'progress-bar-danger' );
+					} else if( valueraw > 84 ) {
+						$( "#" + name + "bar" ).addClass( 'progress-bar-warning' );
+					} else {
+						$( "#" + name + "bar" ).addClass( 'progress-bar-success' );
+					}
+					$( "#" + name + "bar" ).html( value ); 
+				} 
 				
 				$( "#" + name ).html( value );
-//				console.log( jsonobj[ 0 ][ keys[ key ] ] );
+				
+				// Sparkline data
+				
+				$( "#dhthum-spark" ).attr('data-ymax', Math.max.apply(Math, dhthumarray) +2 ).attr('data-ymin', Math.min.apply(Math, dhthumarray) -1 ).html( arr2str( dhthumarray ) );				
+				$( "#dhttemp-spark" ).attr('data-ymax', Math.max.apply(Math, dhttemparray) +2 ).attr('data-ymin', Math.min.apply(Math, dhttemparray) -1 ).html( arr2str( dhttemparray ) );
+				$( ".tableHead" ).html( "last " + temparray.length * ( microintervall / 1000 ) + " Sek." );
+				
+				if( name == "temp" ) {
+					temparray = shifter( temparray, value.slice(0,-2) );
+//					$( "#" + name ).parent().children().eq(1).html( text );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, temparray) +4 ).attr('data-ymin', Math.min.apply(Math, temparray) ).html( arr2str( temparray ) );
+//					intvalue = Math.round( temparray[ temparray.length  - 1] );
+				}
+				
+				if( name == "avg1" ) {
+					avg1array = shifter( avg1array, value );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg1array) +4 ).attr('data-ymin', Math.min.apply(Math, avg1array) - 2 ).html( arr2str( avg1array ) );
+				}
+				
+				if( name == "avg5" ) {
+					avg5array = shifter( avg5array, value );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg5array) +4 ).attr('data-ymin', Math.min.apply(Math, avg5array) - 2 ).html( arr2str( avg5array ) );
+				}
+				
+				if( name == "memp" ) {
+					memparray = shifter( memparray, value.slice(0,-1) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, memparray) +4 ).attr('data-ymin', Math.min.apply(Math, memparray) -1 ).html( arr2str( memparray ) );
+				}
+				
+				if( name == "filep" ) {
+					fileparray = shifter( fileparray, value.slice(0,-1) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, fileparray) +4 ).attr('data-ymin', Math.min.apply(Math, fileparray) -1 ).html( arr2str( fileparray ) );
+				}
+				
+				if( name == "netin" ) {
+					netinarray = shifter( netinarray, value.slice(0,-4) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, netinarray) +2 ).attr('data-ymin', Math.min.apply(Math, netinarray) -2 ).html( arr2str( netinarray ) );
+				}
+				
+				if( name == "netout" ) {
+					netoutarray = shifter( netoutarray, value.slice(0,-4) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, netoutarray) +2 ).attr('data-ymin', Math.min.apply(Math, netoutarray) -2 ).html( arr2str( netoutarray ) );
+				}
+				
+				if( name == "runtime" ) {
+					runtimearray = shifter( runtimearray, value.slice(0,-5) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, runtimearray) +4 ).attr('data-ymin', Math.min.apply(Math, runtimearray) ).html( arr2str( runtimearray ) );
+				}
+				
+				if( name == "sparkle" ) {
+					tmparray = shifter( tmparray, value );
+					$( "#" + name ).attr('data-ymax', Math.max.apply(Math, tmparray) +4 ).attr('data-ymin', Math.min.apply(Math, tmparray) ).html( arr2str( tmparray ) );
+				}
 				
 			}			
-			
-			
-			
-//			var name = jsonobj[0][ 'name' ];
-//			var temp = jsonobj[0][ 'temp' ];
-//			var avg1 = jsonobj[0][ 'avg1' ];
-//			var avg5 = jsonobj[0][ 'avg5' ];
-//			var avg15 = jsonobj[0][ 'avg15' ];
-//			var scha = jsonobj[0][ 'scha' ];
-//			var scht = jsonobj[0][ 'scht' ];
-//			var memt = jsonobj[0][ 'memt' ];
-//			var memf = jsonobj[0][ 'memf' ];
-//			var mema = jsonobj[0][ 'mema' ];
-//			var filet = jsonobj[0][ 'filet' ];
-//			var fileu = jsonobj[0][ 'fileu' ];
-//			var filef = jsonobj[0][ 'filef' ];
-//			var filep = jsonobj[0][ 'filep' ];
-//			var netin = jsonobj[0][ 'netin' ];
-//			var netout = jsonobj[0][ 'netout' ];
-
-//			$( "#" + device ).html( distout );
-
+			sparkline();
 		})
 	
 		.fail(function( jqXHR, textStatus ) {
 			$( '#msg' ).html( "<p class='invalid'>System request failed: " + textStatus + "</p>");
 		});
 		
-//	});
-	
 }
 
 
+$("form").submit(function(event) {
+    // prevent submit
+    event.preventDefault();
+//    console.log( 'submit function' );
+    var form = $(this);
+    var action = form.attr("action"), 
+        method = form.attr("method").toUpperCase(),
+        data   = form.serialize(); 
+    
+//    console.log( data );
+    
+    $.ajax({
+        url : action,
+        type : method,
+        data : data
+    }).done(function (data) {
+        // on succsess
+        console.log( data );
+    }).fail(function() {
+        // on error
+//        alert("Fehler!");
+    }).always(function() {
+        // always
+//        alert("Beendet!");
+    });
+    
+});
+
+
+
+function micropollFunctions() {
+	system();
+}
 
 function pollFunctions() {
 	
 	// Do Stuff on polling
 	ds18b20();
-	bmp085();
+//	bmp085();
 	hcsr04();
 	dht11();
-	system();
 	
+}
+
+function micropolling( intervall, page ) {
+	if( intervall == null ) intervall = 10000; 			// default intervall 1 minute
+	var loc = getLoc();
+	if( page != null || page != "" ) {
+		if( loc == page ) micropollFunctions();
+	} else {
+		micropollFunctions();
+	}
+	if( intervall != 0 ) setTimeout( function(){ micropolling( intervall, page ) }, intervall );
 }
 
 
@@ -402,7 +591,8 @@ $( window ).load( function() {
 // document.ready dont wait for images
 $( document ).ready( function() {
 	
-	polling( 10000, "stats.php" );
+	polling( intervall, "stats.php" );
+	micropolling( microintervall, "stats.php")
 //	system();
 	
 });

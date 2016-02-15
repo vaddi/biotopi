@@ -1,13 +1,15 @@
-// raspberry HC-SR04
+// raspberry LCD 20x4
 //        5V 5V 
 //       GND GND
-//    GPIO24 Trigger
-//    GPIO25 Echo
+//    GPIOxx i2c
+//    GPIOxx i2c
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <wiringPi.h>
 #include <sys/time.h>
+#include <lcd.h>
+#include <wiringPiI2C.h>
 
 #define TRUE 1
 
@@ -71,9 +73,9 @@ float getMM() {
 }
 
 int main(void) {
-        setup();
+	setup();
+	
+/*	printf("%.2f", getMM());*/
 
-        printf("%.2f", getMM());
-
-        return 0;
+	return 0;
 }

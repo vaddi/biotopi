@@ -20,7 +20,7 @@
 
 function getDist(  ) {
 	$absolutPath = realpath("../../");
-	$distance = shell_exec("sudo $absolutPath/inc/bin/hc-sr04" );
+	$distance = shell_exec("sudo ".$absolutPath."/inc/bin/hc-sr04" );
 	if( $distance != null ) {
 		return $distance;
 	} else {

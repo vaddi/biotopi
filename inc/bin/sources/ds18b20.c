@@ -1,9 +1,14 @@
 /*
 
-Based on:  
+Get DS18b20 temperatur data
 
 */
 
+// PIN Settings
+// Raspberry DS18b20 
+//      3,3V 3,3V 
+//       GND GND
+//     GPIO4 Data
 
 #include <stdio.h>
 #include <dirent.h>

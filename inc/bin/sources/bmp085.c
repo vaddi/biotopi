@@ -12,6 +12,13 @@
 // 
 // date: 30-05-2014
 
+// pinsettings
+// raspberry BMP085
+//      3,3V 3,3V 
+//       GND GND
+//     GPIO2 SDA
+//     GPIO3 SCL
+
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
@@ -131,7 +138,8 @@ int main(int argc, char **argv){
 /*  sealevel = (double) pressure / pow((1.0-ALTITUDE/44330.0),5.255);*/
 /*  printf("Temperature: %.1f *C, Pressure: %d Pa\n", temperature, (int) pressure);*/
 /*  printf("Pressure at sea level: %.0f\n", sealevel);*/
-	printf("%d", (int) pressure);
+  printf("%d", (int) pressure);
+  
   return 0;
 }
 

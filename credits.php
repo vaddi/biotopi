@@ -14,8 +14,6 @@ incl('inc/init.php');
 	
 	<?php incl('inc/header.php'); ?>
 	
-	<?php incl('inc/nav.php'); ?>
-	
 	<p><h3>C-Software <small>Die kleinen Helfer</small></h3>
 		<ul>
 			<li>BMP085 Barometer (<a href="inc/bin/sources/bmp085.c">bmp085.c</a>) </li>
