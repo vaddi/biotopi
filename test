@@ -1,2 +1,0 @@
-dtoverlay=w1-gpio,gpiopin=4,pullup=on
-dtoverlay=w1-gpio,gpiopin=4,pullup=on
