@@ -9,21 +9,18 @@ if( strpos( $currentURL, SCRIPT ) !== false ) {
 // Sanity check, install should only be checked from index.php
 defined('PATH') or exit('Install tests must be loaded from within index.php!');
 
+require_once('inc/functions.php');
 
-if (version_compare(PHP_VERSION, '5.3', '<'))
-{
+if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 	// Clear out the cache to prevent errors. This typically happens on Windows/FastCGI.
 	clearstatcache();
-}
-else
-{
+} else {
 	// Clearing the realpath() cache is only possible PHP 5.3+
 	clearstatcache(TRUE);
 }
 
-function urlExists($url=NULL)  
-{  
-    if($url == NULL) return false;  
+function urlExists( $url = null ) {  
+    if($url == null) return false;  
     if( function_exists( 'curl_init' ) ) {
     	$ch = curl_init($url);  
 			curl_setopt($ch, CURLOPT_TIMEOUT, 5);  

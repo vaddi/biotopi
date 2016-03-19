@@ -1,7 +1,7 @@
 <?php
 
 $homelink = 'index';
-$exclude = array( 'install', 'old_install' );
+$exclude = array( 'install', 'old_install', 'template', 'bhd' ); // by mimetype .php 
 
 // get all php files from mainfolder
 $verzeichnis_raw = "./";
@@ -27,6 +27,9 @@ foreach ($exclude as $key => $value) {
 
 ?>
 	<nav class="navigation">
+	
+	<p class="pull-right"><span class="clock"><!-- Time --></span></p>
+	
 		<ul id="headnav" class="nav nav-tabs">
 		<?php	
 		foreach($verzeichnis_glob as $key => $file) {
@@ -47,6 +50,7 @@ foreach ($exclude as $key => $value) {
 		} 
 		?>
 		</ul>
+		
 		<script type="text/javascript">
 			navigator( '#headnav' );
 		</script>

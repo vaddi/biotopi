@@ -16,10 +16,14 @@ incl('inc/config.php');
 // Create Session
 $session = session_id();
 if(empty($session)) session_start();
+// set client token
+//define('SERVERTOKEN', strtotime( date( 'd.m.Y H:00:00' ) ) . '_' . session_id() );
+define('SERVERTOKEN', strtotime( date( 'd.m.Y H:00:00' ) ) . '_' . str2hex( ENCRYPTION_KEY ) );
+define('CLIENTTOKEN', urlencode( base64_encode( SERVERTOKEN ) ) );
+$_SESSION["client"] = CLIENTTOKEN; // store token in session 
 
 // define some constants
 define('CLIENT', $_SERVER['HTTP_USER_AGENT'] );
-define('CLIENT_ID', MD5( CLIENT . $session ));
 define('CLIENT_IP', $_SERVER['REMOTE_ADDR']);
 define('PROTOCOL', stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://' );
 define('HOST', $_SERVER['SERVER_NAME'] );

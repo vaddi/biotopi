@@ -1,22 +1,20 @@
 <?php
 
-//if( isset( $_GET['sid'] ) ) $client_sid = $_GET['sid'];
+// Get Data from hs-sr04 
 
-//if( empty( session_id() ) ) session_start();
-//$this_sid = session_id();
+require_once( "../config.php" );
+require_once( '../functions.php' );
+require_once( '../secure.php' );
 
-//if( $this_sid != $client_sid ) {
-//	// noID or wrongID, redirect to mainindex
-//	echo "<meta http-equiv='refresh' content='0; url=./' />";
-//} else { 
-	
-		$retArr[0]['name'] = "hc-sr04";
-		$retArr[0]['dist'] = getDist(  );
-		print_r( json_encode( $retArr ) );
-//		echo $_GET['alt'];
-	
-	
-//} // END else 
+$retArr[0]['name'] = "hc-sr04";
+$retArr[0]['dist'] = getDist(  );
+
+// set json header and print output
+require_once( 'json_header.php' );
+print_r( json_encode( $retArr ) );
+
+
+// Helper functions
 
 function getDist(  ) {
 	$absolutPath = realpath("../../");

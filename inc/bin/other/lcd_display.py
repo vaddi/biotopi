@@ -90,6 +90,7 @@ class lcd:
   def display_string(self, string, line):
     """display a string on the given line of the display, 1 or 2, string is truncated to 16 chars and centred"""
     centered_string = string.center(0)
+    
     if line == 1:
       self.write(0x80)
     if line == 2:
@@ -100,6 +101,7 @@ class lcd:
       self.write(0xD4)
  
     for char in centered_string:
+#    	if ord(char) == "/n" self.write(LCD_CURSORSHIFT)
       self.write(ord(char), Rs)
 
   def clear(self):

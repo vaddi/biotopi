@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<?php 
-$preload = 'inc/functions.php'; if (file_exists($preload)) include $preload; 
-incl('inc/init.php');
-?>
+<?php $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload; ?>
 <html lang="<?= APPLANG ?>">
 <head>
-<?php incl('inc/head.php'); ?>
+<?php 
+incl('inc/head.php');
+require_once( 'inc/class/class.File.php' );
+$tmparr = json_decode( File::read( realpath("inc/") . "/tmp/bmp085.dat" ), true );
+$bmpdata = "";
+$total = count( $tmparr ) -1;
+foreach ($tmparr as $key => $value) {
+	$bmpdata .= $value;
+	if( $key < $total ) $bmpdata .= ", ";
+}
+?>
+<script type="text/javascript">
+	var bmpArr = [ <?php print_r( $bmpdata ); ?> ];
+</script>
 </head>
 
 <body>
@@ -13,8 +23,6 @@ incl('inc/init.php');
 <div class="container">
 	
 	<?php incl('inc/header.php'); ?>
-	
-	<?php // incl('inc/nav.php'); ?>
 	
 	<div class="panel panel-default">
 		<!-- Default panel contents -->
@@ -91,7 +99,7 @@ incl('inc/init.php');
 			<tbody>
 				<tr>
 					<td>1</td>
-					<td>70m</td>
+					<td>70m <span id="bmp-spark" class="system bmp-spark" data-width="100px" size="2.5" color="#09F #0FF #F00" style="float:right"></span></td>
 					<td id="bmp085_70" class="bmp085"></td>
 		  	</tr>
 		  	
@@ -146,7 +154,7 @@ incl('inc/init.php');
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>l</th>
+					<th>mm</th>
 		  	</tr>
 			</thead>
 			<tbody>
@@ -201,74 +209,84 @@ incl('inc/init.php');
 					<td>Auslastung 5m <span id="avg5-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span></td>
 					<td id="avg5" class="system"></td>
 		  	</tr>
-				<tr>
+		  	<tr>
 					<td>5</td>
+					<td>Auslastung 15m <span id="avg15-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span></td>
+					<td id="avg15" class="system"></td>
+		  	</tr>
+				<tr>
+					<td>6</td>
 					<td>Aktive Tasks</td>
 					<td id="scha" class="system"></td>
 		  	</tr>
 				<tr>
-					<td>6</td>
+					<td>7</td>
 					<td>Gesamt Tasks</td>
 					<td id="scht" class="system"></td>
 		  	</tr>
 				<tr>
-					<td>7</td>
+					<td>8</td>
 					<td>Gesamter Speicher</td>
 					<td id="memt" class="system"></td>
 		  	</tr>
 				<tr>
-					<td>8</td>
+					<td>9</td>
 					<td>Freier Speicher</td>
 					<td id="memf" class="system"></td>
 		  	</tr>
-					<td>9</td>
+					<td>10</td>
 					<td>Verwendeter Speicher</td>
 					<td id="mema" class="system"></td>
 		  	</tr>
 		  	<tr>
-					<td>9</td>
+					<td>11</td>
 					<td>Prozentual belegter Speicher <span id="memp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
 					<td id="memp" class="system"></td>
 		  	</tr>
 				<tr>
 				<tr>
-					<td>10</td>
+					<td>12</td>
 					<td>Gesamtes Dateisystem</td>
 					<td id="filet" class="system"></td>
 		  	</tr>
 				<tr>
-					<td>11</td>
+					<td>13</td>
 					<td>Benutzes Dateisystem</td>
 					<td id="fileu" class="system"></td>
 		  	</tr>
 				<tr>
-					<td>12</td>
+					<td>14</td>
 					<td>Freies Dateisystem</td>
 					<td id="filef" class="system"></td>
 		  	</tr>
 				<tr>
-					<td>13</td>
+					<td>15</td>
 					<td>Prozentual belegtes Dateisystem <span id="filep-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
 					<td id="filep" class="system"></td>
 		  	</tr>
+		  	<tr>
+					<td>16</td>
+					<td>Netzwerk Device IP Adresse</td>
+					<td id="netip" class="system"></td>
+		  	</tr>
 				<tr>
-					<td>14</td>
-					<td>Netzwerk Device Empfangen <span id="netin-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></td>
+					<td>17</td>
+					<td>Netzwerk Device Empfangen <span id="netin-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
 					<td id="netin" class="system"></td>
 		  	</tr>
 		  	<tr>
-					<td>15</td>
-					<td>Netzwerk Device Gesendet <span id="netout-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></td>
+					<td>18</td>
+					<td>Netzwerk Device Gesendet <span id="netout-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
 					<td id="netout" class="system"></td>
 		  	</tr>
 		  	<tr>
-					<td>16</td>
+					<td>19</td>
 					<td>Apt updates (NonSecurity/Security)</td>
 					<td id="updates" class="system"></td>
 		  	</tr>
 		  	<tr>
-					<td>17</td>
-					<td>Check Runtime <span id="runtime-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></td>
+					<td>20</td>
+					<td>Check Runtime <span id="runtime-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
 					<td id="runtime" class="system"></td>
 		  	</tr>
 			</tbody>

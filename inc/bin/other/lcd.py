@@ -7,7 +7,7 @@ from lcd_display import lcd
 #print 'Args: ', str(sys.argv)
 #today = date.today()
 
-datetime = str( datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
+datetime = str( datetime.datetime.now().strftime("%d.%m.%y %H:%M:%S") )
 #date = str( datetime.datetime.now().strftime("%Y-%m-%d") )
 #time = str( datetime.datetime.now().strftime("%H:%M:%S") )
 

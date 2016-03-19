@@ -1,9 +1,11 @@
+/************** Arrays ***************/
 
 //var temparray = [ "45", "50", "48", "50", "0", "6", "10", "0", "1", "2" ];
 var temparray = [ 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9, 37.9 ];
-var tmparray = [ 50, 50, 50, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+var tmparray = [ 50, 50, 50, 50, 0, 0, 0, 50, 50, 50, 0, 0, 0, 25, 25, 25, 0, 0, 0, 0 ];
 var avg1array = [ 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 ];
 var avg5array = [ 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 ];
+var avg15array = [ 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 ];
 var memparray = [ 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75 ];
 var netinarray = [ 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4 ];
 var netoutarray = [ 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2 ];
@@ -13,6 +15,8 @@ var dhthumarray = [ 37.0, 37.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 
 var runtimearray = [ "0.5", "0.8", "0.9", "0.99", "1", "0.9", "0.8", "0.9", "0.8", "0.9" ];
 var intervall = 30000;
 var microintervall = 10000;
+
+/************** Array functions ***************/
 
 function shifter( array, value, maximum ) {
 	if( maximum == null || maximum == "" ) maximum = array.length;
@@ -31,8 +35,15 @@ function arr2str( array ) {
 	for(var i = 0; i < array.length; i++) { 
 		str += array[i] + " ";
 	}
-//	console.log( str );
 	return str;
+}
+
+function inArray(needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i] == needle) return true;
+    }
+    return false;
 }
 
 String.prototype.replaceArray = function(find, replace) {
@@ -42,6 +53,8 @@ String.prototype.replaceArray = function(find, replace) {
   }
   return replaceString;
 };
+
+/************** Navigavion ***************/
 
 function getLoc() {
 	var path = window.location.pathname;
@@ -55,105 +68,86 @@ function getLoc() {
 }
 
 function navigator( navId ) {
-	
 	var loc = getLoc();
-	
 	$( navId ).find('a').each(function() {
 		$(this).parent().toggleClass('active', $(this).attr('href') == loc);
 	});
+}
+
+/************** Time functions ***************/
+
+function addZero( value ) {
+	value = value < 10 ? "0" + value : value;
+	return value;
+}
+
+function now() {
+	var d = new Date();
+	var day = addZero( d.getDate() );
+	var month = addZero( d.getMonth() );
+	var year = d.getFullYear();
+	var hour = addZero( d.getHours() );
+	var minute = addZero( d.getMinutes() );
+	return day + "." + month + "." + year + " " + hour + ":" + minute;
+}
+
+
+
+
+
+
+
+
+
+
+
+// Spinner on all ajax requests
+var spinnerid = '#spinner';
+$(document).ajaxStart(function() { $(spinnerid).show(); });
+$(document).ajaxStop(function() { $(spinnerid).hide(); });
+
+/* simple getAjax function 
+ * @param $url			request url
+ * @param $param		parameter (dont use ?)
+ * @param callback	function on success
+ * 
+ * Usage:
+ * getAjax( 'http://google.com/', 'q=wtf&foo=bah', function( data ) {
+ * 	// do stuf with data
+ * });
+ */
+function getAjax( url, param, callback ) {
+	var form_data = param;
+	var method = "POST";
+//	if( method == "GET" ) url += "?" + param;
 	
-}
-
-function htmlMsg( id, type, name, text ) {
-	if( id === null ) return;
-	if( type === null ) return;
-  if( name === null ) return;
-  if( text === null ) return;
-  
-  var typeVal = [ 'success', 'info', 'warning', 'danger' ];
-  
-  if( inArray( type, typeVal ) ) {
-		$( '#' + id ).html( '<div class="alert alert-' + type + ' fade in" style="width:320px;"><button class="close" data-dismiss="alert" aria-label="close">&times;</button><strong>' + name + '</strong> ' + text + '</div>' );
-		if( type == 'success' || type == 'info' || type == 'warning' ) 
-			window.setTimeout( function() { fadeOutEl( ".alert-" + type ); }, 5000);
-		
-  }
-}
-
-//window.setTimeout( function() {
-//        fadeOutEl( ".alert-success" );
-//}, 5000);
-
-//$(document).ready(function(){
-//        $(".close").click(function(){
-//                fadeOutEl( ".alert" );
-//        });
-//});
-
-function fadeOutEl( elclass ) {
-        $( elclass ).fadeTo( 500, 0 ).slideUp( 500, function() {
-                $( elclass ).remove();
-        });
-}
-
-function inArray(needle, haystack) {
-    var length = haystack.length;
-    for(var i = 0; i < length; i++) {
-        if(haystack[i] == needle) return true;
+	$.ajax({
+		data: form_data,
+		url: url,
+		method: method,	
+		cache: false,
+		async: true,
+		beforeSend : function() {
+			// before send
+		},
+		success : function(data){
+      callback(data);
+    },
+    error: function (request, status, error) {
+      // on error
+    },
+    complete: function() {
+    	// on complete
     }
-    return false;
+	})
 }
-
-// Example
-//function skelet() {
-//	var device = null;
-//	var url_var = "inc/module/MODUL.php";			// Replace MODUL
-// 
-//	$('.MODUL').each(function(i){
-//	
-//		device = $( this ).attr('id');
-//		url_var += "?sid=" + sid;
-//		
-//		// ADD Data if neccessary
-//		
-//		// Send AJAX Request 
-//		$.ajax({
-//			url: url_var,
-//			cache: false
-//		})
-//		
-//		// Parse AJAX Response
-//		.done(function( html ) {
-//		
-//			var jsonobj = eval("(" + html + ")");
-//			
-//				var DATA = jsonobj[0][ 'DATA' ];		// Replace DATA
-//  
-//				if( DATA != null ) {								// Replace DATA
-//					DATA = DATA + "FORM";							// Replace DATA and FORM
-//				} else {
-//					DATA = "<font color='#f00'>MODUL request fail</font>";		// Replace DATA and MODUL
-//				}
-//				
-//				$( "#" + DATA ).html( DATA );		// Replace DATA 
-//				
-//		})
-//	
-//		.fail(function( jqXHR, textStatus ) {
-//			$( '#msg' ).html( "<p class='invalid'>MODUL request failed: " + textStatus + "</p>");		// Replace MODUL
-//		})
-//		
-//	});
-//	
-//}
-
 
 function ds18b20() {
 	var device = null;
 	var url_var = "inc/module/ds18b20.php"
 	$('.ds18b20').each(function(i){
 		device = $( this ).attr('id');
-		var url_append = "?sid=" + sid + "&device=" + device;
+		var url_append = "?cid=" + cid + "&device=" + device;
 		
 		// Send AJAX Request 
 		$.ajax({
@@ -201,7 +195,7 @@ function bmp085() {
 		var alt = device.split("_")[1];
 //		console.log( dev_arr );
 		
-		var url_append = "?sid=" + sid + "&alt=" + alt;
+		var url_append = "?cid=" + cid + "&alt=" + alt;
 		
 		// Send AJAX Request 
 		$.ajax({
@@ -212,13 +206,11 @@ function bmp085() {
 		// Parse AJAX Response
 		.done(function( html ) {
 			
-			
-			
 			var jsonobj = eval("(" + html + ")");
 			
 //			for( key in jsonobj ) {
 				var alt = jsonobj[0][ 'alt' ];
-				var pa = jsonobj[0][ 'pa' ] / 100;
+				var pa = jsonobj[0][ 'pa' ];
 				var paout = "";
 				
 				if( pa >= "1013.25" ) {
@@ -228,9 +220,13 @@ function bmp085() {
 				} else {
 					paout = "<font color='#0f0'>" + pa + "</font>";
 				}
+				
+				// bmpArr = shifter( bmpArr, pa );
+				$( "#" + "bmp-spark" ).attr('data-ymax', Math.max.apply(Math, bmpArr) + 1.0 ).attr('data-ymin', Math.min.apply(Math, bmpArr) - 1.0 ).html( arr2str( bmpArr ) );
 //				device = $( this ).attr('id');
 //				console.log( i + " " + device + " " + tempout );
 //				$( "#" + thisdev ).html( "<span style='font-size:100%;'>" + thisdev + "</span> - " + tempout + "°C" );
+				sparkline('bmp-spark');
 				$( "#" + device ).html( paout );
 //			} // END for
 
@@ -263,7 +259,7 @@ function hcsr04() {
 		var alt = device.split("_")[1];
 //		console.log( dev_arr );
 		
-		var url_append = "?sid=" + sid + "&alt=" + alt;
+		var url_append = "?cid=" + cid + "&alt=" + alt;
 		
 		// Send AJAX Request 
 		$.ajax({
@@ -320,7 +316,7 @@ function dht11() {
 	var url_var = "inc/module/dht11.php"
 	$('.dht11').each(function(i){
 		device = $( this ).attr('id');
-		var url_append = "?sid=" + sid;
+		var url_append = "?cid=" + cid;
 		
 		// Send AJAX Request 
 		$.ajax({
@@ -387,7 +383,7 @@ function system() {
 	var device = null;
 	var url_var = "inc/module/system.php"
 	
-		var url_append = "?sid=" + sid;
+		var url_append = "?cid=" + cid;
 		
 		// Send AJAX Request 
 		$.ajax({
@@ -460,6 +456,11 @@ function system() {
 					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg5array) +4 ).attr('data-ymin', Math.min.apply(Math, avg5array) - 2 ).html( arr2str( avg5array ) );
 				}
 				
+				if( name == "avg15" ) {
+					avg15array = shifter( avg15array, value );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg15array) +4 ).attr('data-ymin', Math.min.apply(Math, avg15array) - 2 ).html( arr2str( avg15array ) );
+				}
+				
 				if( name == "memp" ) {
 					memparray = shifter( memparray, value.slice(0,-1) );
 					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, memparray) +4 ).attr('data-ymin', Math.min.apply(Math, memparray) -1 ).html( arr2str( memparray ) );
@@ -491,7 +492,7 @@ function system() {
 				}
 				
 			}			
-			sparkline();
+		sparkline( 'sparkline' );
 		})
 	
 		.fail(function( jqXHR, textStatus ) {
@@ -501,6 +502,164 @@ function system() {
 }
 
 
+
+/************** polling functions ***************/
+
+function micropollFunctions() {
+	system();
+}
+
+function pollFunctions() {
+	// Do Stuff on polling
+	ds18b20();
+	bmp085();
+	hcsr04();
+	dht11();
+}
+
+function micropolling( intervall, page ) {
+	if( intervall == null ) intervall = 10000; 			// default intervall 1 minute
+	var loc = getLoc();
+	if( page != null || page != "" ) {
+		if( loc == page ) micropollFunctions();
+	} else {
+		micropollFunctions();
+	}
+	if( intervall != 0 ) setTimeout( function(){ micropolling( intervall, page ) }, intervall );
+}
+
+
+function polling( intervall, page ) {
+	if( intervall == null ) intervall = 60000; 			// default intervall 1 minute
+	var loc = getLoc();
+	if( page != null || page != "" ) {
+		// if page isset, do only on this page
+		if( loc == page ) pollFunctions();
+	} else {
+		// if page is unsetted, do polling on all sites
+		pollFunctions();
+	}
+	// Repeat polling request 
+	if( intervall != 0 ) setTimeout( function(){ polling( intervall, page ) }, intervall );
+}
+
+
+
+
+
+
+// add timeout function to classes
+window.setTimeout( function() {
+	fadeOutEl( ".alert-info" );
+  fadeOutEl( ".alert-success" );
+  fadeOutEl( ".alert-warning" );
+}, 5000);
+
+/************** window load ***************/
+
+// window.load waits for content loaded
+$( window ).load( function() {
+	$(spinnerid).hide();
+});
+
+
+/************** document ready ***************/
+
+// document.ready dont wait for images
+$( document ).ready( function() {
+	
+	// add close btn function
+	$(".close").click(function(){
+		fadeOutEl( ".alert" );
+  });
+	fadeoutAlerts();
+	
+//	for(var i = 0; i <= 8; i++) {
+//		$("[name='r" + i + "']").attr({'data-size': 'mini', 'data-on-color': 'danger'}).bootstrapSwitch();
+//	}
+	polling( intervall, "stats.php" );
+	micropolling( microintervall, "stats.php")
+//	system();
+	
+});
+
+/************** HTML outputs ***************/
+
+function htmlMsg( id, type, name, text ) {
+	if( id === null ) return;
+	if( type === null ) return;
+  if( name === null ) return;
+  if( text === null ) return;
+  var typeVal = [ 'success', 'info', 'warning', 'danger' ];
+  if( inArray( type, typeVal ) ) {
+		$( '#' + id ).html( '<div class="alert alert-' + type + ' fade in" style="width:320px;"><button class="close" data-dismiss="alert" aria-label="close">&times;</button><strong>' + name + '</strong> ' + text + '</div>' );
+		if( type == 'success' || type == 'info' || type == 'warning' ) 
+			window.setTimeout( function() { fadeOutEl( ".alert-" + type ); }, 5000);
+  }
+}
+
+// fadeout and remove class or id
+function fadeOutEl( elclass ) {
+  $( elclass ).fadeTo( 500, 0 ).slideUp( 500, function() {
+		$( elclass ).remove();
+  });
+}
+
+// toggler function for sms page
+function toggler( id ) {
+	var ele = jQuery( id ); 
+	ele.slideToggle('fast');
+}
+
+/* Textarea Counter
+ * A tiny function to add a character counter under textareas. Call by CSS-Class or ID.
+ * Usage: textareaCounter( '#msg', 160 ); // simple 
+ * 
+ * @param int			id		The id of the textbox (id or class with "#" or "." notation)
+ * @param int length		The maximum length of textarea content
+ * @param int 	warn		Wen reach this, the Counternumber will turn color to yellow
+ */
+function textareaCounter( id, length, warn ) {
+	if( length === undefined ) length = 80;
+	if( warn === undefined ) warn = length / 100 * 15;
+	
+	var idPrefix = '_feedback';
+	var amountClass = 'amount';
+	
+	// on reload, get old data and subtract from amount
+  if( $( id ).val().length > 0 ) temp_length = ( length - $( id ).val().length );
+  	else temp_length = length; 
+  
+  // create div if not exist
+  if( $( id + idPrefix ).length <= 0 ) {
+  	$( id ).after( '<div id="' + id.substring(1, id.length) + idPrefix + '" class="pull-right" style="color:#aaa;"><span class="' + amountClass + '">' + temp_length + '</span> Zeichen verbleibend</div>' );
+  	$( id ).attr({'maxlength':length});
+  }
+	
+  $( id ).keyup(function() {
+  	var temp_length = $( id ).attr( 'maxlength' );
+    var text_length = $( id ).val().length;
+    var text_remaining = temp_length - text_length;
+		
+		$( id + idPrefix ).html( '<span class="' + amountClass + '">' + text_remaining + '</span>' + ' Zeichen verbleibend');
+		
+		if( text_remaining <= 0 ) {
+			$( id + idPrefix + ' .' + amountClass ).css({'color':'#F00'});
+		} else if( text_remaining < warn ) {
+			$( id + idPrefix + ' .' + amountClass ).css({'color':'#aa0'});
+		} else {
+			$( id + idPrefix + ' .' + amountClass ).css({'color':'#aaa'});
+		}
+  });
+}
+
+
+function allRel() {
+	$('.relais input').each(function(i,input){
+		console.log( input );
+	});
+}
+
 $("form").submit(function(event) {
     // prevent submit
     event.preventDefault();
@@ -509,8 +668,6 @@ $("form").submit(function(event) {
     var action = form.attr("action"), 
         method = form.attr("method").toUpperCase(),
         data   = form.serialize(); 
-    
-//    console.log( data );
     
     $.ajax({
         url : action,
@@ -529,73 +686,39 @@ $("form").submit(function(event) {
     
 });
 
-
-
-function micropollFunctions() {
-	system();
+function fadeoutAlerts() {
+	var alerts = [ 'info', 'success', 'warning', 'danger' ];
+	$( '.alert' ).each( function( i ){
+		var timeout = $(this).data("time");
+		var id = $(this).attr('id');
+		if( timeout > 0 ) {
+			for(var i = 0; i < alerts.length; i++) {
+				// $( alerts[ i ] )
+//				console.log( $( '.alert .' + id ) );
+			}
+//		console.log( id );
+//			window.setTimeout( function() {
+//				fadeOutEl( id );
+//			}, timeout);
+		}
+	});
+	
+//	for(var i = 0; i < alerts.length; i++) {	
+////		console.log( $( '.alert .alert-' + alerts[ i ] ) );
+////		$( '.alert .alert-' + alerts[ i ] ).each( function() {
+//		$( '.alert' ).each( function( i ){
+//			
+//			var timeout = $(this).data("time");
+//			var id = $(this).attr('id');
+//			if( timeout > 0 ) {
+////				console.log( this );
+////				window.setTimeout( function() {
+////					fadeOutEl( id );
+////				}, timeout);
+//			}
+//		});
+//	}
 }
-
-function pollFunctions() {
-	
-	// Do Stuff on polling
-	ds18b20();
-//	bmp085();
-	hcsr04();
-	dht11();
-	
-}
-
-function micropolling( intervall, page ) {
-	if( intervall == null ) intervall = 10000; 			// default intervall 1 minute
-	var loc = getLoc();
-	if( page != null || page != "" ) {
-		if( loc == page ) micropollFunctions();
-	} else {
-		micropollFunctions();
-	}
-	if( intervall != 0 ) setTimeout( function(){ micropolling( intervall, page ) }, intervall );
-}
-
-
-function polling( intervall, page ) {
-	
-	if( intervall == null ) intervall = 60000; 			// default intervall 1 minute
-	var loc = getLoc();
-	
-	if( page != null || page != "" ) {
-		
-		// if page isset, do only on this page
-		if( loc == page ) pollFunctions();
-		
-	} else {
-		
-		// if page is unsetted, do polling on all sites
-		pollFunctions();
-		
-	}
-	
-	// Repeat polling request 
-	if( intervall != 0 ) setTimeout( function(){ polling( intervall, page ) }, intervall );
-	
-//	console.log( loc + " " + page );
-	
-}
-
-
-// window.load waits for content loaded
-$( window ).load( function() {
-	
-	
-});
-
-// document.ready dont wait for images
-$( document ).ready( function() {
-	
-	polling( intervall, "stats.php" );
-	micropolling( microintervall, "stats.php")
-//	system();
-	
-});
 
 
 

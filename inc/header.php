@@ -1,6 +1,10 @@
 <header class="page-header" style="border:none;">
-	<h1><?= APPNAME ?> <small>RaspberryPi Enviroment Controller</small></h1>
+	
+	<h1><?= APPNAME ?> <small>RaspberryPi Enviroment Controller</small> <img id="spinner" src="inc/img/spinner.gif" alt="" /></h1>
+	
 	<p>Ein RaspberryPi Kontroller und Datenlogger für Biotope (Terrarien, Aquarien und Aquaterrarien).</p>
+	
+	<p class="headclock"><span class="clock"><!-- Time --></span></p>
 	
 	<?php incl('inc/navigation.php') ?>
 	

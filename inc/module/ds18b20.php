@@ -1,32 +1,31 @@
 <?php
 
-//if( isset( $_GET['sid'] ) ) $client_sid = $_GET['sid'];
+// Get Data from ds18b20
 
-//if( empty( session_id() ) ) session_start();
-//$this_sid = session_id();
+require_once( "../config.php" );
+require_once( '../functions.php' );
+require_once( '../secure.php' );
 
-//if( $this_sid != $client_sid ) {
-//	// noID or wrongID, redirect to mainindex
-//	echo "<meta http-equiv='refresh' content='0; url=./' />";
-//} else { 
-	
-	if( isset( $_GET['device'] ) ) {
-		$device = $_GET['device'];
-		$retArr[0]['device'] = $device;
-		$retArr[0]['temp'] = getTemp( $device );
-		
-		print_r( json_encode( $retArr ) );
-		
-	} 
-	
-	
-//} // END else 
+if( isset( $_GET['device'] ) ) {
+	$device = $_GET['device'];
+	$retArr[0]['device'] = $device;
+	$retArr[0]['temp'] = getTemp( $device );
+} else {
+	$retArr[0]['device'] = false;
+	$retArr[0]['temp'] = 0.0;
+}
+
+// set json header and print output
+require_once( 'json_header.php' );
+print_r( json_encode( $retArr ) );
+
+
+// Helper functions
 
 function getTemp( $device = null ) {
 	if( $device != null ) {
 		$absolutPath = realpath("../../");
 		$temp = shell_exec("$absolutPath/inc/bin/ds18b20 $device" );
-		
 		if( $temp != null ) {
 			 return $temp;
 		} else {

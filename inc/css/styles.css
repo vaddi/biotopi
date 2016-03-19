@@ -1,0 +1,111 @@
+
+.clickable {
+	cursor: pointer;
+}
+
+.center {
+	text-align: center;
+}
+
+footer {
+	margin-top: 30px;
+}
+footer .center {
+	margin-bottom: -20px;
+}
+
+header .headclock .clock {
+	display: none;
+}
+
+header nav .clock { 
+	display: inline-block;
+	margin-top:10px;
+}
+
+
+
+textarea#msg {
+/*	width:100%; */
+	min-width: 220px;
+	min-height: 65px;
+/*	max-width: 776px;*/
+	max-height: 215px;
+}
+
+
+
+.sms-item:nth-child(2n+1) {
+	background: #fafafa;
+}
+
+.btn {
+	background: #eee;
+	color: #000;
+	transition: all 1000ms ease-out;
+}
+.btn:hover {
+	background: #666;
+	color: #FFF;
+	transition: all 100ms ease-in;
+}
+
+li.lihi {
+	list-style: none;
+	font-weight:bolder;
+	margin: .5rem 0 0 -1.5rem;
+}
+
+option.info,
+a.info { background: #D9EDF7; }
+.dropdown-menu > li > a.info:focus,
+.dropdown-menu > li > a.info:hover,
+button.dropdown-toggle[title="info"] { background: #BCE3F7; }
+
+option.success,
+a.success { background: #DFF0D8; }
+.dropdown-menu > li > a.success:focus,
+.dropdown-menu > li > a.success:hover,
+button.dropdown-toggle[title="success"] { background: #CEF0C0; }
+
+option.warning,
+a.warning { background: #FCF8E3; }
+.dropdown-menu > li > a.warning:focus, 
+.dropdown-menu > li > a.warning:hover,
+button.dropdown-toggle[title="warning"] { background: #FCF4CA; }
+
+option.danger,
+a.danger { background: #F2DEDE; }
+.dropdown-menu > li > a.danger:focus, 
+.dropdown-menu > li > a.danger:hover,
+button.dropdown-toggle[title="danger"] { background: #F2CBCB; }
+
+select:focus,
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+
+@media only screen and (max-width: 1280px) {
+	textarea#msg { max-width: 776px; }
+}
+
+@media only screen and (max-width: 993px) {
+	textarea#msg { max-width: 595px; }
+}
+
+
+@media only screen and (max-width: 768px) {
+	textarea#msg { max-width: 100%; }
+}
+
+
+
+@media only screen and (max-width: 620px) {
+	header .headclock .clock { display: inline-block; }
+	header nav .clock { margin-top: 0; display: none; }
+	footer .center { text-align: left; margin-bottom: 0px; }
+}
+
+

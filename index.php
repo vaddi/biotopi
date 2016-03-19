@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <?php 
 $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload; 
-incl('inc/init.php');
 // Check for installer file to help install some neccessary stuff
 $fload = 'install.php'; 
 if (file_exists($fload)) return include $fload;
@@ -16,20 +15,20 @@ if (file_exists($fload)) return include $fload;
 <div class="container">
 	
 	<?php incl('inc/header.php'); ?>
-	
-	<?php // incl('inc/nav.php'); ?>
+	<div>
 	
 		<p><h3>Verwendete Hardware:</h3>
 			<ul>
 				<li>2004 LCD Display (mit i2c Ansteuerung)</li>
 				<li>RaspberryPi b+</li>
-				<li>DS18b20 Temperatur Sensoren</li>
-				<li>HC-SR04 berührungslose Füllstands ermittlung</li>
+				<li>DS18b20 Temperatur Sensoren (One Wire)</li>
+				<li>HC-SR04 Berührungslose Füllstands Ermittlung</li>
 				<li>DHT11 Luftfeuchte und Temperatur Sensor</li>
 				<li>Bodenfeuchtigkeitssensoren</li>
 				<li>BMP085 Barometer</li>
 				<li>USB Kamera</li>
-				<li>8faches SSD-Relais zur Schaltung von:<br>
+				<li>MCP3008 10 Kanal A/D Wandler (SPI)</li>
+				<li>8faches SSD-Relais (über 74hc595 Schieberegister) zur Schaltung von:<br>
 					<ul style="list-style: roman;">
 						<li>Lüfter</li>
 						<li>Beregnungsanlage</li>
@@ -50,11 +49,13 @@ if (file_exists($fload)) return include $fload;
 				<li>Status/Warn/Alarm Mail versand bei Über oder unterschreiten von Messwerten</li>
 				<li>Steuerung von Lampen und Beregnungsanlage (oder anderer 220V Komponenten)</li>
 				<li>Selbstdimmendes LCD Display ()</li>
-				<li>Daten werden in MySQL Datenbank gespeichert</li>
+				<li>Daten werden in MySQL Datenbank (Lokal oder Remote) gespeichert</li>
 				<li>Luft, Wasser und Bodentemperatur sowie Relative Luftfeuchte können als Wertematrix hinterlegt werden um bestimmte Regionen nachbilden zu können.</li>
 			</ul>
 		</p>
-	
+
+	</div>	
+
 	<?php incl('inc/footer.php'); ?>
 	
 </div><!-- END .containter -->

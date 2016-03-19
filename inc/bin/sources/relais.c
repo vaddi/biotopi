@@ -45,11 +45,16 @@ void usage() {
 
 void toggleRelais( int wert ) {
 	if( wert > sizeof(rel)/sizeof(unsigned int) ) return;
+/*	if( wert <= 0 ) {*/
+/*		*/
+/*		*/
+/*	}*/
 	if( relState[ wert ] ) {
 		relState[ wert ] = LOW;
 	} else {
 		relState[ wert ] = HIGH;
 	}
+	
 }
 
 void setup() {
@@ -96,8 +101,9 @@ int main (int argc, char **argv) {
     } 
     if ( argv[2] != NULL ) {
     	relIds = my_getnbr( argv[2] );
-    	if( relIds <= 255 && relIds >= 0 ) {
-    		relIds = relIds ;
+    	if( relIds <= 256 && relIds >= 0 ) {
+    		if( relIds == 256 ) { toggleRelais(); relIds += -1; }
+/*    		relIds = relIds ;*/
     	} else {
 				relIds = 0;
 			}	

@@ -1,46 +1,37 @@
 <?php
 
-/*
+// Set Data to Display
 
-I've got a Display 20 chars in 4 lines. Send a text to Display and want to replace every %0A to the amount of spaces till current line is full ( % 20 == 0 )
+// security level 0 file
+$secLvl = 1;
 
-*/
-
-//if( isset( $_GET['sid'] ) ) $client_sid = $_GET['sid'];
-
-//if( session_id() == null ) session_start();
-//$this_sid = session_id();
-
-//if( $this_sid != $client_sid ) {
-//	// noID or wrongID, redirect to mainindex
-//	ignore_user_abort(true);
-//	$redirectUrl = "../../";
-//	header("Location: ".$redirectUrl, true);
-////	header( "HTTP/1.1 403 Forbidden" );
-//	header("Connection: close", true);
-//} else {
+require_once( "../config.php" );
+require_once( '../functions.php' );
+require_once( '../secure.php' );
 	
-	if( isset( $_GET['text'] ) ) {
-		$text = rawUrlEncode( $_GET['text'] ); 
+if( isset( $_GET['text'] ) ) {
+	$text = rawUrlEncode( $_GET['text'] ); 
 //		$text = $_GET['text'];
-	} else if( isset( $_POST['text'] ) ) {
-		$text = rawUrlDecode( $_POST['text'] );
+} else if( isset( $_POST['text'] ) ) {
+	$text = rawUrlDecode( $_POST['text'] );
 //		$text = $_POST['text'];
-	} else {
-		$text = null;
-	}
+} else {
+	$text = null;
+}
+
+// bei \n anzahl an freizeichen bis % 20 == 0
+$text = textForm( $text );
+
+// write log
+if( $retArr[0]['resp'] ) { logger( $text ); }
+$retArr[0]['resp'] = display( $text );
+
+// set json header and print output
+require_once( 'json_header.php' );
+print_r( json_encode( $retArr ) );
 	
-	// bei \n anzahl an freizeichen bis % 20 == 0
-	$text = textForm( $text );
-	
-//	$text = str_replace( "\n", filler( $space ), $text );
-//	echo $text . " ";
-	$retArr[0]['resp'] = display( $text );
-	print_r( json_encode( $retArr ) );
-		
-//	error_log("Unknown: " . $text , 0);
-	
-//} // END else 
+
+// Helper functions
 
 function display( $text = null ) {
 	$erg = null;
@@ -54,7 +45,6 @@ function display( $text = null ) {
 		if($text == "") {
 			$erg = null;
 		}
-//		error_log("Unknown: " . $cmd[0] , 0);
 	}
 	return $erg;
 }

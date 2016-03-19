@@ -249,6 +249,13 @@ else
 #	fi
 fi
 
+# install pear Mail
+#echo 
+#echo -n "Check for pear Mail: "
+#UPDATEPEAR=$(pear channel-update pear.php.net)
+#MAILINST=$(pear install Mail)
+#SMPTINST=$(pear install Net_SMTP)
+
 # install wiringPi
 echo 
 echo -n "Check for wiringPi: "

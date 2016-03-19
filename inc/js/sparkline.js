@@ -40,9 +40,9 @@ function drawLine( context, height, width ) {
 	context.stroke(); 
 }
 
-function sparkline() {
+function sparkline( id ) {
 	// Find all elements of class "sparkline"
-    var elts = document.getElementsByClassName("sparkline");
+    var elts = document.getElementsByClassName( id );
     // Loop through those elements
     main: for(var e = 0; e < elts.length; e++) { 
         var elt = elts[e];

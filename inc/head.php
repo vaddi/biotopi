@@ -1,17 +1,16 @@
 <title><?= APPNAME ?></title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
-<?php if ( is_file('inc/img/biotopi.ico') ) { ?>
+<?php /* favicon loader */ if ( is_file( FAVICON ) ) { ?>
 <!-- icon -->
-<link rel="shortcut icon" href="inc/img/biotopi.ico" />
+<link rel="shortcut icon" href="<?= FAVICON ?>" />
 <?php } ?>
 <!-- styles -->
-<link href="inc/css/bootstrap.min.css" rel="stylesheet">
+<?php /* css loader */ 
+setCss( 'inc/css/' ); ?>
 <!-- javascript -->
 <script type="text/javascript">
-  sid = '<?php echo session_id(); ?>';
+  var cid = "<?= CLIENTTOKEN; ?>";
 </script>
-<script type="text/javascript" src="inc/js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="inc/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="inc/js/functions.js"></script>
-<script type="text/javascript" src="inc/js/sparkline.js"></script>
+<?php /* javascript loader */ 
+setJs( 'inc/js/' ); ?>
