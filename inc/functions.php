@@ -6,6 +6,7 @@
 function incl($file) {
 	if (file_exists($file)) {
 		return include $file;
+//		return require_once $file;
 	} else {
 		 return $file . " doesn't exists! \n";
 	}
@@ -61,6 +62,24 @@ function arrShifter( $array = null, $value = null, $max = null ) {
 	return $array;
 }
 
+function getByValue( $array = null, $value = null ) {
+	if( $array === null || $value === null ) return false;
+	if( is_array( $array ) ) {
+		foreach ( $array as $key => $val ) {
+			if( is_array( $val ) ) {
+				return getByValue( $val, $value );
+			} else {
+				if( $val === $value ) {
+					return $key;
+				}
+			}
+		}
+	} else {
+		return false; // non array
+	}
+	return false;
+}
+
 function colorize( $string = null, $element = null, $value = null, $title = null ) {
 	if( $string === null ) return;
 	if( $element === null ) $element = 'span';
@@ -83,6 +102,44 @@ function isRunning( $proc = null ) {
     return false;
   }
 }
+
+function cronState( $file = null, $param = null ) {
+	if( $file === null || ! is_file( $file ) ) return false;
+	if( $param === null || ( $param === "" ) ) {
+		exec( '/usr/bin/tail -n1 '. $file, $msg, $err );
+	} else {
+		exec( '/usr/bin/tail -n2 '. $file . ' | grep ' . $param, $msg, $err );
+	}
+	if( $err == 0 && ( $msg[0] != null || $msg[0] != "" ) ) {
+		
+		$date = strtotime( substr( $msg[0], 1, 19 ) ) +1 * 60 * 60;
+		$now = strtotime( date( 'd.m.Y H:i:s' ) );
+		
+//		print_r( $msg[0] . "<br />" );
+//		print_r( $date . " " . date( 'd.m.Y H:i:s', $date ) . "<br />" );
+//		print_r( $now . " " . date( 'd.m.Y H:i:s', $now ) . "<br />" );
+		
+		if( $date > $now  ) {
+			return true; 
+		} else {
+			return false;
+		}
+  } else {
+    return false;
+  }
+}
+
+function getRuntime( $name = null ) {
+	if( $name == null ) return;
+	$pid = (int) exec( 'sudo pgrep -o -x ' . $name, $msg, $err );
+	if( $err === 0 && $pid != 0 ) {
+		$erg = exec( 'ps -p "' . $pid . '" -o etime=', $msg, $err );
+		if( $err === 0 ) {
+			return str_replace( ' ', '', $erg );
+		}
+	} 
+}
+
 
 // sort array by function
 // usort( $array, "cmp");
@@ -180,7 +237,7 @@ function convertDate( $dateString, $format ) {
   return $myDateTime->format($format);
 }
 
-function germanDay( $day = null, $fomat = null ) {
+function germanDay( $day = null, $format = null ) {
 	// get Weekday from number 
 	// 0 = Sunday
 	// 1 = Monday
@@ -261,31 +318,17 @@ function sanitize( $string ) {
   return str_replace( $in, $out, $string );
 }
 
-
-function htmlMsg( $name = null, $text = null, $type = null, $timeout = null ) {
-  if( $name === null ) return;
-  if( $text === null ) return;
-  if( $timeout === null ) $timeout = 0;
-//  if( $type === null ) $type = 'info';
-  switch( $type ) {
-  	case 'success':
-  		
-  		break;
-  	case 'info':
-  		
-  		break;
-  	case 'warning':
-  		
-  		break;
-  	case 'danger':
-  		
-  		break;
-  	default :
-  		$type = 'info';
-  		break;
-  }
-  return '<div id="alert-' . $type . '" class="alert alert-' . $type . ' fade in" data-time="' . $timeout . '"><button class="close" data-dismiss="alert" aria-label="close">&times;</button><strong>' . $name . '</strong> ' . $text . '</div>';
+function inlinelinks($description) {
+  $description = preg_replace('#http://(player\.)?vimeo\.com/video/(\d+)#', '[vimeo=$2]', $description); # vimeo id
+  $description = preg_replace('~[^\s]*youtube\.com[^\s]*?v=([-\w]+)~','[youtube=$1]', $description); # youtube id
+//  $description = preg_replace("~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~","<a href=\"\\0\" target=\"_blank\">\\0</a>", $description); # Links klickbar machen
+	$description = preg_replace("~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~",'<a href="\\0" target="_blank">\\0</a>', $description); # Links klickbar machen
+  $description = preg_replace('/\[vimeo\=(.+?)]/s','<iframe src="http://player.vimeo.com/video/$1" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',$description); # vimeo frame
+  $description = preg_replace('/\[youtube\=(.+?)]/s','<iframe width="350" height="197" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>',$description); # youtube frame
+//  $description = preg_replace( '/\[vimeo\=(.+?)]/s', '<a href=""></a>', $description );
+  return $description;
 }
+
 
 function sendMAIL( $recipient = null, $msg = null, $subject = null ) {
   if( $recipient === null || $msg === null ) return false;
@@ -294,7 +337,8 @@ function sendMAIL( $recipient = null, $msg = null, $subject = null ) {
   $msg = sanitize( $msg );
   
 	// http://email.about.com/od/emailprogrammingtips/qt/PHP_Email_SMTP_Authentication.htm
-	require_once "Mail.php";
+//	require_once "Mail.php";
+	require_once "/usr/share/php/Mail.php";
 //	require_once "secure.php"; // DEPRECATED should be load from config 
 	
 	$from = "Raspberry Pi <mvattersen@gmail.com>";
@@ -319,7 +363,7 @@ function sendMAIL( $recipient = null, $msg = null, $subject = null ) {
 	$mail = $smtp->send($to, $headers, $msg);
 
 	if ( PEAR::isError($mail) ) {
-		error_log( 'Fail send mail to ' . $recipient . ' msg:' . var_dump( $msg ), 0 );
+		error_log( 'Fail send mail to ' . $recipient . ' msg:' . $msg . " " . $mail->getMessage(), 0 );
 //		logger( $mail->getMessage() );
 		return false;
 	} else {
@@ -333,15 +377,38 @@ function sendSMS( $phone = null, $msg = null ) {
   if( $phone === null || $msg === null ) return false;
   $msg = sanitize( $msg );
   // if uset -text -> max lengt ... 70 chars
-  exec( '/bin/echo ' . $msg . ' | sudo /usr/bin/gammu-smsd-inject TEXT ' . $phone . ' -len 400', $msg, $err );
+  exec( '/bin/echo "' . $msg . '" | sudo /usr/bin/gammu-smsd-inject TEXT ' . $phone . ' -len 400', $msg, $err );
 //  print_r( $msg ); 
   if( $err == 0 ) {
   	error_log( "Send SMS to " . $phone, 0 );
-    return true; 
+    return true;
   } else {
 //  	logger( arr2str( $msg ) );
     return false;
   }
+}
+
+function gammuData( $string = null ) {
+	if( $string !== null ) {
+		// get one
+		exec( 'sudo gammu-smsd-monitor --loops=1 --delay=0.1 | egrep "(' . $string . ')"', $msg, $err );
+		if( $err == 0 ) {
+			$tmp = explode( ': ', $msg[0] );
+			return isset( $tmp[1] ) ? $tmp[1] : "unsetted";
+		}
+	} else {
+		exec( 'sudo gammu-smsd-monitor --loops=1 --delay=0.1 | egrep "(IMEI|Sent|Received|Failed|NetworkSignal)"', $msg, $err );
+		if( $err == 0 ) {
+			$erg = array();
+			foreach( $msg as $key => $value ) {
+				$tmp = explode( ': ', $value);
+				$erg[ $tmp[0] ] = isset( $tmp[1] ) ? $tmp[1] : "";
+			}
+			// Append Runtime
+			$erg[ 'Runtime' ] = getRuntime( 'gammu-smsd' );
+			return $erg;
+		}
+	}
 }
 
 function sendLCD( $msg = null ) {
@@ -500,16 +567,31 @@ function isFuture($time) {
 }
 
 
+// Html stuff
 
-function inlinelinks($description) {
-  $description = preg_replace('#http://(player\.)?vimeo\.com/video/(\d+)#', '[vimeo=$2]', $description); # vimeo id
-  $description = preg_replace('~[^\s]*youtube\.com[^\s]*?v=([-\w]+)~','[youtube=$1]', $description); # youtube id
-//  $description = preg_replace("~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~","<a href=\"\\0\" target=\"_blank\">\\0</a>", $description); # Links klickbar machen
-	$description = preg_replace("~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~",'<a href="\\0" target="_blank">\\0</a>', $description); # Links klickbar machen
-  $description = preg_replace('/\[vimeo\=(.+?)]/s','<iframe src="http://player.vimeo.com/video/$1" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',$description); # vimeo frame
-  $description = preg_replace('/\[youtube\=(.+?)]/s','<iframe width="350" height="197" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>',$description); # youtube frame
-//  $description = preg_replace( '/\[vimeo\=(.+?)]/s', '<a href=""></a>', $description );
-  return $description;
+function htmlMsg( $name = null, $text = null, $type = null, $timeout = null ) {
+  if( $name === null ) return;
+  if( $text === null ) return;
+  if( $timeout === null ) $timeout = 0;
+//  if( $type === null ) $type = 'info';
+  switch( $type ) {
+  	case 'success':
+  		
+  		break;
+  	case 'info':
+  		
+  		break;
+  	case 'warning':
+  		
+  		break;
+  	case 'danger':
+  		
+  		break;
+  	default :
+  		$type = 'info';
+  		break;
+  }
+  return '<div id="alert-' . $type . '" class="alert alert-' . $type . ' fade in" data-time="' . $timeout . '"><button class="close" data-dismiss="alert" aria-label="close">&times;</button><strong>' . $name . '</strong> ' . $text . '</div>';
 }
 
 function inputHTML( $name = null, $placeholder = null, $type = null, $value = null, $label = null ) {
@@ -543,33 +625,42 @@ function selectHTML( $name = null, $value = null, $label = null, $placeholder = 
 	}
 	$erg .= '>' . "\n";
 	if( is_array( $value ) ) {
-		foreach ($value as $val) {
-			$erg .= '<option class="' . $val . '" $value="' . $val . '">' . $val . '</option>'. "\n";
+		foreach ($value as $key => $val) {
+			$erg .= '<option class="' . $val . '" value="' . $val . '">' . ( isset($key) ? $key : $val ) . '</option>'. "\n";
 		}
 	} else {
-		$erg .= '<option>' . $value . '</option>'. "\n";
+		$erg .= '<option value="' . $value . '">' . $value . '</option>'. "\n";
 	}
 	$erg .= '</select>'. "\n";
 	$erg .= '</div>' . "\n";
 	return $erg;
 }
 
-function dateHTML( $name = null, $label = null, $value = null, $readonly = false ) {
+function dateHTML( $name = null, $label = null, $value = null, $readonly = false, $title = null ) {
 	if( $name === null ) return;
 	if( $value === null ) $value = '';
-	if( $label === null ) $label = ucfirst( $name );
+	if( $title === null )  $title = ''; else $title = ' title="' . $title . '"';
+//	if( $label === null ) $label = ucfirst( $name );
 	if( $readonly === false ) $readonly = ''; else $readonly = 'readonly=""';
+	$erg = "";
 	$date = date( 'd.m.Y H:i' );
 	$jsformat = 'dd.mm.yyyy hh:ii';
-	return '<label id="' . $name . '" class="col-sm-2 form-control-label" for="' . $name . '">' . $label . '</label>
-		<div class="col-sm-4">
-			<div class="input-append date" data-date="' . $date . ':00Z">
-				<input name="' . $name . '" value="' . $value . '" ' . $readonly . ' class="form-control form_datetime" type="text" size="16"></input>
-				<span class="add-on"><i class="icon-remove"></i></span>
-    		<span class="add-on"><i class="icon-calendar"></i></span>
-			</div>
-				
-		  <script type="text/javascript">
+	
+	if( $label != null ) {
+		$erg .= '<label id="' . $name . '" class="col-sm-2 form-control-label" for="' . $name . '">' . $label . '</label>';
+		$erg .= '<div class="col-sm-4">';
+	} else {
+		$erg .= '<div class="col-sm-3">';
+	}
+	
+	$erg .= '<div class="input-append date" data-date="' . $date . ':00Z" ' . $title . '>';
+	$erg .= '<input name="' . $name . '" value="' . $value . '" ' . $readonly . ' class="form-control form_datetime" type="text" size="16" />';
+	$erg .= '<span class="add-on"><i class="icon-remove"></i></span>';
+	$erg .= '<span class="add-on"><i class="icon-calendar"></i></span>';
+//	$erg .= '</input>';
+	$erg .= '</div>';
+  
+	$erg .= '<script type="text/javascript">
 		      $(".form_datetime").datetimepicker({
 		      	format: \'' . $jsformat . '\',
 		      	language: \'de\',
@@ -577,17 +668,24 @@ function dateHTML( $name = null, $label = null, $value = null, $readonly = false
 		      	initialDate: "' . $date . '",
 		      	autoclose: true,
 		      });
-		  </script>            
-    </div>';
+		  </script>';
+    
+  $erg .= '</div>';
+  return $erg;
 }
 
-function checkboxHTML( $name = null, $value = null, $checked = null, $title = null, $id = null, $event = null ) {
+function checkboxHTML( $name = null, $value = null, $checked = null, $title = null, $label = null, $id = null, $event = null ) {
 	if( $name === null || $value === null ) return;
-	if( $title === null ) { $title = ''; } else { $title = 'title="' . $title . '"'; }
+	if( $title === null ) { $title = ''; } /* else { $title = ' title="' . $title . '"'; } */
 	if( $checked === null || $checked === false ) { $checked = ""; } else { $checked = 'checked'; }
 	if( $id === null ) { $id = 'id="'.$name.'"'; } else { $id = 'id="' . $id . '"'; }
 	if( $event === null ) { $event = ""; } else { $event = 'onclick="' . $event . '"'; }
-	return '<label class="checkbox-inline" ' . $title . '><input type="checkbox" ' . $id . ' name="' . $name . '" value="' . $value . '" ' . $event . ' ' . $checked . '>'. $name . "</label>\n";
+	$erg = '';
+	
+	if( $label != null ) $erg .= '<label class="checkbox-inline">';
+	$erg .= '<input type="checkbox" ' . $id . ' name="' . $name . '" value="' . $value . '" ' . $event . ' data-label-text="' . $title . '" '  . $checked . '>' . "\n";
+	if( $label != null )  $erg .= $label . '</label>';
+	return $erg;
 }
 
 

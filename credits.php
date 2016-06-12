@@ -49,6 +49,7 @@
 				<li><a href="http://www.bootstrap-switch.org/">Bootstrap-switch</a></li>
 				<li><a href="https://silviomoreto.github.io/bootstrap-select/">Bootstrap-select</a></li>
 				<li><a href="http://www.malot.fr/bootstrap-datetimepicker/">Bootstrap-datetimepicker</a></li>
+				<li><a href="http://bootboxjs.com/">Bootbox</a></li>
 				<li><a href="http://stackoverflow.com/a/17955149/5208166">Creating a daemon in Linux</a></li>
 				<li><a href="http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html">Linux Daemon Writing HOWTO</a></li>
 				<li><a href="http://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap07-000.htm#Xxx999234">Linux-UNIX-Programmierung</a></li>

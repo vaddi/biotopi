@@ -100,8 +100,8 @@ function sparkline( id ) {
         var canvas = document.createElement("canvas"); 
         canvas.width = width;     // Set canvas dimensions
         canvas.height = height;
-        // Use the element content as a tooltip
-        canvas.title = content;   
+        // Use the element content as a tooltip if title is not set
+        if( elt.getAttribute("title") === undefined || elt.getAttribute("title") === null ) canvas.title = content;   
         elt.innerHTML = "";      // Erase existing content
         elt.appendChild(canvas); // Insert canvas into elt
 
@@ -116,7 +116,21 @@ function sparkline( id ) {
             context.lineTo(x,y); 
         }
         
-        if( elt.getAttribute("color") != "" && elt.getAttribute("color") != "auto" ) {
+        if( elt.getAttribute("color") !== "" && elt.getAttribute("color") === "bw" ) {
+        	var gradient = context.createLinearGradient(0,0,0,height);
+					gradient.addColorStop("0","#BBB");
+					gradient.addColorStop("0.3","#999");
+					gradient.addColorStop("0.7","#777");
+					gradient.addColorStop("1","#000");
+					context.strokeStyle = gradient; 
+        } else if( elt.getAttribute("color") !== "" && elt.getAttribute("color") === "auto" ) {
+        	var gradient = context.createLinearGradient(0,0,0,height);
+					gradient.addColorStop("0","#F00");
+					gradient.addColorStop("0.3","#FF0");
+					gradient.addColorStop("0.7","#FF0");
+					gradient.addColorStop("1","#090");
+					context.strokeStyle = gradient; 
+        } else if( elt.getAttribute("color") !== "" && elt.getAttribute("color") !== "auto" ) {
         	var col = elt.getAttribute("color").split(" ");
         	var gradient = context.createLinearGradient(0,0,0,height);
 					gradient.addColorStop("0",col[0]);
@@ -124,23 +138,30 @@ function sparkline( id ) {
 					gradient.addColorStop("0.7",col[1]);
 					gradient.addColorStop("1",col[2]);
 				  context.strokeStyle = gradient;
-				  
-        } else if( elt.getAttribute("color") == "auto" ) {
-        	var gradient = context.createLinearGradient(0,0,0,height);
-					gradient.addColorStop("0","#F00");
-					gradient.addColorStop("0.3","#FF0");
-					gradient.addColorStop("0.7","#FF0");
-					gradient.addColorStop("1","#090");
-					context.strokeStyle = gradient; 
-					
         } else {
         	context.strokeStyle = color; // Specify color
         }
         
-        context.lineWidth = size;
-//				drawLine( context, 20 , 100 );
-        context.stroke();            // and draw it
-				drawLine( context, 0 , width );
-				drawLine( context, height  , width );        
+        context.lineWidth = size;		// set line thickness
+        context.stroke();           // and draw it
+        
+				drawLine( context, 0 , width ); // Top line
+				var grid = parseInt( elt.getAttribute("grid")) || 0;
+				if( grid >= 1 ) {
+					// gridlines 
+					// if height > 20, every 10px a line
+					// if height < 20, only one line on half size
+					var gridlines = ( ( height / 10 ) > 2 ) ? ( height / 10 ) : ( height / 2 );
+					var tempgrid = 0;
+					for(var i = 0; i <= gridlines; i++) {
+						tempgrid += ( ( height / 10 ) > 2 ) ? ( height / 10 ) : ( height / 2 );
+						drawLine( context, tempgrid , width );
+					}
+				}
+				
+				drawLine( context, height  , width ); // Bottom line 
+				
+				context = null;   
     }
+    
 }

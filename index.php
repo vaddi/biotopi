@@ -4,6 +4,16 @@ $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload;
 // Check for installer file to help install some neccessary stuff
 $fload = 'install.php'; 
 if (file_exists($fload)) return include $fload;
+
+//$db = new SQLite3(DB_FILENAME);
+
+//
+
+//$db->exec("INSERT INTO users(name, creates, since) VALUES ('vaddi','10:00:00',1)");
+
+//$erg = $db->query("SELECT * FROM users");   
+//print_r($erg->fetchArray());
+
 ?>
 <html lang="<?= APPLANG ?>">
 <head>
@@ -14,7 +24,14 @@ if (file_exists($fload)) return include $fload;
 
 <div class="container">
 	
-	<?php incl('inc/header.php'); ?>
+	<?php incl('inc/header.php');
+	
+	if( cronState( '/var/log/cron/biotopi.log', 'temp_' ) ) {
+		print_r( 'cron running' );
+	} 
+	
+	
+		?>
 	<div>
 	
 		<p><h3>Verwendete Hardware:</h3>

@@ -41,13 +41,11 @@ if( isset( $_REQUEST['id'] ) ) {
 	}
 }
 
-
-header( 'Access-Control-Allow-Origin: *' );
-header( 'Cache-Control: no-cache, must-revalidate' );
-header( 'Expires: ' . expireDate() );
-header( 'Content-type: application/json; charset=UTF-8' );
-
 $retArr[0]['data'] = $erg;
+
+// set json header and print output
+require_once( 'json_header.php' );
+header( 'Content-type: application/json; charset=UTF-8' );
 print_r( json_encode( $retArr ) );
 
 ?>

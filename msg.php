@@ -118,12 +118,6 @@ $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload;
 				
 			}
 
-//			$maximum = 0;
-//			if( isset( $_REQUEST['MAIL'] ) && $_REQUEST['MAIL'] !== null ) $maximum = MAILMAX;
-//			if( isset( $_REQUEST['CLI'] ) && $_REQUEST['CLI'] !== null ) $maximum = CLIMAX;
-//			if( isset( $_REQUEST['SMS'] ) && $_REQUEST['SMS'] !== null ) $maximum = SMSMAX;
-//			if( isset( $_REQUEST['LCD'] ) && $_REQUEST['LCD'] !== null ) $maximum = LCDMAX;
-			
 		?>
 	
 		<form action="<?= $_SERVER['SCRIPT_NAME'] ?>" method="POST">
@@ -133,23 +127,23 @@ $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload;
 				echo '<div class="form-group row">';
 				echo '<div class="col-sm-2"><label>Ziel</label></div>';
 				echo '<div id="selectors" class="col-sm-10">'."\n";
-				echo checkboxHTML( 'LCD', 'lcd', isset( $_REQUEST['LCD'] ) ? true : null, "Send a Message to the LCD Display", 'lcd', 'boxEvent( this.id )' );
-				echo checkboxHTML( 'MAIL', 'mail', isset( $_REQUEST['MAIL'] ) ? true : null, "Send a Message to an E-Mail Recipient", 'mail', 'boxEvent( this.id )' );
-				echo checkboxHTML( 'SMS', 'sms', isset( $_REQUEST['SMS'] ) ? true : null, "Send a Message to a Phone via SMS", 'sms', 'boxEvent( this.id )' );
-				echo checkboxHTML( 'CLI', 'clients', isset( $_REQUEST['CLI'] ) ? true : null, "Save Message for client requests", 'clients', 'boxEvent( this.id )' );
+				echo checkboxHTML( 'LCD', 'lcd', isset( $_REQUEST['LCD'] ) ? true : null, "Send a Message to the LCD Display", 'lcd', 'lcd', 'boxEvent( this.id )' );
+				echo checkboxHTML( 'MAIL', 'mail', isset( $_REQUEST['MAIL'] ) ? true : null, "Send a Message to an E-Mail Recipient", 'mail', 'mail', 'boxEvent( this.id )' );
+				echo checkboxHTML( 'SMS', 'sms', isset( $_REQUEST['SMS'] ) ? true : null, "Send a Message to a Phone via SMS", 'sms', 'sms', 'boxEvent( this.id )' );
+				echo checkboxHTML( 'CLI', 'clients', isset( $_REQUEST['CLI'] ) ? true : null, "Save Message for client requests", 'clients', 'clients', 'boxEvent( this.id )' );
 				echo '</div>';
 				echo "</div>\n";
 				
-				// Clients
+				// Client inputs
 				echo '<div class="form-group row clientsField">' . "\n" . inputHTML( 'title', 'Clients Title', 'title', isset( $_REQUEST['title'] ) ? $_REQUEST['title'] : '', 'Title' ) . "</div>\n";
 				echo '<div class="form-group row clientsField">' . "\n" . selectHTML( 'clitype', array( 'info', 'success', 'warning', 'danger' ), 'Type', 'Bitte einen Typ auswählen.' ) . "</div>\n";
 				echo '<div class="form-group row clientsField">' . "\n" . dateHTML( 'date', 'Date', isset( $_REQUEST['date'] ) ? $_REQUEST['date'] : date( DATEFORM ) ) . "</div>\n";
-				// Email
+				// Email inputs
 				echo '<div class="form-group row emailField">' . "\n" . inputHTML( 'email', 'E-Mail Address', 'email', isset( $_REQUEST['email'] ) ? $_REQUEST['email'] : '', 'E-Mail' ) . "</div>\n";
 				echo '<div class="form-group row emailField">' . "\n" . inputHTML( 'subject', 'E-Mail Subject', null, isset( $_REQUEST['subject'] ) ? $_REQUEST['subject'] : '', 'Subject' ) . "</div>\n";
-				// SMS
+				// SMS input
 				echo '<div class="form-group row smsField">' . "\n" . inputHTML( 'phone', 'Phone number', 'tel', isset( $_REQUEST['phone'] ) ? $_REQUEST['phone'] : '', 'Phone' ) . "</div>\n";
-				// Message
+				// Message textarea
 				echo '<div class="form-group row">' . "\n" . textareaHTML( 'msg', 'Message', ( isset( $_REQUEST['msg'] ) ? $_REQUEST['msg'] : '' ), 'Message' ) . "</div>\n";
 				
 			?>
@@ -165,7 +159,6 @@ $preload = 'inc/functions.php'; if (file_exists($preload)) include $preload;
 
 $( document ).ready( function() {
 	textareaCounter( '#msg', getMax( '#selectors' ) ); // initial call
-	
 	<?php echo isset( $_REQUEST['MAIL'] ) ? '$( ".emailField" ).show();' : '$( ".emailField" ).hide();'; ?>
 	<?php echo isset( $_REQUEST['SMS'] ) ? '$( ".smsField" ).show();' : '$( ".smsField" ).hide();'; ?>
 	<?php echo isset( $_REQUEST['CLI'] ) ? '$( ".clientsField" ).show();' : '$( ".clientsField" ).hide();'; ?>

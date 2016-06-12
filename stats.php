@@ -4,18 +4,24 @@
 <head>
 <?php 
 incl('inc/head.php');
-require_once( 'inc/class/class.File.php' );
-$tmparr = json_decode( File::read( realpath("inc/") . "/tmp/bmp085.dat" ), true );
-$bmpdata = "";
-$total = count( $tmparr ) -1;
-foreach ($tmparr as $key => $value) {
-	$bmpdata .= $value;
-	if( $key < $total ) $bmpdata .= ", ";
+require_once( '/var/www/inc/class/class.File.php' );
+$tmparr = json_decode( File::read( realpath("inc/") . "/tmp/" . BMP085FILE ), true );
+if( $tmparr !== null ) {
+	$bmpdata = "";
+	$total = count( $tmparr ) -1;
+	foreach ($tmparr as $key => $value) {
+		$bmpdata .= $value;
+		if( $key < $total ) $bmpdata .= ", ";
+	}
+	echo '<script type="text/javascript">';
+	echo 'var bmpArr = [ ' .  $bmpdata  . ' ];';
+	echo '</script>';
+} else {
+	echo '<script type="text/javascript">';
+	echo 'var bmpArr = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];';
+	echo '</script>';
 }
 ?>
-<script type="text/javascript">
-	var bmpArr = [ <?php print_r( $bmpdata ); ?> ];
-</script>
 </head>
 
 <body>
@@ -188,107 +194,67 @@ foreach ($tmparr as $key => $value) {
 					<th>value</th>
 		  	</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>Hostname</td>
-					<td id="name" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>2</td>
-					<td>Temperatur <span id="temp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
-					<td id="temp" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>3</td>
-					<td>Auslastung 1m <span id="avg1-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span></td>
-					<td id="avg1" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>4</td>
-					<td>Auslastung 5m <span id="avg5-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span></td>
-					<td id="avg5" class="system"></td>
-		  	</tr>
-		  	<tr>
-					<td>5</td>
-					<td>Auslastung 15m <span id="avg15-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span></td>
-					<td id="avg15" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>6</td>
-					<td>Aktive Tasks</td>
-					<td id="scha" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>7</td>
-					<td>Gesamt Tasks</td>
-					<td id="scht" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>8</td>
-					<td>Gesamter Speicher</td>
-					<td id="memt" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>9</td>
-					<td>Freier Speicher</td>
-					<td id="memf" class="system"></td>
-		  	</tr>
-					<td>10</td>
-					<td>Verwendeter Speicher</td>
-					<td id="mema" class="system"></td>
-		  	</tr>
-		  	<tr>
-					<td>11</td>
-					<td>Prozentual belegter Speicher <span id="memp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
-					<td id="memp" class="system"></td>
-		  	</tr>
-				<tr>
-				<tr>
-					<td>12</td>
-					<td>Gesamtes Dateisystem</td>
-					<td id="filet" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>13</td>
-					<td>Benutzes Dateisystem</td>
-					<td id="fileu" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>14</td>
-					<td>Freies Dateisystem</td>
-					<td id="filef" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>15</td>
-					<td>Prozentual belegtes Dateisystem <span id="filep-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
-					<td id="filep" class="system"></td>
-		  	</tr>
-		  	<tr>
-					<td>16</td>
-					<td>Netzwerk Device IP Adresse</td>
-					<td id="netip" class="system"></td>
-		  	</tr>
-				<tr>
-					<td>17</td>
-					<td>Netzwerk Device Empfangen <span id="netin-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
-					<td id="netin" class="system"></td>
-		  	</tr>
-		  	<tr>
-					<td>18</td>
-					<td>Netzwerk Device Gesendet <span id="netout-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
-					<td id="netout" class="system"></td>
-		  	</tr>
-		  	<tr>
-					<td>19</td>
-					<td>Apt updates (NonSecurity/Security)</td>
-					<td id="updates" class="system"></td>
-		  	</tr>
-		  	<tr>
-					<td>20</td>
-					<td>Check Runtime <span id="runtime-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
-					<td id="runtime" class="system"></td>
-		  	</tr>
+			<tbody>		  	
+<?php
+
+$system = array(	
+	array( 'name' => 'Hostname', 'span' => '', 'id' => 'name', 'class' => '' ),
+	array( 'name' => 'Temperatur', 'span' => '<span id="temp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'temp', 'class' => '' ),
+	array( 'name' => 'Auslastung 1m', 'span' => '<span id="avg1-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span>', 'id' => 'avg1', 'class' => '' ),
+	array( 'name' => 'Auslastung 5m', 'span' => '<span id="avg5-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span>', 'id' => 'avg5', 'class' => '' ),
+	array( 'name' => 'Auslastung 15m', 'span' => '<span id="avg15-spark" class="system sparkline" data-width="100px" size="2" color="auto" style="float:right"></span>', 'id' => 'avg15', 'class' => '' ),
+	array( 'name' => 'Aktive Tasks', 'span' => '', 'id' => 'scha', 'class' => '' ),
+	array( 'name' => 'Gesamt Tasks', 'span' => '', 'id' => 'scht', 'class' => '' ),
+	array( 'name' => 'Gesamter Speicher', 'span' => '', 'id' => 'memt', 'class' => '' ),
+	array( 'name' => 'Freier Speicher', 'span' => '', 'id' => 'memf', 'class' => '' ),
+	array( 'name' => 'Verwendeter Speicher', 'span' => '', 'id' => 'mema', 'class' => '' ),
+	array( 'name' => 'Prozentual belegter Speicher', 'span' => '<span id="memp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'memp', 'class' => '' ),
+	array( 'name' => 'Gesamtes Dateisystem', 'span' => '', 'id' => 'filet', 'class' => '' ),
+	array( 'name' => 'Benutzes Dateisystem', 'span' => '', 'id' => 'fileu', 'class' => '' ),
+	array( 'name' => 'Freies Dateisystem', 'span' => '', 'id' => 'filef', 'class' => '' ),
+	array( 'name' => 'Prozentual belegtes Dateisystem', 'span' => '<span id="filep-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'filep', 'class' => '' ),
+	array( 'name' => 'Netzwerk Device IP Adresse', 'span' => '', 'id' => 'netip', 'class' => '' ),
+	array( 'name' => 'Netzwerk Device Empfangen', 'span' => '<span id="netin-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'netin', 'class' => '' ),
+	array( 'name' => 'Netzwerk Device Gesendet', 'span' => '<span id="netout-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'netout', 'class' => '' ),
+	array( 'name' => 'Apt updates (NonSecurity/Security)', 'span' => '', 'id' => 'updates', 'class' => '' ),
+	array( 'name' => 'Caros Seite (Cronjob Status)', 'span' => '', 'id' => 'ccp', 'class' => '' ),
+	array( 'name' => 'DS18b20 Temperatur (Cronjob Status)', 'span' => '', 'id' => 'cds18b20', 'class' => '' ),
+	array( 'name' => 'BMP085 Barometric Pressure (Cronjob Status)', 'span' => '', 'id' => 'cbmp085', 'class' => '' ),
+//	array( 'name' => '', 'span' => '', 'id' => '', 'class' => '' ),
+	array( 'name' => 'Check Runtime', 'span' => '<span id="runtime-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'runtime', 'class' => '' ),
+);
+
+foreach( $system as $id => $system_arr ) {
+
+	echo '<tr>'."\n";
+	echo '<td>' . ( $id +1 ) . '</td>'."\n";
+	$curr_id = '';
+	foreach ( $system_arr as $key => $value ) {
+	
+		if( $key == 'name' ) echo '<td>' . $value;
+		
+		if( $key == 'span' ) {
+			if( $value != null || $value != "" ) {
+				echo ' ' . $value;
+			}
+			echo "</td>\n";
+		}
+		
+		if( $key == 'id' && $value != '' ) $curr_id = $value;
+		
+		if( $key == 'class' ) {
+			if( $value != null && $value != '' ) {
+				echo '<td id="' . $curr_id . '" class="system ' . $value . '">' . "</td>\n";
+			} else {
+				echo '<td id="' . $curr_id . '" class="system"></td>' . "\n";
+			}
+		}
+		
+	}
+	echo '</tr>'."\n";
+}
+
+?>
 			</tbody>
 		</table>
 		

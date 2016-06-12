@@ -14,7 +14,9 @@ if( $secLvl >= 1 ) {
 	if( isset( $_REQUEST['cid'] ) && $_REQUEST['cid'] != null && $_REQUEST['cid'] != "" ) {
 		$cid = base64_decode( urldecode( substr( $_REQUEST['cid'], 0, -1 ) ) );
 	}
-
+#var_dump($cid);
+#print_r("<br />");
+#var_dump(SERVERTOKEN);
 	if( $cid !== SERVERTOKEN ) {
 		ignore_user_abort(true);
 		if( REDIRECT ) {

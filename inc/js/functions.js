@@ -157,12 +157,13 @@ function ds18b20() {
 		
 		// Parse AJAX Response
 		.done(function( html ) {
+		
 			var jsonobj = eval("(" + html + ")");
 
 				var thisdev = jsonobj[0][ 'device' ];
 				var temp = jsonobj[0][ 'temp' ];
 				var tempout = "";
-				
+//				console.log( thisdev + " " + temp );
 				if( temp >= 26 ) {
 					tempout = "<font color='#f00'>" + temp + "&nbsp;</font>";
 				} else if( temp >= 25 ) {
@@ -177,6 +178,7 @@ function ds18b20() {
 	
 		.fail(function( jqXHR, textStatus ) {
 			$( '#msg' ).html( "<p class='invalid'>DS18b20 request failed: " + textStatus + "</p>");
+			console.log( "<p class='invalid'>DS18b20 request failed: " + textStatus + "</p>" );
 		})
 		
 	});
@@ -381,7 +383,7 @@ function dht11() {
 function system() {
 	
 	var device = null;
-	var url_var = "inc/module/system.php"
+	var url_var = "inc/module/system.php";
 	
 		var url_append = "?cid=" + cid;
 		
@@ -501,7 +503,96 @@ function system() {
 		
 }
 
-
+function gammuState() {
+	var device = null;
+	var rawdevice = null;
+	var url_var = "inc/module/sms.php"
+	
+	var sparks = [];
+	$('.gammu-spark').each(function(i){
+		sparks.push( $( this ).attr('id').split('-')[0] );
+	});
+	
+	var url_append = "?cid=" + cid;
+	url_append = url_append + '&cmd=sentstate'
+	// Send AJAX Request 
+	$.ajax({
+		url: url_var + url_append,
+		cache: false
+	})
+	
+	// Parse AJAX Response
+	.done(function( html ) {
+		var jsonobj = eval("(" + html + ")");
+		var keys = jsonobj[0].data;
+		
+		var gammustate = $( '#gstate' ).attr('style').split( ': ' )[1].slice(1,-1);
+		
+		if( jsonobj[0].state ) { // only if gammu is running
+		
+			for( key in keys ) {
+				name = key;
+				
+				values = keys[ key ];
+				
+				if( name == "failed" ) {
+					current = values[ values.length -1 ];
+//					failedArr = shifter( failedArr, current );
+					failedArr = values;
+					title = $( "#" + name + "-spark" ).attr( 'title' ).split( ': ' )[0] + ": " + current;
+					$( "#" + name + "-spark" ).attr( 'data-ymax', Math.max.apply( Math, failedArr ) +1 ).attr( 'data-ymin', Math.min.apply( Math, failedArr ) -1 ).attr( 'title', title ).html( arr2str( failedArr ) );
+				}
+				
+				if( name == "received" ) {
+					current = values[ values.length -1 ];
+//					receivedArr = shifter( receivedArr, current );
+					receivedArr = values;
+					title = $( "#" + name + "-spark" ).attr( 'title' ).split( ': ' )[0] + ": " + current;
+					$( "#" + name + "-spark" ).attr( 'data-ymax', Math.max.apply( Math, receivedArr ) +1 ).attr( 'data-ymin', Math.min.apply( Math, receivedArr ) -1 ).attr( 'title', title ).html( arr2str( receivedArr ) );
+				}
+				
+				if( name == "sent" ) {
+					current = values[ values.length -1 ];
+//					sentArr = shifter( sentArr, current );
+					sentArr = values;
+					title = $( "#" + name + "-spark" ).attr( 'title' ).split( ': ' )[0] + ": " + current;
+					$( "#" + name + "-spark" ).attr( 'data-ymax', Math.max.apply( Math, sentArr ) +1 ).attr( 'data-ymin', Math.min.apply( Math, sentArr ) -1 ).attr( 'title', title ).html( arr2str( sentArr ) );
+				}
+				
+				if( name == "signal" ) {
+					current = values[ values.length -1 ];
+//					signalArr = shifter( signalArr, current );
+					signalArr = values;
+					title = $( "#" + name + "-spark" ).attr( 'title' ).split( ': ' )[0] + ": " + current;
+					$( "#" + name + "-spark" ).attr( 'data-ymax', Math.max.apply( Math, signalArr )  ).attr( 'data-ymin', Math.min.apply( Math, signalArr )  ).attr( 'title', title ).html( arr2str( signalArr ) );
+				}
+				
+			}
+			
+			sparkline( 'sparkline' ); // all data setted, render class sparkline elements
+			
+			if( gammustate === "C00" ) {
+				// Update gammu-smsd state
+				$( '#gstate' ).attr({ 'style': 'color: #666;', 'title' : 'TODO, set title data if gammu is up and running' });
+			}
+			
+		} else {
+			// gammu not running
+			if( gammustate === "666" ) {
+				// Update gammu-smsd state
+				$( '#gstate' ).attr({ 'style': 'color: #C00;', 'title' : 'Gammu SMSD not running!' });
+			}
+		}
+		
+	})
+	.fail(function( jqXHR, textStatus ) {
+		$( '#msg' ).html( "<p class='invalid'>gammu request failed: " + textStatus + "</p>");
+	})
+	.always(function() {
+		
+	});
+		
+}
 
 /************** polling functions ***************/
 

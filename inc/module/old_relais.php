@@ -1,6 +1,6 @@
 <?php
 
-//require_once( "../config.php" );
+require_once( "../config.php" );
 require_once( '../functions.php' );
 require_once( '../secure.php' );
 
@@ -41,11 +41,6 @@ $retArr[0]['resp'] = $erg;
 
 // set json header and print output
 require_once( 'json_header.php' );
-
-//echo "<pre>";
-//print_r( $retArr );
-//echo "</pre>";
-
 print_r( json_encode( $retArr ) );
 
 
@@ -53,8 +48,7 @@ print_r( json_encode( $retArr ) );
 
 function relais( $cmd = null, $relais = null ) {
 	if( $cmd === null /* || ( $relais > 255 || $relais < 0 ) */ ) return false;
-	if( $relais !== null && ( $relais > 255 || $relais < 0 ) ) return false; // 8bit
-//	if( $relais !== null && ( $relais > 16383 || $relais < 0 ) ) return false; // 16bit
+	if( $relais !== null && ( $relais > 255 || $relais < 0 ) ) return false;
 	
 	$erg = false;
 	$absolutPath = realpath("../../");
@@ -62,12 +56,12 @@ function relais( $cmd = null, $relais = null ) {
 	switch( $cmd ) {
 		case "set" :
 			$value = exec( "sudo $absolutPath/inc/bin/relais $cmd $relais", $msg, $err );
-			if( $value == "34344" ) return false; // TODO ???
+			if( $value == "34344" ) return false; 
 			//	www-data need write access to file dir
-			$value = File::write( "$absolutPath/inc/tmp/relais_new.dat",  $value  );
+			$value = File::write( "$absolutPath/inc/tmp/relais.dat", $value );
 		break;
 		case "get" :
-			$value = (int) File::read( "$absolutPath/inc/tmp/relais_new.dat" );
+			$value = (int) File::read( "$absolutPath/inc/tmp/relais.dat" );
 		break;
 		default :
 			$value = null;

@@ -2,7 +2,7 @@
 
 // Get Data from hs-sr04 
 
-require_once( "../config.php" );
+//require_once( "../config.php" );
 require_once( '../functions.php' );
 require_once( '../secure.php' );
 

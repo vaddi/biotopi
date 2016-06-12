@@ -2,24 +2,7 @@
 
 require_once( "../inc/config.php" );
 require_once( '../inc/functions.php' );
-
-// validate cid
-$cid = null;
-if( isset( $_REQUEST['cid'] ) && $_REQUEST['cid'] != null && $_REQUEST['cid'] != "" ) {
-	$cid = base64_decode( urldecode( substr( $_REQUEST['cid'], 0, -1 ) ) );
-}
-
-if( $cid !== SERVERTOKEN ) {
-	ignore_user_abort(true);
-	if( REDIRECT ) {
-		$redirectUrl = "../../";
-		header("Location: ".$redirectUrl, true);
-	} else {
-		header( "HTTP/1.1 403 Forbidden" );
-	}
-	header("Connection: close", true);
-	exit;
-}
+require_once( '../inc/secure.php' );
 
 // get all messages 
 //getCliMsg();
@@ -58,12 +41,11 @@ if( isset( $_REQUEST['id'] ) ) {
 	}
 }
 
-header('Access-Control-Allow-Origin: *');
-header('Cache-Control: no-cache, must-revalidate');
-header('Expires: Sun, 1 Jan 2017 00:00:01 GMT');
-header('Content-type: application/json; charset=UTF-8');
-
 $retArr[0]['data'] = $erg;
+
+// set json header and print output
+require_once( 'json_header.php' );
+header('Content-type: application/json; charset=UTF-8');
 print_r( json_encode( $retArr ) );
 
 ?>
