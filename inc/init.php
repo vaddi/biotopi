@@ -11,7 +11,12 @@
 // SCRIPT_URL	
 
 // Include our config file
-incl('/var/www/inc/config.php');
+if( function_exists( 'incl' ) ) {
+	incl( '/var/www/inc/config.php' );
+} else {
+	require_once( '/var/www/inc/config.php' );
+}
+
 
 if( isset( $fromscript ) && !$fromscript ) {
 // Create Session
@@ -37,7 +42,7 @@ define('SCRIPT_URL', URL . '/' . SCRIPT );
 define('VERSION', "0.2");
 
 // check for installer file to help install the neccessary stuff
-$fload = 'install.php'; 
-if (file_exists($fload)) return include $fload; 
+$installer = 'install.php'; 
+if (file_exists($installer)) return include $installer; 
 
 ?>

@@ -639,7 +639,7 @@ function polling( intervall, page ) {
 
 
 
-// add timeout function to classes
+// add timeout function to classes (TODO, works only once)
 window.setTimeout( function() {
 	fadeOutEl( ".alert-info" );
   fadeOutEl( ".alert-success" );

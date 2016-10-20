@@ -1,3 +1,4 @@
+<div  class="col-sm-12 row">
 <header class="page-header" style="border:none;">
 	
 	<h1><?= APPNAME ?> <small>RaspberryPi Enviroment Controller</small> <img id="spinner" src="inc/img/spinner.gif" alt="" /></h1>
@@ -15,3 +16,4 @@
 	</noscript>
 
 </header>
+</div>

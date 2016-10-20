@@ -17,7 +17,7 @@ class BMP085 implements Modules {
 	}
 	
 	//
-	//  INTEFACE
+	// FROM INTERFACE
 	//
 	
 	public function getStatus(  ) {
@@ -43,7 +43,7 @@ class BMP085 implements Modules {
 	
 	
 	//
-	//  INTERFACE
+	// FROM INTERFACE
 	//
 	
 	public function getPa( $alt ) {

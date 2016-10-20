@@ -103,6 +103,25 @@ function isRunning( $proc = null ) {
   }
 }
 
+function diskSpace() {
+	$data = shell_exec('df -h | grep root | tr -s " "');
+  $data = explode( " ", $data );
+  $value = isset( $data[4] ) ? (int) str_replace( '%', '', $data[4] ) : null;
+  if( $value !== null ) {
+    if( $value >= 96 ) {
+    	// alert, very low disk space
+    	echo "alert " . $value . '%';
+    } else if( $value >= 90 ) {
+    	// warning, low disk space
+    	$erg = "warning " . $value . '%';
+    } else {
+    	// disk space ok
+    	$erg = $value . '%';
+    }
+  }
+  return $erg;
+}
+
 function cronState( $file = null, $param = null ) {
 	if( $file === null || ! is_file( $file ) ) return false;
 	if( $param === null || ( $param === "" ) ) {
@@ -238,6 +257,7 @@ function convertDate( $dateString, $format ) {
 }
 
 function germanDay( $day = null, $format = null ) {
+
 	// get Weekday from number 
 	// 0 = Sunday
 	// 1 = Monday
@@ -318,6 +338,32 @@ function sanitize( $string ) {
   return str_replace( $in, $out, $string );
 }
 
+////http://stackoverflow.com/a/1188460
+//function inlinelinks($text) {
+//  return  preg_replace(
+//     array(
+//       '/(?(?=<a[^>]*>.+<\/a>)
+//             (?:<a[^>]*>.+<\/a>)
+//             |
+//             ([^="\']?)((?:https?|ftp|bf2|):\/\/[^<> \n\r]+)
+//         )/iex',
+//       '/<a([^>]*)target="?[^"\']+"?/i',
+//       '/<a([^>]+)>/i',
+//       '/(^|\s)(www.[^<> \n\r]+)/iex',
+//       '/(([_A-Za-z0-9-]+)(\\.[_A-Za-z0-9-]+)*@([A-Za-z0-9-]+)
+//       (\\.[A-Za-z0-9-]+)*)/iex'
+//       ),
+//     array(
+//       "stripslashes((strlen('\\2')>0?'\\1<a href=\"\\2\">\\2</a>\\3':'\\0'))",
+//       '<a\\1',
+//       '<a\\1 target="_blank">',
+//       "stripslashes((strlen('\\2')>0?'\\1<a href=\"http://\\2\">\\2</a>\\3':'\\0'))",
+//       "stripslashes((strlen('\\2')>0?'<a href=\"mailto:\\0\">\\0</a>':'\\0'))"
+//       ),
+//       $text
+//   );
+//}
+
 function inlinelinks($description) {
   $description = preg_replace('#http://(player\.)?vimeo\.com/video/(\d+)#', '[vimeo=$2]', $description); # vimeo id
   $description = preg_replace('~[^\s]*youtube\.com[^\s]*?v=([-\w]+)~','[youtube=$1]', $description); # youtube id
@@ -332,18 +378,18 @@ function inlinelinks($description) {
 
 function sendMAIL( $recipient = null, $msg = null, $subject = null ) {
   if( $recipient === null || $msg === null ) return false;
-  if( $subject === null || $subject == "" ) $subject = "Message from your RaspberryPi";
+  if( $subject === null || $subject === "" ) $subject = "Message from your RaspberryPi";
   
-  $msg = sanitize( $msg );
+//  $msg = sanitize( $msg );
   
 	// http://email.about.com/od/emailprogrammingtips/qt/PHP_Email_SMTP_Authentication.htm
-//	require_once "Mail.php";
 	require_once "/usr/share/php/Mail.php";
-//	require_once "secure.php"; // DEPRECATED should be load from config 
 	
 	$from = "Raspberry Pi <mvattersen@gmail.com>";
-	$to = explode( '@', $recipient )[0] . " <" . $recipient . ">";
-
+	$name = explode( '@', $recipient )[0];
+	$name = str_replace( '.',' ', $name );
+	$to = "$name <" . $recipient . ">";
+	
 	$host = MAILHOST;
 	$username = MAILUSER;
 	$password = MAILPASS;	
@@ -352,22 +398,53 @@ function sendMAIL( $recipient = null, $msg = null, $subject = null ) {
 	$smtp = $protocol . "://" . $host . ":" . $port;
 
 	$headers = array ('From' => $from,
-	 'To' => $to,
-	 'Subject' => $subject);
-	$smtp = Mail::factory('smtp',
-	 array ('host' => $smtp,
+		'To' => $to,
+		'Subject' => $subject,
+//		'Reply-To' => $from,
+		'MIME-Version' => "1.0",
+		'Content-type' => "text/html; charset=UTF-8"
+  );
+  $mime_params = array(
+		'text_encoding' => '7bit',
+		'text_charset'  => 'UTF-8',
+		'html_charset'  => 'UTF-8',
+		'head_charset'  => 'UTF-8'
+	);
+	
+	require_once 'Mail/mime.php';
+	$mime = new Mail_mime();
+
+	$html =  '<html><body>' . "\n";
+	$html .= str_replace( "\n", '<br />', inlinelinks( $msg ) );
+	$html .= '</body></html>' . "\n";
+
+	$mime->setTXTBody($msg);
+	$mime->setHTMLBody($html);
+
+	$body = $mime->get($mime_params);
+	$headers = $mime->headers($headers);	
+	
+	$mail_object =& Mail::factory('smtp', 
+		array ('host' => $smtp,
 		 'auth' => true,
 		 'username' => $username,
 		 'password' => $password));
+	$mail = $mail_object->send($to, $headers, $body);
 
-	$mail = $smtp->send($to, $headers, $msg);
+//	$smtp = Mail::factory('smtp',
+//	 array ('host' => $smtp,
+//		 'auth' => true,
+//		 'username' => $username,
+//		 'password' => $password));
+
+//	$mail = $smtp->send($to, $headers, $msg);
 
 	if ( PEAR::isError($mail) ) {
 		error_log( 'Fail send mail to ' . $recipient . ' msg:' . $msg . " " . $mail->getMessage(), 0 );
 //		logger( $mail->getMessage() );
 		return false;
 	} else {
-		error_log( "Send E-Mail to " . $recipient, 0 );
+//		error_log( "Send E-Mail to " . $recipient, 0 );
 		return true;
 	}
 	
@@ -565,6 +642,176 @@ function isPast( $time ) {
 function isFuture($time) {
     return ( strtotime( $time ) > time() );
 }
+
+// get digitalized analog data from mcp3008
+function getAD( $id = null ) {
+	if( $id === null ) { $id = ""; } else { $id = " " . $id; }
+	
+//	$absolutPath = realpath("../../") == "/" ? __DIR__ ."/../../" : realpath("../../");
+	$absolutPath = "/var/www/inc";
+	$value = ( (int) shell_exec("sudo " . $absolutPath . "/bin/mcp3008$id" ) );
+
+	return $value;
+}
+
+function valid( $var ) {
+	$valid = false;
+	if( is_array( $var ) ) {
+		$valid = isset( $var[0] ) ? true : false;
+		$valid = $var[0] != null ? true : false;
+		$valid = ! empty( $var[0] ) ? true : false;	
+	} else {
+		$valid = $var != "" ? true : false;
+		$valid = $var != null ? true : false;
+		$valid = ! empty( $var ) ? true : false;
+	}
+	return $valid;
+}
+
+//
+// Get Functions for devices
+//
+
+function dht11( $unit = null ) {
+	
+	$erg = null;
+	$absolutPath = realpath("/var/www");
+	$raw = explode( " ", shell_exec( "sudo " . $absolutPath . "/inc/bin/dht11" ) );
+	
+	if( $unit != null && isset( $raw[0] ) && isset( $raw[1] ) ) {
+		switch ($unit) {
+			case 'rf':
+				$erg = $raw[0];
+			break;
+			case 'temp':
+				$erg = $raw[1];
+			break;
+			default:
+				$erg = $raw[0] . " " . $raw[1];
+			break;
+		}
+	} else if( isset( $raw[0] ) && isset( $raw[1] ) ) {
+		$erg = array( 'rf' => $raw[0], 'temp' => $raw[1] );
+	} else {
+//		$erg = $raw;
+		$erg = array( 'rf' => null, 'temp' => null );
+	}
+	return $erg;
+}
+
+function relais( $cmd = null, $relais = null ) {
+	if( $cmd === null /* || ( $relais > 255 || $relais < 0 ) */ ) return false;
+	if( $relais !== null && ( $relais > 255 || $relais < 0 ) ) return false; // 8bit
+//	if( $relais !== null && ( $relais > 16383 || $relais < 0 ) ) return false; // 16bit
+	
+	$erg = false;
+	$absolutPath = realpath("/var/www");
+	require_once( 'class/class.File.php' );
+	switch( $cmd ) {
+		case "set" :
+			$value = exec( "sudo $absolutPath/inc/bin/relais $cmd $relais", $msg, $err );
+			if( $value == "34344" ) return false; // TODO ???
+			//	www-data need write access to file dir
+			$value = File::write( "$absolutPath/inc/tmp/relais_new.dat",  $value  );
+		break;
+		case "get" :
+			$value = (int) File::read( "$absolutPath/inc/tmp/relais_new.dat" );
+		break;
+		default :
+			$value = null;
+		break;
+	}
+	return $value;
+}
+
+function bmp085( $alt = null ) {
+	if( $alt != null ) {
+		
+		$absolutPath = realpath("/var/www");
+		$altitude = ( (int) shell_exec("sudo " . $absolutPath . "/inc/bin/bmp085 $alt" ) ) / 100;
+
+		if( $altitude != null ) {
+			
+			if( BMP085HIST > 0 ) {
+				$tmpfile = $absolutPath . "/inc/tmp/" . BMP085FILE;
+				$filetime = filemtime( $tmpfile );
+				$now = time();
+			
+				// 3600s = 1h
+				if( ( $now - ( BMP085HIST * 60 ) ) > $filetime ) {
+
+					// get old data 
+					require_once( $absolutPath . '/inc/class/class.File.php' );
+					$tmparr = json_decode( File::read( $tmpfile ) );
+				
+					// if no data available, set default (new file etc.)
+					if( ! isset( $tmparr ) ) $tmparr = array( 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 );
+				
+					// shift Data in to array
+					$tmparr = arrShifter( $tmparr, $altitude );
+				
+					// update bmp file data (json encode)
+					File::write( $tmpfile, json_encode( $tmparr ) );
+			
+				}
+			}
+			
+			return $altitude;
+		} else {
+			return false;
+		}
+	} 
+}
+
+function sr04() {
+	$absolutPath = realpath("/var/www");
+	$distance = shell_exec("sudo ".$absolutPath."/inc/bin/hc-sr04" );
+	if( $distance != null ) {
+		return $distance;
+	} else {
+		return false;
+	}
+}
+
+function ds18b20( $device = null ) {
+	if( $device != null ) {
+		$absolutPath = realpath("/var/www");
+		$temp = shell_exec("$absolutPath/inc/bin/ds18b20 $device" );
+		if( $temp != null ) {
+			
+			if( DS18B20HIST > 0 ) {
+				$temp = str_replace( "\n", '', $temp );
+				$file = ( defined( 'DS18B20FILE' ) && strpos( DS18B20FILE, '{DEVICE}' ) !== false ) ? str_replace( '{DEVICE}', $device, DS18B20FILE ) : DS18B20FILE;
+				$tmpfile = $absolutPath."/inc/tmp/" . $file;
+				$filetime = filemtime( $tmpfile );
+				$now = time();
+			
+				// 3600s = 1h
+				if( ( $now - DS18B20HIST ) > $filetime ) {
+
+					// get old data 
+					require_once( $absolutPath.'/inc/class/class.File.php' );
+					$tmparr = json_decode( File::read( $tmpfile ) );
+				
+					// if no data available, set default (24h)
+					if( ! isset( $tmparr ) ) $tmparr = array( 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 );
+				
+					// shift Data in to array
+					$tmparr = arrShifter( $tmparr, $temp );
+				
+					// update bmp file data (json encode)
+					File::write( $tmpfile, json_encode( $tmparr ) );
+			
+				}
+			}
+			
+			return $temp;
+		} else {
+			return false;
+		}
+	} 
+}
+
 
 
 // Html stuff

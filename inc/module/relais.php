@@ -48,33 +48,4 @@ require_once( 'json_header.php' );
 
 print_r( json_encode( $retArr ) );
 
-
-// Helper functions
-
-function relais( $cmd = null, $relais = null ) {
-	if( $cmd === null /* || ( $relais > 255 || $relais < 0 ) */ ) return false;
-	if( $relais !== null && ( $relais > 255 || $relais < 0 ) ) return false; // 8bit
-//	if( $relais !== null && ( $relais > 16383 || $relais < 0 ) ) return false; // 16bit
-	
-	$erg = false;
-	$absolutPath = realpath("../../");
-	require_once( '../class/class.File.php' );
-	switch( $cmd ) {
-		case "set" :
-			$value = exec( "sudo $absolutPath/inc/bin/relais $cmd $relais", $msg, $err );
-			if( $value == "34344" ) return false; // TODO ???
-			//	www-data need write access to file dir
-			$value = File::write( "$absolutPath/inc/tmp/relais_new.dat",  $value  );
-		break;
-		case "get" :
-			$value = (int) File::read( "$absolutPath/inc/tmp/relais_new.dat" );
-		break;
-		default :
-			$value = null;
-		break;
-	}
-	return $value;
-}
-
-
 ?>

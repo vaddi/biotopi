@@ -33,8 +33,25 @@ if (file_exists($fload)) return include $fload;
 	
 		?>
 	<div>
-	
-		<p><h3>Verwendete Hardware:</h3>
+		
+		<div class="col-sm-12 row">
+			<h3>Heimautomation für Terrarien/Aquarien</h3>
+
+			<div class="col-sm-2 pull-right">	
+				<a href="inc/img/waterdragon.jpg" title="Meine Wasseragamendame">		
+					<img src="inc/img/waterdragon.jpg" alt="Wasseragame" class="img-thumbnail" /> 
+				</a>
+				<div style="margin:0 0 32px;text-align: center;">		
+					&copy;<a href="https://500px.com/rolandrebholz" target="_blank">Roland Rebholz Fotografie</a>
+				</div>
+			</div>
+
+			<p>Um meiner Wasseragame ein möglichst heimisches Umfeld bieten zu können, habe ich ihr eine Heimautomation für ihr Terrarium gebaut.</p>
+
+		</div>
+		
+		<div class="col-sm-12 row">
+			<h3>Verwendete Hardware:</h3>
 			<ul>
 				<li>2004 LCD Display (mit i2c Ansteuerung)</li>
 				<li>RaspberryPi b+</li>
@@ -58,9 +75,10 @@ if (file_exists($fload)) return include $fload;
 					</ul>
 				</li>
 			</ul>
-		</p>
+		</div>
 
-		<p><h3>Funktionen:</h3>
+		<div class="col-sm-12 row" style="margin-bottom:50px;">
+			<h3>Funktionen:</h3>
 			<ul>
 				<li>Webserver zur Ausgabe und Konfiguration</li>
 				<li>Status/Warn/Alarm Mail versand bei Über oder unterschreiten von Messwerten</li>
@@ -69,8 +87,8 @@ if (file_exists($fload)) return include $fload;
 				<li>Daten werden in MySQL Datenbank (Lokal oder Remote) gespeichert</li>
 				<li>Luft, Wasser und Bodentemperatur sowie Relative Luftfeuchte können als Wertematrix hinterlegt werden um bestimmte Regionen nachbilden zu können.</li>
 			</ul>
-		</p>
-
+		</div>
+		
 	</div>	
 
 	<?php incl('inc/footer.php'); ?>
