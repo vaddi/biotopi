@@ -34,6 +34,7 @@ PKGS=(	mysql-server
 				php5-curl 
 				php5-mcrypt 
 				php5-gd
+				daemon
 				htop
 				iftop
 				vim
