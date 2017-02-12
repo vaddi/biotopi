@@ -33,7 +33,7 @@ function getDHT11( $unit = null ,$value = null ) {
 				// 3600s = 1h
 				if( ( $now - DHT11HIST ) > $filetime ) {
 					// get old data 
-					require_once( 'class/class.File.php' );
+					require_once( $absolutPath.'/inc/class/class.File.php' );
 					$tmparr = json_decode( File::read( $tmpfile ) );
 					// if no data available, set default (24h)
 					if( ! isset( $tmparr ) ) $tmparr = array( 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 );

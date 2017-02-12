@@ -85,7 +85,14 @@ function delsms( file, folder, el ) {
 }
 
 $(document).ready(function() {
+	// set max chars to textarea
   textareaCounter( '#msg', <?= SMSMAX ?> );
+  // phonepicker into inputfield
+  $('#phoneviewer').val( $('.selectpicker option:selected').val() );
+  $('.selectpicker').on('change', function() {
+		$('#phoneviewer').val( $('.selectpicker option:selected').val() );
+	});
+	// start the polling
   polling( 30000, "sms.php" ); 
 });
 
@@ -188,9 +195,10 @@ function pollFunctions() {
 			echo '<form action="' . $_SERVER['SCRIPT_NAME'] . '" method="post">';
 			
       echo '<div class="form-group row smsField">';
-      echo inputHTML( 'phone', 'Phone number', 'tel', isset( $_REQUEST['phone'] ) ? $_REQUEST['phone'] : '', 'Phone' ) . "\n";
-//			$recipient = isset( $_REQUEST['phone'] ) ? getByValue( $recipients, $_REQUEST['phone'] ) : null;
+//      echo inputHTML( 'phone', 'Phone number', 'tel', isset( $_REQUEST['phone'] ) ? $_REQUEST['phone'] : '', 'Phone' ) . "\n";
+			$recipient = isset( $_REQUEST['phone'] ) ? getByValue( $recipients, $_REQUEST['phone'] ) : null;
 // 			echo selectHTML( 'phone', $recipients, 'Empfänger', $recipient );
+ 			echo selectPHONE( 'phone', $recipients, 'Empfänger', $recipient );
       echo "</div>\n";
       
       echo '<div class="form-group row">' . "\n" . textareaHTML( 'msg', 'Message', ( isset( $_REQUEST['msg'] ) ? $_REQUEST['msg'] : '' ), 'Message' );
@@ -333,13 +341,16 @@ function pollFunctions() {
 					$contentraw = file_get_contents( $file );
 					
 					if( $folder == 'inbox' ) {
+						// for inbox files
 						$replace_str = 'IN';
 						$content = $contentraw;
+//						$content = mb_convert_encoding( $contentraw, 'UTF-8-DOCOMO', 'UTF-8');
 					} else {
+						// for outbox files
 						$replace_str = 'OUTC';
-						$contentraw = substr( $contentraw, 183, -1 );
-						$content = explode( 'PDU', $contentraw )[0];
-						$content = str_replace( ';','<br />', $content );
+						$contentraw = substr( $contentraw, 183, -1 );		// remove gammu infos
+						$content = explode( 'PDU', $contentraw )[0];		// get the text
+						$content = str_replace( "\n; ",'', $content );	// remove newlines
 					}
 
 					$dateraw = isset( $namearr[0] ) ? str_replace( $replace_str,'',$namearr[0] ) : "";
@@ -356,6 +367,7 @@ function pollFunctions() {
 					echo '<span class="controlls"><a class="clickable" onclick="delsms( \'' . urlencode( $filename ) . '\', \'' . $folder . '\', this )"><img src="inc/img/icons/hex_delete.png" width="18" style="margin-top:-4px;" alt="löschen" /></a></span>';
 					echo '</div><br />';
 					echo inlinelinks( $content );
+//					echo $content;
 					echo '</li>';
 
 					$id++;

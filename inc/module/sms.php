@@ -27,7 +27,7 @@ if( isRunning( 'gammu-smsd' ) ) {
 			// delete one file
 			case "delfile":
 				if( isset( $_REQUEST['file'] ) && $_REQUEST['file'] !== null && $_REQUEST['file'] !== "" && isset( $_REQUEST['folder'] ) && $_REQUEST['folder'] !== null && $_REQUEST['folder'] !== "" ) {
-					$file = '/var/spool/gammu/' . escapeshellarg( $_REQUEST['folder'] ) . '/' . escapeshellarg( urldecode( $_REQUEST['file'] ) );
+					$file = '/var/spool/gammu/' . escapeshellarg( $_REQUEST['folder'] ) . '/' . escapeshellarg( $_REQUEST['file'] );
 					exec( 'sudo /bin/rm ' . $file, $msg, $err );
 					if( $err == 0 ) $erg = true;
 						else $erg = false;

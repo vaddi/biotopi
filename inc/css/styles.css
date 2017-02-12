@@ -87,12 +87,21 @@ select:-moz-focusring {
 }
 
 
+#phoneviewer {
+	width:130px;
+	text-align:center;
+	float:right;
+	margin: 0 -20px 0 0;
+}
+
+
 @media only screen and (max-width: 1280px) {
 	textarea#msg { max-width: 776px; }
 }
 
 @media only screen and (max-width: 993px) {
 	textarea#msg { max-width: 595px; }
+	#phoneviewer { margin: 0; float:none; }
 }
 
 

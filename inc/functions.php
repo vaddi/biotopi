@@ -336,6 +336,7 @@ function sanitize( $string ) {
   $in  = array( 'ö',  'ä',  'ü',  'Ö',  'Ä',  'Ü',  'ß'  );
   $out = array( 'oe', 'ae', 'ue', 'Oe', 'Ae', 'Ue', 'sz' );
   return str_replace( $in, $out, $string );
+//  return mb_convert_encoding( utf8_decode($string), 'UTF-8-DOCOMO', 'UTF-8');
 }
 
 ////http://stackoverflow.com/a/1188460
@@ -649,7 +650,7 @@ function getAD( $id = null ) {
 	
 //	$absolutPath = realpath("../../") == "/" ? __DIR__ ."/../../" : realpath("../../");
 	$absolutPath = "/var/www/inc";
-	$value = ( (int) shell_exec("sudo " . $absolutPath . "/bin/mcp3008$id" ) );
+	$value = ( (int) shell_exec("sudo " . $absolutPath . "/bin/mcp3008 $id" ) );
 
 	return $value;
 }
@@ -879,6 +880,32 @@ function selectHTML( $name = null, $value = null, $label = null, $placeholder = 
 		$erg .= '<option value="' . $value . '">' . $value . '</option>'. "\n";
 	}
 	$erg .= '</select>'. "\n";
+	$erg .= '</div>' . "\n";
+	return $erg;
+}
+
+function selectPHONE( $name = null, $value = null, $label = null, $placeholder = null ) {
+	if( $name === null || $value === null ) return;
+	if( $label === null ) $label = $name;
+	if( $placeholder === null ) $placeholder = false;
+	$erg = '<label id="' . $name . '" class="col-sm-2 form-control-label" for="' . $name . '">' . $label . '</label>' . "\n";
+	$erg .= '<div class="col-sm-4">' . "\n";
+	$erg .= '<select class="selectpicker" name="' . $name . '"';
+	if( $placeholder !== false && $placeholder !== null && $placeholder !== "" ) { // Placeholder
+		$erg .= ' title="' . $placeholder . '"';
+	}
+	$erg .= '>' . "\n";
+	if( is_array( $value ) ) {
+		foreach ($value as $key => $val) {
+			$erg .= '<option class="' . $val . '" value="' . $val . '">' . ( isset($key) ? $key : $val ) . '</option>'. "\n";
+		}
+	} else {
+		$erg .= '<option value="' . $value . '">' . $value . '</option>'. "\n";
+	}
+	$erg .= '</select>'. "\n";
+//	$erg .= '<div class="col-sm-4">' . "\n";
+	$erg .= '<input id="phoneviewer" name="phonestr" maxlength="14" />' . "\n";
+//	$erg .= '</div">' . "\n";
 	$erg .= '</div>' . "\n";
 	return $erg;
 }
