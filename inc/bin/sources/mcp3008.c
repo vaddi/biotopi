@@ -22,22 +22,40 @@
 #include "mcp3008Spi.h"
 #include "mcp3008Spi.cpp"
 
+#define APPNAME     "mcp3008"
+#define APPVERSION  "0.1"
+
 using namespace std;
+
+void usage() {
+  printf("%s v%s - Get Values from mcp3008 ADC\n", APPNAME, APPVERSION );
+  printf("Usage:\n");
+  printf("%s [ARG]\n", APPNAME);
+  printf("[ARG] \t = device id - Return Device Temperatur Value (°C)\n");
+  printf("[ARG] \t = 0         - Return List of Devices\n");
+  printf("Example:\n");
+  printf("%s 28-000004d0e3cf\n", APPNAME);
+  printf("25.187\n");
+}
+
 
 int char2int( char *c ) {
   return *c - '0';
 }
 
 int main(int argc, char **argv) {
-		
+
 	int a2dVal = 0;
 	int a2dChannel = 0;
-	if ( argv[1] != NULL && char2int( argv[1] ) != 0  ) { 
-		a2dChannel = char2int( argv[1] ); 
-	}
-		
+	if ( argv[1] != NULL && char2int( argv[1] ) != 0  ) {
+		a2dChannel = char2int( argv[1] );
+	} else {
+    usage();
+    return 0
+  }
+
 	mcp3008Spi a2d( "/dev/spidev0.0", SPI_MODE_0, 1000000, 8 );
-    
+
 	unsigned char data[ 3 ];
 
 	data[0] = 1;	// first byte transmitted -> start bit
@@ -49,8 +67,8 @@ int main(int argc, char **argv) {
 	a2dVal = 0;
 	a2dVal = ( data[ 1 ] << 8 ) & 0b1100000000; //merge data[1] & data[2] to get result
 	a2dVal |= ( data[ 2 ] & 0xff );
-    
+
 	cout << a2dVal << endl; // output value
-		
-    return 0;
+
+  return 0;
 }

@@ -56,43 +56,51 @@ if( isset( $_GET['command'] ) ) {
 	$updates = isset( $updates ) ? $updates : "0/0";
 	$filesysArr = explode( " ", $filesysout );
 	$kernel	= shell_exec('uname -r');
+	$radiation = radiation( true );
+#	$radiation = array();	
 	$min = 0;
 	$max = 50;
 	$sparkle = rand($min,$max);
 	
 	// cron jobs
-	$ccp = cronState( '/var/log/cron/caro.log' ) ? 'Ok' : 'Failed';
-	$cds18b20 = cronState( '/var/log/cron/biotopi.log', 'temp_' ) ? 'Ok' : 'Failed';
+//	$ccp = cronState( '/var/log/cron/caro.log' ) ? 'Ok' : 'Failed';
+	$bahnjob = cronState( '/var/log/cron/bahn.log', null, 12 ) ? 'Ok' : 'Failed';
+	$cds18b20 = cronState( '/var/log/cron/biotopi.log', 'temp_', 3 ) ? 'Ok' : 'Failed';
 	$cbmp085 = cronState( '/var/log/cron/biotopi.log', 'pa' ) ? 'Ok' : 'Failed';
 	
 	// check runtime
 	$runtime = round( ( microtime(true) - $time_start ), 3 ) . " Sek.";
 	
 	
-	$retArr[0]['name'] = $hostname;						// Hostname
-	$retArr[0]['temp'] = $soc_temp;						// SoC Temperatur
+	$retArr[0]['name'] = $hostname;					// Hostname
+	$retArr[0]['temp'] = $soc_temp;					// SoC Temperatur
 	$retArr[0]['avg1'] = $loadavgArr[0];			// average systemload last 1m
 	$retArr[0]['avg5'] = $loadavgArr[1];			// average systemload last 5m
 	$retArr[0]['avg15'] = $loadavgArr[2];			// average systemload last 15m
-	$retArr[0]['scha'] = $schedulingArr[0];		// number of active tasks
-	$retArr[0]['scht'] = $schedulingArr[1];		// number of total tasks
-	$retArr[0]['memt'] = $mem_total;					// Total Memory in kB
-	$retArr[0]['memf'] = $mem_free;						// Free Memory in kB
-	$retArr[0]['mema'] = $mem_avail;					// Available Memory in kB
-	$retArr[0]['memp'] = $mem_freep;					// Free memory in %
+	$retArr[0]['scha'] = $schedulingArr[0];			// number of active tasks
+	$retArr[0]['scht'] = $schedulingArr[1];			// number of total tasks
+	$retArr[0]['memt'] = $mem_total;				// Total Memory in kB
+	$retArr[0]['memf'] = $mem_free;					// Free Memory in kB
+	$retArr[0]['mema'] = $mem_avail;				// Available Memory in kB
+	$retArr[0]['memp'] = $mem_freep;				// Free memory in %
 	$retArr[0]['filet'] = $filesysArr[1];			// Filesystem Total space
 	$retArr[0]['fileu'] = $filesysArr[2];			// Filesystem Used space
 	$retArr[0]['filef'] = $filesysArr[3];			// Filesystem Free space
 	$retArr[0]['filep'] = $filesysArr[4];			// Filesystem Used space %
-	$retArr[0]['netip'] = $netip;							// Network ip address
-	$retArr[0]['netin'] = $netin;							// Network Device Received
-	$retArr[0]['netout'] = $netout;						// Network Device Transmit
-	$retArr[0]['updates'] = $updates;					// Amount of Apt-Updates 
-	$retArr[0]['ccp']	= $ccp;									// Cronjob for Caros Page
+	$retArr[0]['netip'] = $netip;					// Network ip address
+	$retArr[0]['netin'] = $netin;					// Network Device Received
+	$retArr[0]['netout'] = $netout;					// Network Device Transmit
+	$retArr[0]['updates'] = $updates;				// Amount of Apt-Updates 
+	$retArr[0]['bahnjob']	= $bahnjob;				// Cronjob for Bahn check
 	$retArr[0]['cds18b20'] = $cds18b20;				// Cronjob for ds18b20 temperature
-	$retArr[0]['cbmp085'] = $cbmp085;					// Cronjob for BMP085 Barometric Pressure
-	$retArr[0]['sparkle'] = $sparkle;					// Random Value
-	$retArr[0]['runtime'] = $runtime;					// Check runtime
+	$retArr[0]['cbmp085'] = $cbmp085;				// Cronjob for BMP085 Barometric Pressure
+	$retArr[0]['radcps'] = $radiation[0]['CPS'];	// Radiation Counts per Second
+	$retArr[0]['radcpm'] = $radiation[0]['CPM'];	// Radiation Counts per Minute
+	$retArr[0]['uSv'] = $radiation[0]['uSv'];		// Radiation Level uSv/h
+	$retArr[0]['radmode'] = $radiation[0]['mode'];	// Radiation detect mode
+	
+	$retArr[0]['sparkle'] = $sparkle;				// Random Value
+	$retArr[0]['runtime'] = $runtime;				// Check runtime
 	
 	// cleanup linebreaks
 	foreach ( $retArr[0] as $key => $value ) {

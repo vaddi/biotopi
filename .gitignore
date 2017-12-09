@@ -1,6 +1,18 @@
 # git ignore file
+
+# dont push mac osx hidden files
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+
+# dont push tmp
 tmp/*
+
+# dont push config & backups
 inc/config.php
 inc/bin/bkup/*
+
+# dont push last bahn tracker
 last.html
 

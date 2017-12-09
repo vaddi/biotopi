@@ -1,6 +1,8 @@
 // bmp085.c
-// 
-// Bosch BMP085 experimental driver over I2C 
+// Used in BiotoPi Project
+// Get hPa from BMP085 Sensor. Based on:
+//
+// Bosch BMP085 experimental driver over I2C
 // using the wiringPi I2C library - issued under GNU LGPLv3 see COPYING.LESSER
 // for Raspberry Pi rev2
 //
@@ -9,12 +11,12 @@
 // Step 3 set the OSS value (optional) - see below
 // Step 4 compile this file:  gcc -Wall -std=gnu99 bmp085.c -o bmp085 -l wiringPi -l m
 // Step 5 execute the script ./bmp085
-// 
+//
 // date: 30-05-2014
 
-// pinsettings
+// Pin layout
 // raspberry BMP085
-//      3,3V 3,3V 
+//      3,3V 3,3V
 //       GND GND
 //     GPIO2 SDA
 //     GPIO3 SCL
@@ -26,7 +28,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define DEBUG 0
+#define APPNAME     "bmp085"
+#define APPVERSION  "0.1"
 
 //set the oversampling value (OSS 0..3) - this affects the precision of pressure measurement and
 //the current required to get one reading
@@ -47,7 +52,7 @@ int fd;
 // each OSS value requires a different max timing (in us)
 // this usually could be done quicker - see data sheet
 int get_timing(){
-  if ( OSS == 0 ) return 4500;  
+  if ( OSS == 0 ) return 4500;
   if ( OSS == 1 ) return 7500;
   if ( OSS == 2 ) return 13500;
   if ( OSS == 3 ) return 25500;
@@ -68,7 +73,7 @@ void read_calibration_values(int fd){
   MB  = (wiringPiI2CReadReg8 (fd, 0xBA) << 8) + wiringPiI2CReadReg8 (fd, 0xBB);
   MC  = (wiringPiI2CReadReg8 (fd, 0xBC) << 8) + wiringPiI2CReadReg8 (fd, 0xBD);
   MD  = (wiringPiI2CReadReg8 (fd, 0xBE) << 8) + wiringPiI2CReadReg8 (fd, 0xBF);
-  if ( DEBUG == 1 ) printf("AC1 = %d \nAC2 = %d \nAC3 = %d \nAC4 = %d \nAC5 = %d \nAC6 = %d \nB1 = %d \nB2 = %d \nMB = %d \nMC = %d \nMD = %d \n", 
+  if ( DEBUG == 1 ) printf("AC1 = %d \nAC2 = %d \nAC3 = %d \nAC4 = %d \nAC5 = %d \nAC6 = %d \nB1 = %d \nB2 = %d \nMB = %d \nMC = %d \nMD = %d \n",
      AC1, AC2, AC3, AC4, AC5, AC6, B1, B2, MB, MC, MD);
 }
 
@@ -82,7 +87,7 @@ void get_readings(long UT, long UP){
   X2 = (MC << 11) / (X1 + MD);
   B5 = X1 + X2;
   temp = (B5 + 8) >> 4;
-  
+
   B6 = B5 - 4000;
   X1 = (B2 * ((B6 * B6) >> 12)) >> 11;
   X2 = (AC2 * B6) >> 11;
@@ -103,22 +108,31 @@ void get_readings(long UT, long UP){
 
 int main(int argc, char **argv){
   int MSB, LSB, XLSB, timing, DEVICE_ADDRESS;
-/*  double temperature, sealevel, ALTITUDE;*/
+  double /* temperature, */ sealevel, ALTITUDE;
 
-  if (argc != 2) {
-    printf("usage: %s [altitude in meters]\n", argv[0]);
-    printf("example: %s 89 - the sensor is at 89m height \n", argv[0]);
+// Default values
+  ALTITUDE = 70.00;
+  DEVICE_ADDRESS = 0x77;
+
+  if (argc != 3) {
+    printf( "%s v%s - Get hPa Value from given address and altitude\n", APPNAME, APPVERSION );
+    printf( "Usage:\n" );
+    printf( "%s ADDRESS <ALTITUDE>\n", APPNAME );
+    printf( "ADDRESS : %i [Address in Hex]\n", DEVICE_ADDRESS );
+    printf( "ALTITUDE : %.0f [Altitude in meters]\n", ALTITUDE );
+    printf( "Returnl hPa Valu \n" );
     return 2;
   }
-  
-  DEVICE_ADDRESS = 0x77;
-/*  ALTITUDE = atof(argv[1]);*/
+
+  // Set Args
+  DEVICE_ADDRESS = atoi(argv[1]);
+  ALTITUDE = atof(argv[2]);
 
   fd = wiringPiI2CSetup (DEVICE_ADDRESS);
   read_calibration_values(fd);
-  
+
   //get raw temperature
-  wiringPiI2CWriteReg8 (fd, 0xF4, 0x2E);  
+  wiringPiI2CWriteReg8 (fd, 0xF4, 0x2E);
   usleep(4500);
   MSB = wiringPiI2CReadReg8 (fd, 0xF6);
   LSB = wiringPiI2CReadReg8 (fd, 0xF7);
@@ -134,12 +148,15 @@ int main(int argc, char **argv){
   UP = ((MSB << 16) + (LSB << 8) + XLSB) >> (8 - OSS);
 
   get_readings(UT, UP);
-/*  temperature = temp/10;*/
-/*  sealevel = (double) pressure / pow((1.0-ALTITUDE/44330.0),5.255);*/
-/*  printf("Temperature: %.1f *C, Pressure: %d Pa\n", temperature, (int) pressure);*/
-/*  printf("Pressure at sea level: %.0f\n", sealevel);*/
-  printf("%d", (int) pressure);
-  
+//  temperature = temp/10;
+  sealevel = (double) ( pressure / pow( ( 1.0 - ALTITUDE / 44330.0 ) , 5.255 ) );
+//  printf("Temperature: %.1f *C, Pressure: %d Pa\n", temperature, (int) pressure);
+//  printf("Pressure at sea level: %.0f\n", sealevel);
+
+  // temp, hPa, sealevel
+  //printf("%.1f°C %d %.0f", temperature, (int) pressure, sealevel);
+  printf("%.0f", sealevel);
+
   return 0;
 }
 

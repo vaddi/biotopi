@@ -13,7 +13,8 @@ $devices = array(
 									array(	'name' => 'Temperatur Widerstand' ),
 									array(	'name' => 'Lichtsensor Transistor' ),
 									array(	'name' => 'Bodenfeuchte Sensor' ),
-									array(	'name' => 'UV Sensor' )
+									array(	'name' => 'UV Sensor' ),
+									array(	'name' => 'Gas Sensor' )
 );
 
 ?>

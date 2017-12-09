@@ -11,8 +11,9 @@ var netinarray = [ 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 88.4, 8
 var netoutarray = [ 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2, 73.2 ];
 var fileparray = [ 40, 40, 41, 41, 41, 41, 42, 42, 40, 40, 40, 41, 42, 43, 43, 43, 43, 43 ]
 var dhttemparray = [ 25.0, 25.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 25.0, 25.0, 24.0, 24.0 ];
-var dhthumarray = [ 37.0, 37.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 37.0, 36.0, 35.0, 35.0, 36.0, 36.0 ];
+var dhthumarray = [ 37.0, 37.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 36.0, 37.0, 36.0,35.0, 35.0, 36.0, 36.0 ];
 var runtimearray = [ "0.5", "0.8", "0.9", "0.99", "1", "0.9", "0.8", "0.9", "0.8", "0.9" ];
+//var uSvarray = [ 0.13, 0.9, 0.15, 0.13, 0.10, 0.11, 0.10, 0.10, 0.10, 0.9, 0.8, 0.14, 0.13, 0.13, 0.13, 0.11, 0.9, 0.10, 0.10, 0.11, 0.13, 0.13, 0.13, 0.10 ];
 var intervall = 30000;
 var microintervall = 10000;
 
@@ -330,10 +331,10 @@ function dht11() {
 		.done(function( html ) {
 			var jsonobj = eval("(" + html + ")");
 			
-				var rf = jsonobj[0][ 'rf' ];
-				var temp = jsonobj[0][ 'temp' ] ;
+				var rf =  jsonobj[0][ 'rf' ] ;
+				var temp =  jsonobj[0][ 'temp' ] ;
 
-				if( temp != null ) {
+				if( temp != null && temp != NaN ) {
 					dhttemparray = shifter( dhttemparray, temp );
 					dhthumarray = shifter( dhthumarray, rf );
 					
@@ -437,30 +438,30 @@ function system() {
 				
 				// Sparkline data
 				
-				$( "#dhthum-spark" ).attr('data-ymax', Math.max.apply(Math, dhthumarray) +2 ).attr('data-ymin', Math.min.apply(Math, dhthumarray) -1 ).html( arr2str( dhthumarray ) );				
-				$( "#dhttemp-spark" ).attr('data-ymax', Math.max.apply(Math, dhttemparray) +2 ).attr('data-ymin', Math.min.apply(Math, dhttemparray) -1 ).html( arr2str( dhttemparray ) );
+				$( "#dhthum-spark" ).attr('data-ymax', Math.max.apply(Math, dhthumarray) +1.0 ).attr('data-ymin', Math.min.apply(Math, dhthumarray) -1.0 ).html( arr2str( dhthumarray ) );				
+				$( "#dhttemp-spark" ).attr('data-ymax', Math.max.apply(Math, dhttemparray) +1.0 ).attr('data-ymin', Math.min.apply(Math, dhttemparray) -1.0 ).html( arr2str( dhttemparray ) );
 				$( ".tableHead" ).html( "last " + temparray.length * ( microintervall / 1000 ) + " Sek." );
 				
 				if( name == "temp" ) {
 					temparray = shifter( temparray, value.slice(0,-2) );
 //					$( "#" + name ).parent().children().eq(1).html( text );
-					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, temparray) +4 ).attr('data-ymin', Math.min.apply(Math, temparray) ).html( arr2str( temparray ) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, temparray) +4.0 ).attr('data-ymin', Math.min.apply(Math, temparray) -2.0 ).html( arr2str( temparray ) );
 //					intvalue = Math.round( temparray[ temparray.length  - 1] );
 				}
 				
 				if( name == "avg1" ) {
 					avg1array = shifter( avg1array, value );
-					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg1array) +4 ).attr('data-ymin', Math.min.apply(Math, avg1array) - 2 ).html( arr2str( avg1array ) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg1array) +4.0 ).attr('data-ymin', Math.min.apply(Math, avg1array) -2.0 ).html( arr2str( avg1array ) );
 				}
 				
 				if( name == "avg5" ) {
 					avg5array = shifter( avg5array, value );
-					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg5array) +4 ).attr('data-ymin', Math.min.apply(Math, avg5array) - 2 ).html( arr2str( avg5array ) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg5array) +4.0 ).attr('data-ymin', Math.min.apply(Math, avg5array) -2.0 ).html( arr2str( avg5array ) );
 				}
 				
 				if( name == "avg15" ) {
 					avg15array = shifter( avg15array, value );
-					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg15array) +4 ).attr('data-ymin', Math.min.apply(Math, avg15array) - 2 ).html( arr2str( avg15array ) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, avg15array) +4.0 ).attr('data-ymin', Math.min.apply(Math, avg15array) -2.0 ).html( arr2str( avg15array ) );
 				}
 				
 				if( name == "memp" ) {
@@ -475,17 +476,22 @@ function system() {
 				
 				if( name == "netin" ) {
 					netinarray = shifter( netinarray, value.slice(0,-4) );
-					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, netinarray) +2 ).attr('data-ymin', Math.min.apply(Math, netinarray) -2 ).html( arr2str( netinarray ) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, netinarray) +2.0 ).attr('data-ymin', Math.min.apply(Math, netinarray) -2.0 ).html( arr2str( netinarray ) );
 				}
 				
 				if( name == "netout" ) {
 					netoutarray = shifter( netoutarray, value.slice(0,-4) );
-					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, netoutarray) +2 ).attr('data-ymin', Math.min.apply(Math, netoutarray) -2 ).html( arr2str( netoutarray ) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, netoutarray) +2.0 ).attr('data-ymin', Math.min.apply(Math, netoutarray) -2.0 ).html( arr2str( netoutarray ) );
 				}
 				
 				if( name == "runtime" ) {
-					runtimearray = shifter( runtimearray, value.slice(0,-5) );
-					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, runtimearray) +4 ).attr('data-ymin', Math.min.apply(Math, runtimearray) ).html( arr2str( runtimearray ) );
+					runtimearray = shifter( runtimearray, value.slice( 0, -5 ) );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, runtimearray) +4.0 ).attr('data-ymin', Math.min.apply(Math, runtimearray) -1.0 ).html( arr2str( runtimearray ) );
+				}
+				
+				if( name == "uSv" ) {
+					uSvarray = shifter( uSvarray, value, 24 );
+					$( "#" + name + "-spark" ).attr('data-ymax', Math.max.apply(Math, uSvarray) -0.5 ).attr('data-ymin', Math.min.apply(Math, uSvarray) -2.0 ).html( arr2str( uSvarray ) );
 				}
 				
 				if( name == "sparkle" ) {

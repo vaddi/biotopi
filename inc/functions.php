@@ -122,16 +122,17 @@ function diskSpace() {
   return $erg;
 }
 
-function cronState( $file = null, $param = null ) {
+function cronState( $file = null, $param = null, $time = null ) {
 	if( $file === null || ! is_file( $file ) ) return false;
+	if( $time === null ) $time = 1;
 	if( $param === null || ( $param === "" ) ) {
 		exec( '/usr/bin/tail -n1 '. $file, $msg, $err );
 	} else {
-		exec( '/usr/bin/tail -n2 '. $file . ' | grep ' . $param, $msg, $err );
+		exec( 'grep ' . $param . ' ' . $file . ' | tail -1', $msg, $err );
 	}
 	if( $err == 0 && ( $msg[0] != null || $msg[0] != "" ) ) {
 		
-		$date = strtotime( substr( $msg[0], 1, 19 ) ) +1 * 60 * 60;
+		$date = strtotime( substr( $msg[0], 1, 19 ) ) +$time * 60 * 60;
 		$now = strtotime( date( 'd.m.Y H:i:s' ) );
 		
 //		print_r( $msg[0] . "<br />" );
@@ -396,7 +397,7 @@ function sendMAIL( $recipient = null, $msg = null, $subject = null ) {
 	$password = MAILPASS;	
 	$protocol = "ssl";
 	$port = "465";
-	$smtp = $protocol . "://" . $host . ":" . $port;
+	$smtp = $protocol . "://" . $host; // . ":" . $port;
 
 	$headers = array ('From' => $from,
 		'To' => $to,
@@ -427,6 +428,7 @@ function sendMAIL( $recipient = null, $msg = null, $subject = null ) {
 	
 	$mail_object =& Mail::factory('smtp', 
 		array ('host' => $smtp,
+		 'port' => $port,
 		 'auth' => true,
 		 'username' => $username,
 		 'password' => $password));
@@ -673,12 +675,17 @@ function valid( $var ) {
 // Get Functions for devices
 //
 
-function dht11( $unit = null ) {
-	
-	$erg = null;
+function dht_helper( $PIN = 2, $TYPE = 22 ) {
 	$absolutPath = realpath("/var/www");
-	$raw = explode( " ", shell_exec( "sudo " . $absolutPath . "/inc/bin/dht11" ) );
-	
+  return explode( " ", shell_exec( "sudo " . $absolutPath . "/inc/bin/dht " . $PIN . " " . $TYPE ) );
+}
+
+function dht( $unit = null ) {
+
+	$erg = null;
+
+	$raw = dht_helper();
+
 	if( $unit != null && isset( $raw[0] ) && isset( $raw[1] ) ) {
 		switch ($unit) {
 			case 'rf':
@@ -702,15 +709,15 @@ function dht11( $unit = null ) {
 
 function relais( $cmd = null, $relais = null ) {
 	if( $cmd === null /* || ( $relais > 255 || $relais < 0 ) */ ) return false;
-	if( $relais !== null && ( $relais > 255 || $relais < 0 ) ) return false; // 8bit
-//	if( $relais !== null && ( $relais > 16383 || $relais < 0 ) ) return false; // 16bit
-	
+//	if( $relais !== null && ( $relais > 255 || $relais < 0 ) ) return false; // 8bit
+	if( $relais !== null && ( $relais > 65535 || $relais < 0 ) ) return false; // 16bit
+
 	$erg = false;
 	$absolutPath = realpath("/var/www");
 	require_once( 'class/class.File.php' );
 	switch( $cmd ) {
 		case "set" :
-			$value = exec( "sudo $absolutPath/inc/bin/relais $cmd $relais", $msg, $err );
+			$value = exec( "sudo $absolutPath/inc/bin/sources/relais 21 22 23 $relais", $msg, $err );
 			if( $value == "34344" ) return false; // TODO ???
 			//	www-data need write access to file dir
 			$value = File::write( "$absolutPath/inc/tmp/relais_new.dat",  $value  );
@@ -813,6 +820,52 @@ function ds18b20( $device = null ) {
 	} 
 }
 
+function buildRadArr( $array, $date = null ) {
+	if( $date === null ) $date = date('Y-m-d H:i:s');
+	$data = explode( ', ', $array );
+	if( count( $data ) === 7 ) {
+		$result = array(
+			$data[0]	=> $data[1],
+			$data[2]	=> $data[3],
+			'uSv'			=> $data[5],
+			'mode'		=> $data[6],
+			'date'		=> $date
+		);
+		return $result;
+	}
+}
+
+function radiation( $live = false ) {
+	$result = false;
+	if( $live ) {
+		$device = '/dev/ttyUSB1';
+		if( file_exists( $device ) ) {
+			exec( 'sudo head -n1 ' . $device, $msg, $err );
+		} else {
+			$msg;
+			$result = 'Device ' . $device . ' not present!';
+		}
+	} else {
+		$file = "/var/log/cron/radiation.log";
+		exec( 'tail -n 24 ' . $file, $msg, $err );
+	}
+	
+	if( count( $msg ) > 1 ) {
+		foreach ( $msg as $key => $value ) {
+			if( isset( $value ) && $value !== null && $value !== '' && strlen( $value ) === 57 ) {
+				$date = substr( $value, 1, 19 ); // get the date
+				$value = substr( $value, 22 ); // cut of the log date
+				$result[] = buildRadArr( $value, $date );
+			}
+		}
+	} else {
+		if( isset( $msg[0] ) && $msg[0] !== null && $msg[0] !== '' ) {
+//			if( ! $live ) $msg[0] = substr( $msg[0], 22 ); // cut of the log date
+			$result[] = buildRadArr( $msg[0] );
+		}
+	}
+	return $result;
+}
 
 
 // Html stuff

@@ -4,11 +4,11 @@
  *	DHT11 test
  */
 
-// pinsettings
+// pin settings
 // raspberry DHT11
 //      3,3V 3,3V 
 //       GND GND
-//    GPIO27 Data (if change wiring, set the new DHTPIN!)
+//    GPIO27 Data (if change wiring, set the new DHTPIN. use "gpio readall" to get the DHTPIN)
 
 
 #include <wiringPi.h>

@@ -1,142 +1,88 @@
-// raspberry Shiftregister 74x595
-//        5V 5V 
+/*
+ *  relais.c:
+ *  BiotoPi Project
+ *  Switch 16 Relais over 74x595 Shift register
+ */
+
+// Pin Layout
+// raspberry 74x595
+//        5V 5V
 //       GND GND
 //     GPIO5 DATA
 //     GPIO6 CLOCK
-//    GPIO13 LATCH
-/*
- * sr.c:
- *      Shift register test program
- *
- * Copyright (c) 2012-2013 Gordon Henderson. <projects@drogon.net>
- ***********************************************************************
- */
+//    GPIO13 SAVE
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <wiringPi.h>
 #include <wiringShift.h>
 
-// wirinPi pins
-#define DATA 21
-#define CLOCK 22
-#define LATCH 23
+#define APPNAME     "relais"
+#define APPVERSION  "0.1"
 
 #define LSBFIRST        0
 #define MSBFIRST        1
 
 // shift register output addresses
-// 128 64 32 16 8 4 2 1
-int rel[] = { 1, 2, 4, 8, 16, 32, 64, 128 };
-int relState[] = { LOW, LOW, LOW, LOW, LOW, LOW, LOW, LOW }; // Schaltzustände der Relais Pins
+long rel[] = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768 };
 
-// Schieberegisterfunktion
-void sendeBytes(int wert) {
-  digitalWrite(LATCH,LOW);
+// Shift register function
+void sendeBytes(int DATA, int CLOCK, int SAVE, long wert) {
+  digitalWrite(SAVE,LOW);
   shiftOut(DATA, CLOCK, MSBFIRST, wert >> 8);
-  shiftOut(DATA, CLOCK, MSBFIRST, wert & 255);
-  digitalWrite(LATCH,HIGH);
+  shiftOut(DATA, CLOCK, MSBFIRST, wert & 65535);
+  digitalWrite(SAVE,HIGH);
 }
 
-void usage() {
-	printf( "\n" );
-	printf( "\n" );
-	printf( "\n" );
+void usage( int DATA, int CLOCK, int SAVE ) {
+  printf( "%s v%s - Switch Relais over Shiftregister 74x595\n", APPNAME, APPVERSION );
+  printf( "Usage:\n" );
+  printf( "%s DATA CLOCK SAVE <VALUE>\n", APPNAME );
+  printf( "DATA : \t%i\n", DATA );
+  printf( "CLOCK : %i\n", CLOCK );
+  printf( "SAVE : \t%i\n", SAVE );
+  printf( "VALUE : %i (0-65536)\n", 0 );
+  printf( "Return the switched value\n" );
 }
 
-void toggleRelais( int wert ) {
-	if( wert > sizeof(rel)/sizeof(unsigned int) ) return;
-/*	if( wert <= 0 ) {*/
-/*		*/
-/*		*/
-/*	}*/
-	if( relState[ wert ] ) {
-		relState[ wert ] = LOW;
-	} else {
-		relState[ wert ] = HIGH;
-	}
-	
-}
-
-void setup() {
+void setup( int DATA, int CLOCK, int SAVE ) {
   wiringPiSetup();
   pinMode(DATA, OUTPUT);
-	pinMode(CLOCK, OUTPUT);
-	pinMode(LATCH, OUTPUT);
+  pinMode(CLOCK, OUTPUT);
+  pinMode(SAVE, OUTPUT);
 }
 
-int my_getnbr(char *str) {
-  int result, puiss;
-  result = 0;
-  puiss = 1;
-  while (('-' == (*str)) || ((*str) == '+')) {
-    if (*str == '-')
-      puiss = puiss * -1;
-    str++;
-  }
-  while ((*str >= '0') && (*str <= '9')) {
-    result = (result * 10) + ((*str) - '0');
-    str++;
-  }
-  return (result * puiss);
-}
 
-// input rel address 
-// as byte eg: 1, 2, 4, 8, 16, 32, 64, 128
-// as sum  eg: 3, 131
+// Main
 int main (int argc, char **argv) {
-	
-	int relIds = 0;
-	int cmd = 0;
-	
-	if (argc >= 2) {
-		/* there is 1 parameter (or more) in the command line used */
-    /* argv[0] may point to the program name */
-    /* argv[1] points to the 1st parameter */
-    /* argv[argc] is NULL */
-    if ( argv[1] != NULL ) {
-/*    	str1[] = argv[1];*/
-/*    	char str2[] = "set";*/
-/*    	if( strcmp( str1, str2 ) == 0 ) cmd = 1;*/
-			 cmd = 1;
-    } 
-    if ( argv[2] != NULL ) {
-    	relIds = my_getnbr( argv[2] );
-    	if( relIds <= 256 && relIds >= 0 ) {
-    		if( relIds == 256 ) { toggleRelais(); relIds += -1; }
-/*    		relIds = relIds ;*/
-    	} else {
-				relIds = 0;
-			}	
-    } 
-	} 
-	
-	int erg;
-	
-  setup();
-	
-	switch( cmd ) {
-		case 0: 
-			
-		break;
-		case 1: 
-			if( relIds >= 0 ) erg = relIds;
-			sendeBytes( erg );
-		break;
-		default: 
-			
-		break;
-	}
-	
-/*	int i*/
-/*	for( i = 0; i < sizeof(rel)/sizeof(sizeof(unsigned int)); ++i ) {*/
-/*		toggleRelais( i );*/
-/*		if( relState[ i ] == HIGH ) erg = erg + rel[ i ];*/
-/*	}	*/
-	
-	
-	printf( "%i", erg );
-	
-	
-  return 0 ;
-}
+  int DATA = 21;
+  int CLOCK = 22;
+  int SAVE = 23;
+  long VALUE = 0;
 
+  // get arguments
+  if ( argc != 4 && argc != 5 ) {
+    // no args, print usage
+    usage( DATA, CLOCK, SAVE );
+    return (2);
+  } else if ( argc == 4 ) {
+    DATA = atoi(argv[1]);
+    CLOCK = atoi(argv[2]);
+    SAVE = atoi(argv[3]);
+    VALUE = 0;
+  } else if ( argc == 5 ) {
+    DATA = atoi(argv[1]);
+    CLOCK = atoi(argv[2]);
+    SAVE = atoi(argv[3]);
+    VALUE = atoi(argv[4]);
+  }
+
+  if ( VALUE > 65536 || VALUE < 0 ) VALUE = 0;
+
+  setup( DATA, CLOCK, SAVE );
+  sendeBytes( DATA, CLOCK, SAVE, VALUE );
+
+  printf( "%ld", VALUE );
+
+  return (0);
+}

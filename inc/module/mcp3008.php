@@ -47,31 +47,31 @@ function getAD2( $id = null ) {
 	if( $id === null ) { $id = ""; } else { $id = " " . $id; }
 	
 	$absolutPath = realpath("../../") == "/" ? __DIR__ ."/../.." : realpath("../../");
-	$value = ( (int) shell_exec("sudo " . $absolutPath . "/inc/bin/mcp3008$id" ) );
+	$value = ( (int) shell_exec("sudo " . $absolutPath . "/inc/bin/mcp3008 $id" ) );
 
-//	if( MCP3008HIST > 0 ) {
-//		$tmpfile = $absolutPath . "/inc/tmp/" . MCP3008FILE;
-//		$filetime = filemtime( $tmpfile );
-//		$now = time();
-//	
-//		// 3600s = 1h
-//		if( ( $now - ( MCP3008HIST * 60 ) ) > $filetime ) {
+	if( MCP3008HIST > 0 ) {
+		$tmpfile = $absolutPath . "/inc/tmp/" . MCP3008FILE;
+		$filetime = filemtime( $tmpfile );
+		$now = time();
+	
+		// 3600s = 1h
+		if( ( $now - ( MCP3008HIST * 60 ) ) > $filetime ) {
 
-//			// get old data 
-//			require_once( $absolutPath . '/inc/class/class.File.php' );
-//			$tmparr = json_decode( File::read( $tmpfile ) );
-//		
-//			// if no data available, set default (new file etc.)
-//			if( ! isset( $tmparr ) ) $tmparr = array( 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 );
-//		
-//			// shift Data in to array
-//			$tmparr = arrShifter( $tmparr, $value );
-//		
-//			// update bmp file data (json encode)
-//			File::write( $tmpfile, json_encode( $tmparr ) );
-//	
-//		}
-//	}
+			// get old data 
+			require_once( $absolutPath . '/inc/class/class.File.php' );
+			$tmparr = json_decode( File::read( $tmpfile ) );
+		
+			// if no data available, set default (new file etc.)
+			if( ! isset( $tmparr ) ) $tmparr = array( 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 );
+		
+			// shift Data in to array
+			$tmparr = arrShifter( $tmparr, $value );
+		
+			// update bmp file data (json encode)
+			File::write( $tmpfile, json_encode( $tmparr ) );
+	
+		}
+	}
 
 	return $value;
 }

@@ -7,7 +7,8 @@ require_once( '../functions.php' );
 require_once( '../secure.php' );
 
 $absolutPath = realpath("../../");
-$values = explode(" ", shell_exec("sudo " . $absolutPath . "/inc/bin/dht11" ));
+//$values = explode(" ", shell_exec("sudo " . $absolutPath . "/inc/bin/dht 2 22" ));
+$values = explode(" ", dht( "all" ) );
 
 if( valid( $values[0] ) && valid( $values[1] ) ) {
 	$retArr[0]['rf'] = getDHT11( 'rf', $values[0] );

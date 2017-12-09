@@ -24,22 +24,16 @@ if (file_exists($fload)) return include $fload;
 
 <div class="container">
 	
-	<?php incl('inc/header.php');
+	<?php incl('inc/header.php'); ?>
 	
-	if( cronState( '/var/log/cron/biotopi.log', 'temp_' ) ) {
-		print_r( 'cron running' );
-	} 
-	
-	
-		?>
 	<div>
 		
 		<div class="col-sm-12 row">
 			<h3>Heimautomation für Terrarien/Aquarien</h3>
 
 			<div class="col-sm-2 pull-right">	
-				<a href="inc/img/waterdragon.jpg" title="Meine Wasseragamendame">		
-					<img src="inc/img/waterdragon.jpg" alt="Wasseragame" class="img-thumbnail" /> 
+				<a href="inc/img/waterdragon.jpg" title="Meine Wasseragamendame">
+					<img src="inc/img/waterdragon.jpg" alt="Wasseragame" class="img-thumbnail" />
 				</a>
 				<div style="margin:0 0 32px;text-align: center;">		
 					&copy;<a href="https://500px.com/rolandrebholz" target="_blank">Roland Rebholz Fotografie</a>
@@ -48,6 +42,17 @@ if (file_exists($fload)) return include $fload;
 
 			<p>Um meiner Wasseragame ein möglichst heimisches Umfeld bieten zu können, habe ich ihr eine Heimautomation für ihr Terrarium gebaut.</p>
 
+		</div>
+		
+		<div class="col-sm-12 row">
+			<?php
+			
+#				echo "<pre>";
+#				print_r( radiation( true ) ); // current µSv
+##				print_r( radiation() ); 			// last 24 hourly µSv
+#				echo "</pre>";
+			
+			?>
 		</div>
 		
 		<div class="col-sm-12 row">

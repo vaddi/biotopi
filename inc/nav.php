@@ -8,6 +8,11 @@ $verzeichnis_raw = "./";
 $suffix = ".php";
 $verzeichnis_glob = glob( $verzeichnis_raw . '*' . $suffix );
 
+// check for gammu service
+if( ! isRunning( 'gammu-smsd' ) ) {
+	array_push( $exclude, 'sms' );
+}
+
 natsort( $verzeichnis_glob );
 
 // Sort Homelink to first position in array

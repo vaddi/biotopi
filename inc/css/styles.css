@@ -95,6 +95,24 @@ select:-moz-focusring {
 }
 
 
+/* SVG icons */
+.icon img,
+.icon svg {
+	fill:currentColor;
+	vertical-align:text-top;
+	width:1.2em;
+	height:1.2em;
+}
+
+.icon #icon-anarchy {
+	color: #f00;
+}
+
+.icon #icon-rss {
+	color: #ff6202;
+}
+
+
 @media only screen and (max-width: 1280px) {
 	textarea#msg { max-width: 776px; }
 }

@@ -19,7 +19,9 @@ if( isset( $_GET['device'] ) ) {
 		// iterate over all devices 
 		$path = '/sys/devices/w1_bus_master1/';
 		exec( 'ls -d '.$path.'28-*', $msg, $err );
+//		$retArr[0] = "[" . date( 'd.m.Y H:i:s' ) . "]";
 		print_r( "[" . date( 'd.m.Y H:i:s' ) . "] " );
+//		echo "[" . date( 'd.m.Y H:i:s' ) . "] ";
 		foreach( $msg as $key => $device ) {
 			$dev = str_replace( $path, '', $device );
 			$retArr[0][ 'device_' . $key ] = $dev;

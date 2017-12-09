@@ -5,6 +5,7 @@
 <?php 
 incl('inc/head.php');
 require_once( '/var/www/inc/class/class.File.php' );
+// bmp085
 $tmparr = json_decode( File::read( realpath("inc/") . "/tmp/" . BMP085FILE ), true );
 if( $tmparr !== null ) {
 	$bmpdata = "";
@@ -21,10 +22,30 @@ if( $tmparr !== null ) {
 	echo 'var bmpArr = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];';
 	echo '</script>';
 }
+
+// radiation
+$tmparr = radiation();
+if( $tmparr !== null ) {
+	$uSvarray = "";
+	$total = count( $tmparr ) -1;
+	foreach ( $tmparr as $key => $value ) {
+		$uSvarray .= $value['uSv'];
+		if( $key < $total ) $uSvarray .= ", ";
+	}
+	echo '<script type="text/javascript">';
+	echo 'var uSvarray = [ ' .  $uSvarray  . ' ];';
+	echo '</script>';
+} else {
+	echo '<script type="text/javascript">';
+	echo 'var uSvarray = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];';
+	echo '</script>';
+}
 ?>
 </head>
 
 <body>
+
+<?php echo file_get_contents( 'inc/svg/svg-defs.svg', FILE_USE_INCLUDE_PATH ); ?>
 
 <div class="container">
 	
@@ -35,10 +56,10 @@ if( $tmparr !== null ) {
 		<div class="panel panel-default">
 			<!-- Default panel contents -->
 			<div class="panel-heading">
-				<h4><span class="glyphicon glyphicon-fire" aria-hidden="false"></span> Temperatur</h4>
+				<h4><span class="icon"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-temp"></use></svg></span> Temperatur</h4>
 			</div>
 			<div class="panel-body">
-				<p>Anzeigen der <b>ds18b20</b> Temperatur Sensoren. Daten können via AJAX anhand der CSS id und class Eigenschaften aus dem C-Programm abgefragt werden. <br />
+				<p>Anzeigen der <b>ds18b20</b> Temperatur Sensoren. Daten können via AJAX anhand der CSS id und class Eigenschaften aus dem C-Programm abgefragt werden.<br />
 					<br />GPIO Port: <b>17</b>
 					<br />Protokoll: <b>oneWire</b>
 				</p>
@@ -102,7 +123,7 @@ if( $tmparr !== null ) {
 				<thead>
 					<tr>
 						<th>#</th>
-						<th>Altitude</th>
+						<th>Altitude <span style="font-weight:bold;float:right">last 24h.</span></th>
 						<th>hPa</th>
 					</tr>
 				</thead>
@@ -117,12 +138,61 @@ if( $tmparr !== null ) {
 			</table>
 		</div><!-- END .panel -->
 	</div>
-	
+
+<?php if($radiation !== null) : ?>	
 	<div class="col-sm-12 row">
 		<div class="panel panel-default">
 			<!-- Default panel contents -->
 			<div class="panel-heading">
-				<h4><span class="glyphicon glyphicon-tint" aria-hidden="false"></span> Relative Luftfeuchte</h4>
+				<h4><span class="icon"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-radiation"></use></svg></span> Ionisierte Teilchen</h4>
+			</div>
+			<div class="panel-body">
+				<p>Anzeigen der durchschnitlichen Anzahl von <b>ionisierten Teilchen</b>.<br />
+					<br />GPIO Port: <b>-</b>
+					<br />Protokoll: <b>usb/rs232 FTDI</b>
+				</p>
+			</div>
+
+			<!-- Table -->
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th><span style="font-weight:bold;float:right">last 24h.</span></th>
+						<th>Wert</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1</td>
+						<td>Counts per Second</td>
+						<td id="radcps" class="radcps"></td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>Counts per Minute</td>
+						<td id="radcpm" class="radcpm"></td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>uSv/h <span id="uSv-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span></td>
+						<td id="uSv" class="uSv"></td>
+					</tr>
+					<tr>
+						<td>4</td>
+						<td>Geigercounter mode</td>
+						<td id="radmode" class="radmode"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div><!-- END .panel -->
+	</div>
+<?php endif; ?>
+	<div class="col-sm-12 row">
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading">
+				<h4><span class="icon"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-rlfeuchte"></use></svg></span> Relative Luftfeuchte</h4>
 			</div>
 			<div class="panel-body">
 				<p>Anzeigen der <b>dht11</b> Abstandssensor Werte. Daten können via AJAX anhand der CSS id und class Eigenschaften aus dem C-Programm abgefragt werden. <br />
@@ -135,13 +205,15 @@ if( $tmparr !== null ) {
 			<table class="table">
 				<thead>
 					<tr>
-						<th># <span class="tableHead" style="float:right"></span></th>
+						<th>#</th>
+						<th><span class="tableHead" style="float:right"></span></th>
 						<th>value</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>1 <div style="float:right"><span id="dhthum-spark" class="system sparkline" data-width="100px" size="2.5" color="#0FF #09F #F00"></span><br /><span id="dhttemp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto"></span></div></td>
+						<td>1</td>
+						<td> <div style="float:right"><span id="dhthum-spark" class="system sparkline" data-width="100px" size="2.5" color="#0FF #09F #F00"></span><br /><span id="dhttemp-spark" class="system sparkline" data-width="100px" size="2.5" color="auto"></span></div></td>
 						<td id="dht11" class="dht11"></td>
 					</tr>
 					
@@ -168,12 +240,14 @@ if( $tmparr !== null ) {
 				<thead>
 					<tr>
 						<th>#</th>
+						<th> <span class="tableHead" style="float:right"></span></th>
 						<th>mm</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>1</td>
+						<td>...</td>
 						<td id="hc-sr04_1" class="hc-sr04"></td>
 					</tr>
 					
@@ -225,11 +299,12 @@ $system = array(
 	array( 'name' => 'Netzwerk Device Empfangen', 'span' => '<span id="netin-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'netin', 'class' => '' ),
 	array( 'name' => 'Netzwerk Device Gesendet', 'span' => '<span id="netout-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'netout', 'class' => '' ),
 	array( 'name' => 'Apt updates (NonSecurity/Security)', 'span' => '', 'id' => 'updates', 'class' => '' ),
-	array( 'name' => 'Caros Seite (Cronjob Status)', 'span' => '', 'id' => 'ccp', 'class' => '' ),
+	array( 'name' => 'Bahn checker (Cronjob Status)', 'span' => '', 'id' => 'bahnjob', 'class' => '' ),
 	array( 'name' => 'DS18b20 Temperatur (Cronjob Status)', 'span' => '', 'id' => 'cds18b20', 'class' => '' ),
 	array( 'name' => 'BMP085 Barometric Pressure (Cronjob Status)', 'span' => '', 'id' => 'cbmp085', 'class' => '' ),
 //	array( 'name' => '', 'span' => '', 'id' => '', 'class' => '' ),
 	array( 'name' => 'Check Runtime', 'span' => '<span id="runtime-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'runtime', 'class' => '' ),
+//	array( 'name' => 'Radioaktivität in uSv/h', 'span' => '<span id="uSv-spark" class="system sparkline" data-width="100px" size="2.5" color="auto" style="float:right"></span>', 'id' => 'uSv', 'class' => '' ),
 );
 
 foreach( $system as $id => $system_arr ) {

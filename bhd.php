@@ -7,7 +7,7 @@
 <script type="text/javascript">
 <!--
 function ChangeValue(id) {
-  
+
   var dec;
   var bin;
   var hex;
@@ -16,31 +16,31 @@ function ChangeValue(id) {
   value = document.getElementById(id).value;
 
   if (value!="") {
-  
+
     switch(id)
     {
     case 'bin':
       // User supplied a binary number
       dec = parseInt(value, 2);
-      if (isNaN(dec)) {dec=1;value='00000001';}      
+      if (isNaN(dec)) {dec=1;value='0000000000000001';}
       bin = value;
-      hex = dec.toString(16); 
+      hex = dec.toString(16);
       break;
     case 'dec':
       // User supplied a decimal number
       dec = parseInt(value, 10);
-      if (isNaN(dec)) dec=1;    
-      if (value>255) value=255;
-      if (value<1) value=1;      
-      bin = dec.toString(2);  
-      hex = dec.toString(16);  
+      if (isNaN(dec)) dec=1;
+      if (value>255) value=65536;
+      if (value<1) value=1;
+      bin = dec.toString(2);
+      hex = dec.toString(16);
       break;
     case 'hex':
       // User supplied a hexidecimal number
       dec = parseInt(value, 16);
       if (isNaN(dec)) {dec=1;value='1';}
-      bin = dec.toString(2); 
-      hex = value;    
+      bin = dec.toString(2);
+      hex = value;
       break;
     default:
 
@@ -50,9 +50,9 @@ function ChangeValue(id) {
     document.getElementById('bin').value = bin;
     document.getElementById('dec').value = dec;
     document.getElementById('hex').value = hex.toUpperCase();
-  
+
   }
-  
+
 }
 // -->
 </script>
@@ -67,21 +67,21 @@ function ChangeValue(id) {
 <body>
 
 <div class="container">
-	
+
 	<?php incl('inc/header.php'); ?>
-	
+
 	<div><h3>BHD Convertor<small> Binär Hexadezimal und Dezimal Konverter</small></h3>
 		<div id="calculator">
-		<div class="label">Binary</div><div class="values"><input id="bin" type="text" value="11111111" onkeyup="ChangeValue(this.id);" maxlength="8" size="8"/></div>
-		<div class="label">Decimal</div><div class="values"><input id="dec" type="text" value="255" onkeyup="ChangeValue(this.id);" maxlength="3" size="8" /></div>
-		<div class="label">Hexadecimal</div><div class="values"><input id="hex" type="text" value="FF" onkeyup="ChangeValue(this.id);" maxlength="2"size="8"/></div>
+		<div class="label">Binary</div><div class="values"><input id="bin" type="text" value="1111111111111111" onkeyup="ChangeValue(this.id);" maxlength="16" size="18"/></div>
+		<div class="label">Decimal</div><div class="values"><input id="dec" type="text" value="65535" onkeyup="ChangeValue(this.id);" maxlength="5" size="18" /></div>
+		<div class="label">Hexadecimal</div><div class="values"><input id="hex" type="text" value="FFFF" onkeyup="ChangeValue(this.id);" maxlength="4"size="18"/></div>
 		</div>
 	</div>
-	
+
 	<p>Quelle: <a href="http://mattsbits.co.uk/webtools/bhd_convertor/">mattsbits.co.uk</a></p>
-	
+
 	<?php incl('inc/footer.php'); ?>
-	
+
 </div><!-- END .containter -->
 
 </body>
