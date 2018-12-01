@@ -1,104 +1,26 @@
-<!DOCTYPE html>
-<?php 
-$preload = 'inc/functions.php'; if (file_exists($preload)) include $preload; 
-// Check for installer file to help install some neccessary stuff
-$fload = 'install.php'; 
-if (file_exists($fload)) return include $fload;
+<?php
 
-//$db = new SQLite3(DB_FILENAME);
+//echo realpath('./');
+//echo __DIR__;
 
-//
+// Load config file
+$file = __DIR__ . '/inc/config.php';
+if (file_exists( $file ) ) require_once $file;
 
-//$db->exec("INSERT INTO users(name, creates, since) VALUES ('vaddi','10:00:00',1)");
+// load install file if exists and show setup the helper
+$file = __DIR__ . '/inc/assets/installation/install.php';
+if (file_exists( $file ) ) return require_once $file;
 
-//$erg = $db->query("SELECT * FROM users");   
-//print_r($erg->fetchArray());
+// create the API Object
+$file = __DIR__ . '/inc/class/API.php';
+if (file_exists( $file ) ) {
+	require_once $file;
+	new API();
+} else {
+	$result['state'] = false;
+	$result['errormsg'] = "Unable to create instance of Class API, abort";
+	header("Content-Type: application/json charset=UTF-8");
+	echo json_encode( $result );
+}
 
 ?>
-<html lang="<?= APPLANG ?>">
-<head>
-<?php incl('inc/head.php'); ?>
-</head>
-
-<body>
-
-<div class="container">
-	
-	<?php incl('inc/header.php'); ?>
-	
-	<div>
-		
-		<div class="col-sm-12 row">
-			<h3>Heimautomation für Terrarien/Aquarien</h3>
-
-			<div class="col-sm-2 pull-right">	
-				<a href="inc/img/waterdragon.jpg" title="Meine Wasseragamendame">
-					<img src="inc/img/waterdragon.jpg" alt="Wasseragame" class="img-thumbnail" />
-				</a>
-				<div style="margin:0 0 32px;text-align: center;">		
-					&copy;<a href="https://500px.com/rolandrebholz" target="_blank">Roland Rebholz Fotografie</a>
-				</div>
-			</div>
-
-			<p>Um meiner Wasseragame ein möglichst heimisches Umfeld bieten zu können, habe ich ihr eine Heimautomation für ihr Terrarium gebaut.</p>
-
-		</div>
-		
-		<div class="col-sm-12 row">
-			<?php
-			
-#				echo "<pre>";
-#				print_r( radiation( true ) ); // current µSv
-##				print_r( radiation() ); 			// last 24 hourly µSv
-#				echo "</pre>";
-			
-			?>
-		</div>
-		
-		<div class="col-sm-12 row">
-			<h3>Verwendete Hardware:</h3>
-			<ul>
-				<li>2004 LCD Display (mit i2c Ansteuerung)</li>
-				<li>RaspberryPi b+</li>
-				<li>DS18b20 Temperatur Sensoren (One Wire)</li>
-				<li>HC-SR04 Berührungslose Füllstands Ermittlung</li>
-				<li>DHT11 Luftfeuchte und Temperatur Sensor</li>
-				<li>Bodenfeuchtigkeitssensoren</li>
-				<li>BMP085 Barometer</li>
-				<li>USB Kamera</li>
-				<li>MCP3008 10 Kanal A/D Wandler (SPI)</li>
-				<li>8faches SSD-Relais (über 74hc595 Schieberegister) zur Schaltung von:<br>
-					<ul style="list-style: roman;">
-						<li>Lüfter</li>
-						<li>Beregnungsanlage</li>
-						<li>Aquarien-Heizstab</li>
-						<li>HQL Lampe</li>
-						<li>UVA/UVB Lampe</li>
-						<li>Energy-Spar Lampe</li>
-						<li>Neonlicht im Terrarium</li>
-						<li>Neonlicht im Aquarium</li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-
-		<div class="col-sm-12 row" style="margin-bottom:50px;">
-			<h3>Funktionen:</h3>
-			<ul>
-				<li>Webserver zur Ausgabe und Konfiguration</li>
-				<li>Status/Warn/Alarm Mail versand bei Über oder unterschreiten von Messwerten</li>
-				<li>Steuerung von Lampen und Beregnungsanlage (oder anderer 220V Komponenten)</li>
-				<li>Selbstdimmendes LCD Display ()</li>
-				<li>Daten werden in MySQL Datenbank (Lokal oder Remote) gespeichert</li>
-				<li>Luft, Wasser und Bodentemperatur sowie Relative Luftfeuchte können als Wertematrix hinterlegt werden um bestimmte Regionen nachbilden zu können.</li>
-			</ul>
-		</div>
-		
-	</div>	
-
-	<?php incl('inc/footer.php'); ?>
-	
-</div><!-- END .containter -->
-
-</body>
-</html>

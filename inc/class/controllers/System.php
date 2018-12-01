@@ -1,0 +1,197 @@
+<?php
+
+/**
+ * The Daemons for the BiotoPi Project
+ *
+ * Just call this class methods as GET or POST request:
+ * http(s)://APP/?controller=systems&action=read
+ * http(s)://APP/?controller=systems&action=read&id=1
+ * http(s)://APP/?controller=systems&action=create&name=hum0&type=1&threshold=100&protocol=1
+ * http(s)://APP/?controller=systems&action=read&id=2
+ * http(s)://APP/?controller=systems&action=delete&id=2
+ * http(s)://APP/?controller=systems&action=update&id=1&name=hum1
+ */
+
+class System {
+	
+	/**
+	 * Attributes
+	 */
+	private $_order = 'id'; // Default 'order by' clause element
+	private $_params;				// Parameters container
+	private $_db;						// Database object container
+	private $_dbTable;			// Used DB-Table (empty will use the Classname as Tablename)
+	
+	/**
+	 * constructor
+	 * set all possible params, others will not pass
+	 */
+	public function __construct( $_db, $id, $name, $value ) {
+		try {
+			// first param is allways the DB object
+			$this->_db = $_db;
+			// if $_dbTable is empty use Classname as Tablename
+			if( empty( $this->_dbTable ) ) $this->_dbTable = strtolower( __CLASS__ );
+			// get params if they are some into a new object
+			$this->_params = new stdClass();
+			// for each database field set a value
+			$this->_params->id = ( isset( $id ) && $id !== null ) ? $id : null;
+			$this->_params->name = ( isset( $name ) && $name !== null ) ? $name : null;
+			$this->_params->value = ( isset( $value ) && $value !== null ) ? $value : null;
+		} catch( Exception $e ) {
+			if( ENV == 'prod' ) throw new Exception( $e->getMessage() );
+				else throw new Exception( __CLASS__ . '::' . __FUNCTION__ . ' throw ' . $e->getMessage() );
+		}
+	}	
+
+	
+	
+	//
+	// fontend helper methods
+	//
+	
+	/**
+	 * Specialized method to read Entry/ies from the frontend
+	 **/
+	public function read() {
+		$result = false;
+		try {
+			$this->_db->query( "SELECT * FROM $this->_dbTable" );
+			$this->_db->execute();
+			if( $this->_db->rowCount( $this->_dbTable ) > 0 ) {
+				$result = $this->_db->resultset();
+			} else {
+				$result = null;
+			}
+		} catch( Exception $e ) {
+			if( ENV == 'prod' ) throw new Exception( $e->getMessage() );
+				else throw new Exception( __CLASS__ . '::' . __FUNCTION__ . ' throw ' . $e->getMessage() );
+		}
+		return $result;
+	}
+	
+	
+	/**
+	 * Specialized method to validate a entry by given id
+	 */
+	public function validateEntry() {
+		$result = false;
+		try {
+			$this->_validateParam( 'id' );
+			$this->_db->query( "SELECT * FROM $this->_dbTable WHERE id = :id;" );
+			$this->_db->bind( ':id', $this->_params->id );
+			$this->_db->execute();
+			if( $this->_db->rowCount( $this->_dbTable ) > 0 ) {
+				$result = true;
+			}
+		} catch( Exception $e ) {
+			if( ENV == 'prod' ) throw new Exception( $e->getMessage() );
+				else throw new Exception( __CLASS__ . '::' . __FUNCTION__ . ' throw ' . $e->getMessage() );
+		}
+		return $result;
+	}
+
+	
+	//
+	// System data 
+	//
+	
+	public function getAll() {
+		$data = null;
+		$data['host'] = self::getHost();
+		$data['cpuTemp'] = self::getCpuTemp();
+		$data['mem'] = self::getMem();
+		$data['load'] = self::getLoad();
+		$data['fs'] = self::getFs();
+		$data['net'] = self::getNet();
+		//$data['updates'] = self::getUpdates();
+		return $data;
+	}
+	
+	public function getHost() {
+		$host['name'] = shell_exec('hostname | tr -d "\n"');
+		$host['kernel'] = shell_exec('uname -r | tr -d "\n"');
+		return $host;
+	}
+
+
+	public function getCpuTemp() {
+		$soc_temp_raw = shell_exec( 'cat /sys/class/thermal/thermal_zone0/temp' );
+		return substr( $soc_temp_raw, 0, 2 ) . "." . substr( $soc_temp_raw, 2, -3 );
+	}
+
+
+	public function getMem() {
+		$mem['total'] = shell_exec( 'cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+" | tr -d "\n"' );			// Total Memory in kB
+		$mem['free'] = shell_exec( 'cat /proc/meminfo | grep MemFree | grep -o "[0-9]\+" | tr -d "\n"' );				// Free Memory in kB
+		$mem['avail'] = shell_exec( 'cat /proc/meminfo | grep MemAvailable | grep -o "[0-9]\+" | tr -d "\n"' );	// Available Memory in kB
+		$mem['percent'] = round( ( 100 / $mem['total'] ) * $mem['avail'] ) . "%";										// Free memory in %
+		return $mem;
+	}
+
+
+	public function getLoad() {
+		$loadavgout = shell_exec('cat /proc/loadavg');
+		$loadavgArr = explode(" ", $loadavgout);
+		$schedulingArr = explode("/", $loadavgArr[3]);
+		$avg['avg1'] = $loadavgArr[0];			// average systemload last 1m
+		$avg['avg5'] = $loadavgArr[1];			// average systemload last 5m
+		$avg['avg15'] = $loadavgArr[2];			// average systemload last 15m
+		$avg['active'] = $schedulingArr[0];	// number of active tasks
+		$avg['total'] = $schedulingArr[1];	// number of total tasks
+		return $avg;
+	}
+
+
+	public function getFs() {
+		$filesysout = shell_exec('df -h | grep root | tr -s " "');
+		$filesysArr = explode( " ", $filesysout );
+		$fs['total'] = $filesysArr[1];		// Filesystem Total space
+		$fs['used'] = $filesysArr[2];			// Filesystem Used space
+		$fs['free'] = $filesysArr[3];			// Filesystem Free space
+		$fs['percent'] = $filesysArr[4];	// Filesystem Used space %
+		return $fs;
+	}
+
+
+	public function getNet() {
+		$net['ip'] = shell_exec( '/sbin/ifconfig eth0 | grep \'inet addr:\' | cut -d: -f2 | awk \'{ print $1}\' | tr -d "\n"' );
+		$netin = shell_exec( '/sbin/ifconfig | grep -m 1 "RX bytes" | awk -F "[()]" \'{print $2}\' | tr -d "\n"' );
+		$net['in'] = ( strpos( $netin, 'GiB' ) !== false ) ? $netin = str_replace( ' GiB', '', $netin ) * 1024 . ' MiB' : $netin;
+		$netout = shell_exec( '/sbin/ifconfig | grep -m 1 "RX bytes" | awk -F "[()]" \'{print $4}\' | tr -d "\n"' );
+		$net['out'] = ( strpos( $netout, 'GiB' ) !== false ) ? $netout = str_replace( ' GiB', '', $netout ) * 1024 . ' MiB' : $netout;
+		return $net;
+	}
+
+
+	public function getUpdates() {
+		// has long runtime!!!
+		//$updates = shell_exec( 'sudo /usr/lib/update-notifier/update-motd-updates-available | grep -Eo \'[0-9]{1,3}\' | tr \'\n\' \'/\' | cut -d \'/\' -f1,2' );
+		// apt-get install update-notifier-common (for apt-check)
+		//$updates = shell_exec( 'sudo /usr/lib/update-notifier/apt-check' );
+		$updates = shell_exec( "LANG=C apt-get upgrade -s | grep -P '^\d+ upgraded' | cut -d \" \" -f1 | tr -d \"\n\"" );
+		return isset( $updates ) ? $updates : "0";
+	}
+
+
+	//
+	// parameter validation
+	//
+	
+	
+	/**
+	 * Helper method to validate a parameter (set them as required)
+	 * throws exception if parameter has no data or doesnt exists in the request
+	 */
+	private function _validateParam( $paramName = null ) {
+		if( $paramName === null ) return false;
+		foreach ( $this->_params as $key => $value ) {
+			if( ! isset( $this->_params->$paramName ) && $this->_params->$paramName === null ) {
+				throw new Exception( "Missing required Parameter: $paramName" );
+			}
+		}
+	}
+	
+}
+
+?>

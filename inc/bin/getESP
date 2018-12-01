@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+# get data from ESP Webdevice
+
+if [ "$1" == "" ]; then
+  echo "address (IP or HTTP/S) required, aboart!"
+  exit 1;
+fi
+
+token="5up3rG3he1m!"
+
+#content=$( curl -L "${1}/raw" ) 2>&1
+content=$( wget -O - "${1}/raw" 2>&1 )
+
+OIFS=$IFS
+IFS='|'
+values=$content
+DATA=()
+for x in $values
+do
+#    echo "> [$x]"
+  DATA+=($x)
+done
+
+checksum="${DATA[0]##*$'\n'}"
+temp=${DATA[1]}
+hum=$( echo "${DATA[2]}" | head -1 )
+
+checksumS=$( echo -n "${token}${temp}|${hum}" | sha1sum | tr -d '  -' )
+
+if [ "${checksum}" == "${checksumS}" ]; then
+#  echo "Checksum: $checksum"
+  echo "Temperatur: $temp °C"
+  echo "Relative Luftfeuchte: $hum %"
+else
+  echo "wrong checksum!"
+fi
+exit 0
+
+# end of file

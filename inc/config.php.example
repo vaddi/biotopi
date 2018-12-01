@@ -1,0 +1,15 @@
+<?php
+
+// MySQL connection parameters
+define( 'MYSQL_USER', 'dbuser' );
+define( 'MYSQL_PASS', 'dbpasswd' );
+define( 'MYSQL_NAME', 'dbname' );
+define( 'MYSQL_HOST', 'dbhost' );
+define( 'MYSQL_PORT', 3306 );
+
+// SQLite Database
+define( 'SQLITE_TYPE', 'FILE' );	// FILE or MEMORY
+define( 'SQLITE_FILE', __DIR__ . '/db/database.db' );
+
+?>
+

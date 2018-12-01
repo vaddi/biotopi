@@ -1,48 +1,59 @@
-# BiotoPi #
+# BiotoPi API
 
-A RaspberryPi Enviroment Controller and Datalogger for biotope and habitat (Reptile houses, Fish tanks and similar). 
-
-
-### About ###
-
-*  just a private project
-*  Version 0.1
-
-This Project is my personel testarea. I play arround by building small C-Programms witch will be executed from PHPs shell_exec() Command. The PHP Skripts will called from AJAX to reduce Pageload and get a possibility to have a polling event. Inside the PHP core, the dispatcher class will generate an instance of each Modulecall and assign all parameters to the Modulclass.
-
-At the moment there are a lots of chaos inside this code, but hey: this is an private Project, feel free to join.
-
-### Dependencies ###
-
-*  [wiringPi][]
-*  [MySQL][]
-*  [PHP][]
-*  Apache Webserver-[Apache][]
-
-## Installation ##
-
-Get last version from github.com by following command:
-
-    git clone git://github.com/vaddi/biotopi.git
-
-Edit `config.php` to change username and password and Database Connection.
+The Backend for the BiotoPi Project. A simple PHP Based API class build to easily use the BiotoPi functions.
 
 
-### How do I set it up? ###
+## Installation
 
-*  ToDo
-
-
-### Credits ###
-
-1. [wiringPi][] wiringPi
-2. [Bootstrap][] Bootstrap
+A Simple Step by Step Guide to install the BiotoPi onto a RaspberryPi (Version 2 or 3). Run this from `/var/www`. Later we setup a simple PHP Webserver (Apache) to server our Application.
 
 
-[PHP]: http://php.net/
-[MySQL]: http://www.mysql.com/
-[Apache]: http://httpd.apache.org/
-[wiringPi]: http://wiringpi.org/
-[Bootstrap]: http://getbootstrap.com/
+### Get the Sourcecode
+
+	git clone https://github.com/vaddi/biotopi.git
+
+
+### Prepare the System
+
+Change into the desired Directory:
+
+	cd /var/www/biotopi
+
+Prepare the RaspberryPi and install all necessary Packages and Setup the I2C, SPI and other Interfaces by run the installation Script:
+
+	./install.sh
+
+Create the configuration file by using `config.php.example` as Template. 
+
+	cp config.php.example config.php
+
+Now setup the Database Connection in `config.php` File. 
+
+	vim confog.php
+
+There are currently 2 Databases which can be used. Feel free to add a new implemention in the `inc/class/Database.php` class.
+
+*  SQLite	- A Simple Filebased Database 
+*  MySQL	- A MySQL Database connection
+
+
+#### Create the Tables
+
+Currently there are no installation processes to create the Database tables and fill them by default data. Only the neccessary SQL Files will be found under the `assets/sql` folder.
+
+
+
+### Setup the Webserver
+
+The Application need the PHP Language, which musst be served from a Webserver. Feel free to add nginx or other Webserver. I prefeer Apache.
+
+
+## Ready to use
+
+### Open the Website
+
+Use you prefeered Webbrowser to open the Mainpage.
+
+	http://RASPBERRYPI/
 
 

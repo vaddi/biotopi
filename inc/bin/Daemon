@@ -1,0 +1,121 @@
+#!/bin/bash
+#
+# chkconfig: 345 95 5
+# description: BitotoPi Daemon.
+# processname: Daemon
+
+# Variables 
+NAME=BiotoPiDaemon
+FOLDER=$( pwd )
+BINARY=BiotoPiDaemon.php
+SCRIPT=${FOLDER}/${BINARY}
+LOGFILE=${FOLDER}/../log/${NAME}.log
+DATE=$(date '+%Y-%m-%d %H:%M:%S')
+
+#verify that the executable exists
+test -x ${SCRIPT} || exit 1
+
+# Current Amount of Processes
+#CAP=$( expr $(ps aux | grep "${FOLDER}/${NAME}" | wc -l) - 1)
+
+CAP() {
+	VALUE=$( expr $(ps aux | grep "${FOLDER}/${NAME}" | wc -l) - 1 );
+	echo "${VALUE}"
+}
+
+
+start() {
+	if [ "$(CAP)" -gt 0 ]; then
+		echo "Already running"
+	else
+		echo -n "Starting $NAME: "
+		daemon -- $SCRIPT --log=$LOGFILE
+		sleep 1s
+		if [ $? -eq 0 ] && [ "$(CAP)" -gt 0 ]; then 
+			echo "OK"
+			echo "$DATE Starting BiotoPi Daemon" >> $LOGFILE
+		else
+			echo "FAIL"
+		fi
+	fi
+}
+ 
+stop() {
+	if [ "$(CAP)" -gt 0 ]; then
+		echo -n "Stopping $NAME: "
+		pkill $NAME
+		sleep 1s
+		if [ $? -eq 0 ] && [ "$(CAP)" -eq 0 ]; then
+		  echo "OK"
+			echo "$DATE Shutdown BiotoPi Daemon" >> $LOGFILE
+		else
+		  echo "FAIL"
+		fi
+	else
+		echo "Not running"
+	fi
+}
+ 
+restart() {
+	stop
+	#sleep 2s
+	start
+}	
+ 
+reload() {
+	restart
+}
+
+clean() {
+	echo -n "Cleanup Logfile: "
+	echo -n "" > ${LOGFILE}
+	if [ $? -eq 0 ]; then
+	  echo "OK"
+		echo "BiotoPi Daemon Logfile" >> $LOGFILE
+	else
+	  echo "FAIL"
+	fi
+}
+
+status() {
+	echo -n "${NAME} is "
+	if [ "$(CAP)" -gt 0 ]; then
+		echo "running"
+		PID=$(ps aux | grep "daemon -- ${SCRIPT}" | head -n1 | awk '{print $2}')
+		echo -e "Process ID: \t ${PID}"
+		RUNTIME=$(ps -p ${PID} -o etime= | tr -d " ")
+		echo -e "Runtime: \t ${RUNTIME}"
+#		PID=$(ps aux | grep "/usr/bin/php ${SCRIPT}" | head -n1 | awk '{print $2}')
+#		echo -e "Child PID: \t ${PID}"
+#		RUNTIME=$(ps -p ${PID} -o etime= | tr -d " ")
+#               echo -e "Child Runtime: \t ${RUNTIME}"
+	else
+		echo "not running"
+	fi
+}
+ 
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		restart
+		;;
+	status)
+		status
+		;;
+	clean)
+		clean
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|status|clean}"
+		exit 0
+		;;
+esac
+ 
+exit 0
+
+# end of file

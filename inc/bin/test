@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "from ${0}";
+
+# end of file

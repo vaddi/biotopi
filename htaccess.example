@@ -1,0 +1,15 @@
+Options +FollowSymLinks
+RewriteEngine On
+ 
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+# rewrite all example
+#RewriteRule ^.*$ ./index.php
+
+# simple REST calls
+
+# rewrite controller and action
+RewriteRule ^([^/]*)/([^/]*)$ ./index.php?controller=$1&action=$2 [L]
+# rewrite controller action and id
+RewriteRule ^([^/]*)/([^/]*)/([^/]*)$ ./index.php?controller=$1&action=$2&id=$3 [L]
