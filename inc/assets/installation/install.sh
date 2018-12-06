@@ -77,6 +77,10 @@ case $SYSTEM in
 		INSTALLER="apt-get"
 		WSUSER="www-data:www-data"
 		;;
+	"Raspbian")
+		INSTALLER="apt-get"
+		WSUSER="www-data:www-data"
+		;;
 	*)
     # default behaviour, return message and exit 1
     echo "Unknown System detected, installation aboarted."

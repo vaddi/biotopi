@@ -185,8 +185,9 @@ class System extends Base {
 		//$updates = shell_exec( 'sudo /usr/lib/update-notifier/update-motd-updates-available | grep -Eo \'[0-9]{1,3}\' | tr \'\n\' \'/\' | cut -d \'/\' -f1,2' );
 		// apt-get install update-notifier-common (for apt-check)
 		//$updates = shell_exec( 'sudo /usr/lib/update-notifier/apt-check' );
-		$updates = shell_exec( "LANG=C apt-get upgrade -s | grep -P '^\d+ upgraded' | cut -d \" \" -f1 | tr -d \"\n\"" );
-		return isset( $updates ) ? $updates : "0";
+//		$updates = shell_exec( "LANG=C apt-get upgrade -s | grep -P '^\d+ upgraded' | cut -d \" \" -f1 | tr -d \"\n\"" );
+//		return isset( $updates ) ? $updates : "0";
+		return 0;
 	}
 
   /**
