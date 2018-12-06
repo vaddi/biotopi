@@ -12,4 +12,4 @@ RewriteCond %{SCRIPT_FILENAME} !-f
 # rewrite controller and action
 RewriteRule ^([^/]*)/([^/]*)$ ./index.php?controller=$1&action=$2 [L]
 # rewrite controller action and id
-RewriteRule ^([^/]*)/([^/]*)/([^/]*)$ ./index.php?controller=$1&action=$2&id=$3 [L]
+#RewriteRule ^([^/]*)/([^/]*)/([^/]*)$ ./index.php?controller=$1&action=$2&id=$3 [L]

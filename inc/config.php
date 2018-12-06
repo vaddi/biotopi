@@ -23,7 +23,7 @@ define( 'MYSQL_PORT', 3306 );
 
 // SQLite connection parameters
 define( 'SQLITE_TYPE', 'FILE' );	// FILE | MEMORY (In planning)
-define( 'SQLITE_FILE', __DIR__ . '/db/database.db' );
+define( 'SQLITE_FILE', __DIR__ . '/db/database.db' ); // seen from inc/
 
 // set server and client token
 $unpack = unpack( 'H*', SECRET );

@@ -1,0 +1,150 @@
+
+
+a:link, 
+a:visited {
+	transition: all 1000ms ease-out;
+}
+a:hover,
+a:focus {
+	outline: 0;
+	transition: all 150ms ease-in;
+}
+a:active {
+	color:#f00;
+}
+
+.pull-right { float: right; }
+.pull-center { text-align: center; }
+.pull-center.pull-top { margin-bottom: -20px; }
+
+
+.form-group {
+/*  margin-bottom: -15px;*/
+}
+
+.form-group .btn {
+	margin-bottom: 5px;
+}
+
+.label {
+	display: inline-block;
+}
+.label-default {
+	padding: 4px 7px;
+}
+
+.label-default.active {
+	background: #444;
+}
+
+.label-default,
+.btn-default {
+	transition: all 1000ms ease-out;
+}
+
+
+.label-default:hover,
+.btn-default:hover,
+.label-default:focus,
+.btn-default:focus {
+	transition: all 150ms ease-in;
+	cursor: pointer;
+}
+
+.btn-default.focus, 
+/*.btn-default.active,*/
+.btn-default.active:focus,
+.btn-default.active.focus:focus {
+	background: #d9edf7;
+}
+
+.btn-default.active.focus {
+	background: #93cce9;;
+}
+
+.list-group-item-info {
+	padding:15px;
+}
+
+.list-group-item {
+	padding-bottom: 20px;
+	transition: all 1000ms ease-out;
+}
+
+.list-group-item:hover,
+.list-group-item:focus {
+	transition: all 150ms ease-in;
+	background: #fafafa;
+}
+
+.list-group-item blockquote {
+	margin: 15px 0 20px 2px;
+}
+
+.list-group-item input[type="checkbox"] {
+	display: none;
+}
+
+
+
+.page-header { 
+	border-bottom: none;
+  margin: 30px 0;
+}
+
+.page-footer { 
+	border-top: 1px solid #ddd; 
+	padding: 20px 0 0; 
+	margin-top: 30px; 
+}
+
+
+/* SVG icons */
+.icon img,
+.icon svg {
+	fill:currentColor;
+	vertical-align:text-top;
+	width:4em;
+	height:4em;
+}
+
+.icon #icon-anarchy {
+	color: #f00;
+}
+
+.icon #icon-rss {
+	color: #ff6202;
+}
+
+.icon #icon-zelda {
+/*	stroke: #999;*/
+/*	fill: none;*/
+/*	transform: scale(2);*/
+}
+
+
+
+@media only screen and (max-width: 620px) {
+	.pull-right.elinks { float: none !important; font-size:inherit; margin-bottom:10px; }
+	.pull-center, 
+	.pull-left,
+	.pull-right { float: none !important; }
+	.pull-center.pull-top { margin-bottom: 10px;}
+	header h1 small:before { content: ' '; display: block; }
+	footer p { text-align: center; }
+}
+
+
+
+
+/* DEBUG View invisible checkboxes */
+
+/*[data-toggle="buttons"] > .btn input[type="checkbox"] {*/
+/*	position: inherit;*/
+/*}*/
+
+/*.list-group-item input[type="checkbox"] {*/
+/*    display: inherit;*/
+/*}*/
+
+

@@ -48,10 +48,10 @@ class Database implements iDatabase {
 			//error_log( TIMESTAMP . $error, 3, LOG );
 		}
 		$this->type = $class;
-		if( $this->_db->error !== null ) {
-			echo $this->_db->error;
-			return;
-		}
+    // if( $this->_db->error !== null ) {
+    //   echo $this->_db->error;
+    //   return;
+    // }
 		if( $this->connection() ) {
 			$this->connected = true;
 		}

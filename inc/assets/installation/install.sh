@@ -22,18 +22,18 @@ APPNAME="BiotoPi"		# Application Name
 # Pkg Array, all of this Pkgs will be installed in this order
 PKGS=(	mysql-server 
 				apache2 
-				php5 
-				php5-mysql 
+				php 
+				php-mysql 
 				php-http 
-				php5-dev 
+				php-dev 
 				libcurl4-openssl-dev
 				libmagic-dev 
 				php-pear 
 				curl 
 				libcurl3 
-				php5-curl 
-				php5-mcrypt 
-				php5-gd
+				php-curl 
+				php-mcrypt 
+				php-gd
 				daemon
 				htop
 				iftop
@@ -78,8 +78,10 @@ case $SYSTEM in
 		WSUSER="www-data:www-data"
 		;;
 	*)
-		INSTALLER="apt-get"
-		WSUSER="www-data:www-data"
+    # default behaviour, return message and exit 1
+    echo "Unknown System detected, installation aboarted."
+    echo "Feel free to add your system to this Script (${0})."
+    exit 1;
 		;;
 esac
 
@@ -139,6 +141,9 @@ fi
 
 # clear screen
 printf  "\033cInstalling \033[0;34m$APPNAME\033[0;37m Application on a \033[1;34m$SYSTEM\033[0;37m System\n\n"
+
+# change into main folder
+cd ../../../
 
 # Set permissions
 echo -n "Set Main permissions: " 

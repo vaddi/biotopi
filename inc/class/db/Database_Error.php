@@ -4,6 +4,8 @@ require_once( 'iDatabase.php' );
 
 class Database_Error implements iDatabase {	
 	
+  public $error = null;
+  
 	// close DB connection
 	public function close() {
 		

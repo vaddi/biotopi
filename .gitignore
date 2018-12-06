@@ -1,3 +1,5 @@
 **/.DS_Store
 /inc/log/*
 /inc/config.php
+/inc/db/database.db
+

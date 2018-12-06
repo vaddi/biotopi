@@ -116,10 +116,11 @@ class API {
 			//var_dump( $result );
 			echo "</pre>";
 		} else if ( $result ) {
-			// return our json encoded result to the requester
-			header("Access-Control-Allow-Origin: *");
-			header("Content-Type: application/json charset=UTF-8");
-			echo json_encode( $result );
+      // return our json encoded result to the requester
+      header( 'Cache-Control: no-cache, must-revalidate' );
+			header( "Access-Control-Allow-Origin: *" );
+			header( "Content-Type: application/json charset=UTF-8" );
+			print_r( json_encode( $result ) );
 		} else {
 			echo "<pre>";
 			var_dump( $result );

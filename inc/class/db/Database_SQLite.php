@@ -22,7 +22,7 @@ class Database_SQLite extends PDO implements iDatabase {
 		$PDO = '';
 		$this->_dbType = $type;
 		if( $type === 'FILE' ) {
-			if( file_exists( $dbfile ) ) {
+			if( ! file_exists( $dbfile ) ) {
 				echo "File $dbfile does not exists, abort.";
 				return false;
 				exit;
@@ -72,8 +72,9 @@ class Database_SQLite extends PDO implements iDatabase {
 	
 	// verifying database connection (write access, etc.)
 	public function connection() {
+    if( $this->_dbString === null ) return null;
 		$dbStrArr = explode( '::', $this->_dbString );
-		if( $dbStrArr[1] === 'FILE' && $dbStrArr[2] !== null || $dbStrArr[2] !== "" ) {
+		if( isset( $dbStrArr[1] ) && isset( $dbStrArr[2] ) && $dbStrArr[1] === 'FILE' && $dbStrArr[2] !== null || $dbStrArr[2] !== "" ) {
 			if( is_file( $dbStrArr[2] ) && is_writable( $dbStrArr[2] ) ) {
 				return $this->_dbString;
 			}

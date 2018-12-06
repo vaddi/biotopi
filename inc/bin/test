@@ -1,5 +1,6 @@
 #!/bin/bash
 
-echo "from ${0}";
+echo -e "Script:\t${0}";
+echo "ok";
 
 # end of file

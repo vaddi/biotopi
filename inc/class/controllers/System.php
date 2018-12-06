@@ -12,7 +12,7 @@
  * http(s)://APP/?controller=systems&action=update&id=1&name=hum1
  */
 
-class System {
+class System extends Base {
 	
 	/**
 	 * Attributes
@@ -56,7 +56,14 @@ class System {
 	public function read() {
 		$result = false;
 		try {
-			$this->_db->query( "SELECT * FROM $this->_dbTable" );
+      if( isset( $this->_params->id ) && null !== $this->_params->id  ) {
+				// get entry by id
+				$this->_db->query( "SELECT * FROM $this->_dbTable WHERE id = :id;" );
+				$this->_db->bind( ':id', $this->_params->id );
+			} else {
+				// get all entries
+				$this->_db->query( "SELECT * FROM $this->_dbTable" );
+      }
 			$this->_db->execute();
 			if( $this->_db->rowCount( $this->_dbTable ) > 0 ) {
 				$result = $this->_db->resultset();
@@ -104,7 +111,14 @@ class System {
 		$data['load'] = self::getLoad();
 		$data['fs'] = self::getFs();
 		$data['net'] = self::getNet();
-		//$data['updates'] = self::getUpdates();
+    $data['updates'] = self::getUpdates();
+    $data['gitlast'] = self::gitLast();
+    $data['gitremote'] = self::gitRemote();
+    $data['gitcommits'] = self::gitCommits();
+    $data['gitversion'] = self::gitVersion();
+//    $data['appsize'] = self::appSize();
+    $data['ftotal'] = self::totalFiles();
+    $data['env'] = self::getEnv();
 		return $data;
 	}
 	
@@ -125,13 +139,14 @@ class System {
 		$mem['total'] = shell_exec( 'cat /proc/meminfo | grep MemTotal | grep -o "[0-9]\+" | tr -d "\n"' );			// Total Memory in kB
 		$mem['free'] = shell_exec( 'cat /proc/meminfo | grep MemFree | grep -o "[0-9]\+" | tr -d "\n"' );				// Free Memory in kB
 		$mem['avail'] = shell_exec( 'cat /proc/meminfo | grep MemAvailable | grep -o "[0-9]\+" | tr -d "\n"' );	// Available Memory in kB
-		$mem['percent'] = round( ( 100 / $mem['total'] ) * $mem['avail'] ) . "%";										// Free memory in %
+		$mem['percent'] = isset( $mem['total'] ) && isset( $mem['avail'] ) ? round( ( 100 / $mem['total'] ) * $mem['avail'] ) : "" . "%"; // Free memory in %
 		return $mem;
 	}
 
 
 	public function getLoad() {
 		$loadavgout = shell_exec('cat /proc/loadavg');
+    if( $loadavgout === null ) return 'unavailable';
 		$loadavgArr = explode(" ", $loadavgout);
 		$schedulingArr = explode("/", $loadavgArr[3]);
 		$avg['avg1'] = $loadavgArr[0];			// average systemload last 1m
@@ -145,6 +160,7 @@ class System {
 
 	public function getFs() {
 		$filesysout = shell_exec('df -h | grep root | tr -s " "');
+    if( $filesysout === null ) return 'unavailable';
 		$filesysArr = explode( " ", $filesysout );
 		$fs['total'] = $filesysArr[1];		// Filesystem Total space
 		$fs['used'] = $filesysArr[2];			// Filesystem Used space
@@ -173,6 +189,68 @@ class System {
 		return isset( $updates ) ? $updates : "0";
 	}
 
+  /**
+   * Git Last
+   */
+  public static function gitLast() {
+    return Base::gitLast();
+  }
+
+  /**
+   * Git Remote
+   */
+  public static function gitRemote() {
+    return Base::gitRemote();
+  }
+
+  /**
+   * Git Commits
+   */
+  public static function gitCommits() {
+    return Base::gitCommits();
+  }
+
+  /**
+   * Git Version
+   */
+  public static function gitVersion() {
+    return Base::getVersion();
+  }
+
+  /**
+   * App size
+   */
+  public static function appSize() {
+    return Base::appSize();
+  }
+
+  /**
+   * Total Files
+   */
+  public static function totalFiles() {
+    return Base::totalFiles();
+  }
+
+  /**
+   * Get current enviroment
+   */
+  public static function getEnv() {
+    return Base::getEnv();
+  }
+
+	/**
+	 * System Reboot
+	 */
+  public function restart() {
+		return shell_exec( 'sudo shutdown -r now' );
+  }
+
+	/**
+	 * System shutdown
+	 */
+  public function shutdown() {
+    return shell_exec( 'sudo shutdown -h now' );
+  }
 
 	//
 	// parameter validation
