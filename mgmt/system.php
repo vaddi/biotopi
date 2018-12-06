@@ -65,7 +65,7 @@
       content += "<span>App Size: " + JSON.stringify( systemEntries.data.appsize ) + "</span><br />";
       content += "<span>Total Files: " + JSON.stringify( systemEntries.data.ftotal ) + "</span><br />";
       content += "<span>Enviroment: " + JSON.stringify( systemEntries.data.env ) + "</span><br />";
-      content += "<br /><button onclick='restart()'>systemRestart</button> <button onclick='systemShutdown()'>Shutdown</button><br />";
+      content += "<br /><button onclick='return systemRestart()'>systemRestart</button> <button onclick='return systemShutdown()'>Shutdown</button><br />";
       content += "<div><br />";
       $( '#system-pannel' ).html( content );
     }
