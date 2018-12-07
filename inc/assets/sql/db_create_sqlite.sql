@@ -123,7 +123,7 @@ CREATE TABLE system (
 );
 
 CREATE VIEW jobs_v AS 
-	SELECT da.id AS daemon, de.id AS device, da.name AS name, da.type AS dtype, dt.value AS dtypevalue, da.running AS running, da.start AS start, da.end AS end, da.updated AS updated, de.exec AS exec, de.pins AS pins, de.params AS params
+	SELECT da.id AS daemon, de.id AS device, da.name AS name, da.type AS dtype, da.start AS start, da.end AS end, da.updated AS updated, de.exec AS exec, de.pins AS pins, de.params AS params
 	FROM daemons AS da
 	INNER JOIN devices de on de.id = da.device 
 	INNER JOIN daemontypes dt on dt.id = da.id 

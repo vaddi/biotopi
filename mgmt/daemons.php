@@ -20,7 +20,7 @@
         <button onclick='daemonsCmd( "restart" )'>Restart</button> 
         <button onclick='daemonsCmd( "log" )'>Log</button>
       </div><br />
-      <div id="result"></div><br />
+      <div id="output"></div><br />
 			<div id="content">
 		    loading...
 			</div>
@@ -49,8 +49,17 @@
     function daemonsCmd( cmd ) {
       let result = apiJson( controllerName, 'daemon&cmd=' + cmd );
       if( result.state ) {
-        var erg = JSON.stringify( result.data )
-        $("#result").html( erg ).fadeIn(300).delay(10000).fadeOut( "slow" );
+        var erg = result.data;
+        if( Array.isArray(erg) ) {
+          let tmperg = "";
+          $( erg ).each( function( key, value ) {
+            tmperg += value + "<br />\n";
+          });
+          erg = tmperg;
+        } else {
+          erg = JSON.stringify( erg );
+        }
+        $("#output").html( erg ).fadeIn(300).delay(10000).fadeOut( "slow" );
       }
     }
     
@@ -221,7 +230,7 @@
 						var erg = "Response: <br />";
             erg += "state: " + data.state + "<br />";
             erg += "data: " + JSON.stringify( data.data ) + "<br />";
-            $("#result").html( erg )
+            $("#output").html( erg )
             	.fadeIn(300)    // fade in time
             	.delay(10000)   // message appears for X milli seconds
             .fadeOut( "slow" ) ; // fade out effect ( slow, normal, fast )

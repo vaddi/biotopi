@@ -17,6 +17,9 @@ a:active {
 .pull-center { text-align: center; }
 .pull-center.pull-top { margin-bottom: -20px; }
 
+#output {
+  font-family: monospace;
+}
 
 .form-group {
 /*  margin-bottom: -15px;*/
