@@ -59,8 +59,10 @@
         } else {
           erg = JSON.stringify( erg );
         }
-        $("#output").html( erg ).fadeIn(300).delay(10000).fadeOut( "slow" );
+        $("#output").html( erg ).fadeIn(300).delay(10000).fadeOut();
+        return true;
       }
+      return false;
     }
     
     /**
