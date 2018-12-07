@@ -243,7 +243,7 @@ class System extends Base {
 	 * System Reboot
 	 */
   public function restart() {
-		return shell_exec( 'sudo shutdown -r now' );
+		return shell_exec( 'sudo shutdown -r now >> /var/www/inc/log/BiotoPiDaemon.log' );
   }
 
 	/**
