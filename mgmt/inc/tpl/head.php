@@ -14,6 +14,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.quicksearch/2.3.1/jquery.quicksearch.js"></script>
 	<script type="text/javascript" src="inc/js/functions.js"></script>
 	<script type="text/javascript" src="inc/js/pageload.js"></script>
+  <script type="text/javascript" src="inc/js/sparkline.js"></script>
 	<script type="text/javascript">
     // javascript search
 		function highlight( searchtext ) {
@@ -21,6 +22,10 @@
 		        new RegExp( searchtext + '(?!([^<]+)?<)', 'gi'),
 		        '<b style="background-color:#ff0;font-size:100%">$&</b>'
 		    );
+		}
+    
+		window.onload = function () {
+			sparkline( 'sparkline' ); // sparklines erzeugen
 		}
 	</script>
 </head>

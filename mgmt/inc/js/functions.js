@@ -157,7 +157,9 @@ function apiJson( controller, action, id ) {
     async: false,
     success: function( response ) {
       // catch API Error messages
-      if( response.state === false ) {
+      if( typeof( response ) === 'string' ) {
+        console.log( response );
+      } else if( response.state === false ) {
         console.log( response.errormsg );
       }
     },

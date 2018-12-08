@@ -119,7 +119,9 @@ CREATE TABLE jobs (
 CREATE TABLE system (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   name TEXT NULL,
-  value TEXT NOT NULL
+  value TEXT NOT NULL,
+  created	TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+  updated	TEXT NOT NULL DEFAULT (datetime('now','localtime'))
 );
 
 CREATE VIEW jobs_v AS 
