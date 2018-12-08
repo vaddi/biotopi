@@ -76,24 +76,24 @@ class Jobs {
 	}
 	
 	/**
-         * Specialized method to read Entry/ies from the frontend
-         **/
-        public function current() {
-                $result = false;
-                try {
-                        $this->_db->query( "SELECT * FROM $this->_dbTable WHERE AND end >= NOW() AND start <= NOW()" );
-                        $this->_db->execute();
-                        if( $this->_db->rowCount( $this->_dbTable ) > 0 ) {
-                                $result = $this->_db->resultset();
-                        } else {
-                                $result = null;
-                        }
-                } catch( Exception $e ) {
-                        if( ENV == 'prod' ) throw new Exception( $e->getMessage() );
-                                else throw new Exception( __CLASS__ . '::' . __FUNCTION__ . ' throw ' . $e->getMessage() );
-                }
-                return $result;
-        }
+   * Specialized method to read Entry/ies from the frontend
+   **/
+  public function current() {
+          $result = false;
+          try {
+                  $this->_db->query( "SELECT * FROM $this->_dbTable WHERE end >= NOW() AND start <= NOW()" );
+                  $this->_db->execute();
+                  if( $this->_db->rowCount( $this->_dbTable ) > 0 ) {
+                          $result = $this->_db->resultset();
+                  } else {
+                          $result = null;
+                  }
+          } catch( Exception $e ) {
+                  if( ENV == 'prod' ) throw new Exception( $e->getMessage() );
+                          else throw new Exception( __CLASS__ . '::' . __FUNCTION__ . ' throw ' . $e->getMessage() );
+          }
+          return $result;
+  }
 	
 	/**
 	 * Specialized method to validate a entry by given id
