@@ -1,5 +1,6 @@
 **/.DS_Store
-/inc/log/*
-/inc/config.php
-/inc/db/database.db
+inc/log/*
+inc/config.php
+inc/db/database.db
+inc/log/BiotoPiDaemon.log
 
