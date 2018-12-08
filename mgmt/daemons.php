@@ -13,12 +13,12 @@
 	<div id="searchfield" class="row">
 		<div class="col-sm-12">
       <div id="daemons-pannel">
-        <button onclick='daemonsCmd( "clean" )'>Clean</button> 
         <button onclick='daemonsCmd( "status" )'>Status</button> 
         <button onclick='daemonsCmd( "start" )'>Start</button> 
         <button onclick='daemonsCmd( "stop" )'>Stop</button> 
         <button onclick='daemonsCmd( "restart" )'>Restart</button> 
         <button onclick='daemonsCmd( "log" )'>Log</button>
+        <button onclick='daemonsCmd( "clean" )'>Clean</button> 
       </div><br />
       <div id="output"></div><br />
 			<div id="content">

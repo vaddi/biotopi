@@ -104,27 +104,24 @@ class System extends Base {
 	//
 	
 	public function getAll() {
-		$data = null;
 		$data['host'] = self::getHost();
-		$data['cpuTemp'] = self::getCpuTemp();
 		$data['mem'] = self::getMem();
 		$data['load'] = self::getLoad();
 		$data['fs'] = self::getFs();
 		$data['net'] = self::getNet();
-    $data['updates'] = self::getUpdates();
-    $data['gitlast'] = self::gitLast();
-    $data['gitremote'] = self::gitRemote();
-    $data['gitcommits'] = self::gitCommits();
-    $data['gitversion'] = self::gitVersion();
-//    $data['appsize'] = self::appSize();
-    $data['ftotal'] = self::totalFiles();
-    $data['env'] = self::getEnv();
+    $data['git'] = self::gitAll();
 		return $data;
 	}
 	
 	public function getHost() {
 		$host['name'] = shell_exec('hostname | tr -d "\n"');
 		$host['kernel'] = shell_exec('uname -r | tr -d "\n"');
+    $host['cputemp'] = self::getCpuTemp();
+    $host['updates'] = self::getUpdates();
+    // ftotal
+    $host['files'] = self::totalFiles();
+    // env
+    $host['env'] = self::getEnv();
 		return $host;
 	}
 
@@ -191,6 +188,18 @@ class System extends Base {
 	}
 
   /**
+   * Git wrapper
+   */
+  public static function gitAll() {
+    return array(
+      'last'  =>  self::gitLast(),
+      'remote'  =>  self::gitRemote(),
+      'commits' =>  self::gitCommits(),
+      'tag' =>  self::gitTag()
+    );
+  }
+
+  /**
    * Git Last
    */
   public static function gitLast() {
@@ -214,8 +223,8 @@ class System extends Base {
   /**
    * Git Version
    */
-  public static function gitVersion() {
-    return Base::getVersion();
+  public static function gitTag() {
+    return Base::gitTag();
   }
 
   /**

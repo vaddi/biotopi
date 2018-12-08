@@ -15,7 +15,7 @@ a:active {
 
 .pull-right { float: right; }
 .pull-center { text-align: center; }
-.pull-center.pull-top { margin-bottom: -20px; }
+.pull-center.pull-top { margin-bottom: -24px; }
 
 #output {
   font-family: monospace;
@@ -132,7 +132,7 @@ a:active {
 	.pull-center, 
 	.pull-left,
 	.pull-right { float: none !important; }
-	.pull-center.pull-top { margin-bottom: 10px;}
+	.pull-center.pull-top { margin-bottom: 10px; }
 	header h1 small:before { content: ' '; display: block; }
 	footer p { text-align: center; }
 }

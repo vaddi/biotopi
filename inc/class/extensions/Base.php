@@ -96,7 +96,7 @@ class Base {
 	/** 
 	 * Helper function to get version number from "git tag" (dont forget to commit them!)
 	 */
-	protected static function getVersion() {
+	protected static function gitTag() {
 		if( self::git() ) {
 			if( is_file( '/usr/bin/git' ) ) 
 				return exec( '/usr/bin/git describe --abbrev=0 --tags' );
