@@ -7,7 +7,7 @@
 //Set the ticks
 declare(ticks = 1)
 
-	$LOG = realpath('./') . "/../log/Daemon.log";
+	$LOG = realpath('./') . "/../log/BiotoPiDaemon.log";
 
 	function displayUsage(){
 		global $LOG;

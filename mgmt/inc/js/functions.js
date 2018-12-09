@@ -244,4 +244,8 @@ function showModal( text, title ) {
 	$( '#pageModal' ).modal( 'show' );
 }
 
-
+// capitalize first character
+function capitalize( s ) {
+    //return this.charAt(0).toUpperCase() + this.slice(1);
+    return s[0].toUpperCase() + s.slice(1);
+}

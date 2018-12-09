@@ -12,7 +12,7 @@
  * http(s)://APP/?controller=subtypes&action=update&id=1&name=hum1
  */
 
-class Subtypes implements CRUD {
+class Devicesubtypes implements CRUD {
 	
 	/**
 	 * Attributes

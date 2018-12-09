@@ -55,9 +55,11 @@ class Database_SQLite extends PDO implements iDatabase {
 	// check SQLite Database file
 	private function checkSQLiteFile() {
 		if( SQLITE_TYPE === 'FILE' && ! is_writeable( SQLITE_FILE ) ) {
-		  $serverusername = posix_getpwuid(posix_geteuid());
-			echo "SQLite file not writeable by webserver user, please add write permissions to file and Folder! <br />";
-		  echo "sudo chown -R " . $serverusername['name'] . " " . dirname( SQLITE_FILE ). "<br />";
+		  $serverusername = posix_getpwuid( posix_geteuid() );
+//      $servergroupname = posix_getgrgid( posix_getegid() );
+			echo "SQLite file not writeable by webserver user '" . $serverusername['name'] . "', please add write permissions to file and Folder! <br />";
+//		  echo "sudo chgrp -hR  -R " . $servergroupname['name'] . " " . dirname( SQLITE_FILE ). "<br />";
+      echo "sudo chown -R " . $serverusername['name'] . " " . dirname( SQLITE_FILE ). "<br />";
 			return true;
 		}
 		return false;

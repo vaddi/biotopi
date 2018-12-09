@@ -12,6 +12,7 @@
 
 	<div id="searchfield" class="row">
 		<div class="col-sm-12">
+      <h3>Devices</h3>
       <div id="output"></div>
 			<div id="content">
 		    loading...
@@ -100,7 +101,7 @@
     }
     
     function renderProtocolsSelector() {
-      let content = '<select class="form-control" name="protocol" id="protocole">';
+      let content = '<select class="form-control" name="protocol" id="protocol">';
       content += '<option value="default" selected="selected" disabled="disabled">Bitte auswählen</option>';
       let protocols = currentProtocols;
       $( protocols ).each( function( key, entry ) {
@@ -122,7 +123,8 @@
     }
 
     function renderDevices() {
-      let content = "<div><a href='?action=create'>Create Entry</a><br />\n";
+      let content = "<div><a href='?action=create'>Create Entry</a><hr />\n";
+      devicesRead();
       let devices = currentDevices;
       let total = devices.length -1;
       content += "<div>";
@@ -143,7 +145,7 @@
         content += "<span>Type: " + getTypesName( value.type ) + "</span><br />\n";
         content += "<span>Updated: " + value.updated + "</span><br />\n";
         content += "<span>Created: " + value.created + "</span><br />\n";
-        content += "<a href='?action=edit&id=" + value.id + "'>Edit</a> <a onclick='return confirm(\"Acknowledge delete Entry " + value.id + " - " + value.name + " - Y/N\")' href='?action=delete&id=" + value.id + "' >Delete</a>";
+        content += "<a href='?action=edit&id=" + value.id + "'>Edit</a> | <a onclick='return confirm(\"Acknowledge delete Entry " + value.id + " - " + value.name + " - Y/N\")' href='?action=delete&id=" + value.id + "' >Delete</a>";
         content += "<div>";
         if( key < total ) content += "<hr /><br />\n";
       });
@@ -179,60 +181,60 @@
       content += "    <input id='name' type='text' name='name' placeholder='" + item.name + "' value='" + item.name + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Data:</label>";
+      content += "    <label for='data'>Data:</label>";
       content += "    <input id='data' type='text' name='data' placeholder='" + item.data + "' value='" + item.data + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Exec:</label>";
+      content += "    <label for='exec'>Exec:</label>";
       content += "    <input id='exec' type='text' name='exec' placeholder='" + item.exec + "' value='" + item.exec + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Params:</label>";
+      content += "    <label for='params'>Params:</label>";
       content += "    <input id='params' type='text' name='params' placeholder='" + item.params + "' value='" + item.params + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Function:</label>";
+      content += "    <label for='function'>Function:</label>";
       content += "    <input id='function' type='text' name='function' placeholder='" + item.function + "' value='" + item.function + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>HTML:</label>";
+      content += "    <label for='html'>HTML:</label>";
       content += "    <input id='html' type='text' name='html' placeholder='" + item.html + "' value='" + item.html + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>JS:</label>";
+      content += "    <label for='js'>JS:</label>";
       content += "    <input id='js' type='text' name='js' placeholder='" + item.js + "' value='" + item.js + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Pin:</label>";
+      content += "    <label for='pin'>Pin:</label>";
       content += "    <input id='pin' type='text' name='pin' placeholder='" + item.pin + "' value='" + item.pin + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Protocol:</label>";
+      content += "    <label for='protocol'>Protocol:</label>";
       content += "    " + renderProtocolsSelector( item.protocol );
 //      content += "    <input id='protocol' type='text' name='protocol' placeholder='" + item.protocol + "' value='" + item.protocol + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Status:</label>";
+      content += "    <label for='status'>Status:</label>";
       content += "    <input id='status' type='text' name='status' placeholder='" + item.status + "' value='" + item.status + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Threshold:</label>";
+      content += "    <label for='threshold'>Threshold:</label>";
       content += "    <input id='threshold' type='number' name='threshold' placeholder='" + item.threshold + "' value='" + item.threshold + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Type:</label>";
+      content += "    <label for='type'>Type:</label>";
       content += "    " + renderTypesSelector( item.type );
 //      content += "    <input id='type' type='text' name='type' placeholder='" + item.type + "' value='" + item.type + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Updated:</label>";
+      content += "    <label for='updated'>Updated:</label>";
       content += "    <input id='updated' type='text' name='updated' placeholder='" + item.updated + "' value='" + item.updated + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Created:</label>";
+      content += "    <label for='created'>Created:</label>";
       content += "    <input id='created' type='text' name='created' placeholder='" + item.created + "' value='" + item.created + "' class='form-control' />";
       content += "  </div>";
-      content += "  <button type='submit' style='margin:15px 0 0;'>Submit</button> <a href='./" + controllerName + ".php'>Show all</a>";
+      content += "  <button type='submit' class='btn btn-primary mb-2'>Submit</button> <a href='./" + controllerName + ".php'>Show all</a>";
       content += "</fieldset>";
       return content;
     }
@@ -298,8 +300,6 @@
 //      console.log( 'action: ' + action + ', id: ' + id );
       if( action == undefined || action === 'read' ) {
         // no action given or action = read, just render the devices List
-        devicesRead();
-        
         renderDevices();
       } else if( action === 'edit' ) {
         if( id == undefined  ) {
@@ -317,8 +317,6 @@
         } else {
           // editing an entry
           devicesDelete( id );
-          devicesRead();
-
           renderDevices();
         }
       }

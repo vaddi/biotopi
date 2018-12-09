@@ -224,10 +224,9 @@ class System extends Base {
 		$host['kernel'] = shell_exec('uname -r | tr -d "\n"');
     $host['cputemp'] = self::getCpuTemp();
     $host['updates'] = self::getUpdates();
-    // ftotal
     $host['files'] = self::totalFiles();
-    // env
     $host['env'] = self::getEnv();
+    $host['uptime'] = self::getUptime();
 		return $host;
 	}
 
@@ -246,6 +245,10 @@ class System extends Base {
 		return $mem;
 	}
 
+	public function getUptime() {
+		$uptime= shell_exec('uptime -p');
+		return $uptime;
+	}
 
 	public function getLoad() {
 		$loadavgout = shell_exec('cat /proc/loadavg');

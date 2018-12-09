@@ -29,7 +29,7 @@ class Daemons extends Base implements CRUD {
 	 * constructor
 	 * set all possible params, others will not pass
 	 */
-	public function __construct( $_db, $id, $name, $device, $type, $start, $end, $created, $cmd ) {
+	public function __construct( $_db, $id, $name, $device, $type, $active, $start, $end, $created, $cmd ) {
 		try {
 			// first param is allways the DB object
 			$this->_db = $_db;
@@ -42,6 +42,7 @@ class Daemons extends Base implements CRUD {
 			$this->_params->name = ( isset( $name ) && $name !== null ) ? $name : null;
 			$this->_params->device = ( isset( $device ) && $device !== null ) ? $device : null;
 			$this->_params->type = ( isset( $type ) && $type !== null ) ? $type : null;
+      $this->_params->active = ( isset( $active ) && $active !== null ) ? $active : null;
 			$this->_params->start = ( isset( $start ) && $start !== null ) ? $start : null;
 			$this->_params->end = ( isset( $end ) && $end !== null ) ? $end : null;
 			$this->_params->created = ( isset( $created ) && $created !== null ) ? $created : null;
@@ -112,6 +113,7 @@ class Daemons extends Base implements CRUD {
 			$this->_params->name = null === $this->_params->name ? $new['name'] : $this->_params->name;
 			$this->_params->device = null === $this->_params->device ? $new['device'] : $this->_params->device;
 			$this->_params->type = null === $this->_params->type ? $new['type'] : $this->_params->type;
+      $this->_params->active = null === $this->_params->active ? $new['active'] : $this->_params->active;
 			$this->_params->start = null === $this->_params->start ? $new['start'] : $this->_params->start;
 			$this->_params->end = null === $this->_params->end ? $new['end'] : $this->_params->end;
 			$result = $this->_save();
@@ -164,7 +166,7 @@ class Daemons extends Base implements CRUD {
 			if( null !== $this->_params->id ) {
 				// update a entry
 				$this->_validateParam( 'id' );
-				$this->_db->query( "UPDATE $this->_dbTable SET name = :name, device = :device, type = :type, start = :start, end = :end, updated = :updated WHERE id = :id;" );
+				$this->_db->query( "UPDATE $this->_dbTable SET name = :name, device = :device, type = :type, active = :active, start = :start, end = :end, updated = :updated WHERE id = :id;" );
 				$this->_db->bind( ':id', $this->_params->id ); 
 				$this->_db->bind( ':updated', date( 'Y-m-d H:i:s' ) );
 				$lastid = $this->_params->id;
@@ -173,13 +175,14 @@ class Daemons extends Base implements CRUD {
 				$this->_validateParam( 'name' );
 				$this->_validateParam( 'type' );
 				$this->_validateParam( 'device' );
-				$this->_db->query( "INSERT INTO $this->_dbTable ( name, device, type, start, end, created ) VALUES ( :name, :device, :type, :start, :end, :created )" );
+				$this->_db->query( "INSERT INTO $this->_dbTable ( name, device, type, active, start, end, created ) VALUES ( :name, :device, :type, :active, :start, :end, :created )" );
 				$this->_db->bind( ':created', date( 'Y-m-d H:i:s' ) );
 			}
 			// update and insert shared bindings
 			$this->_db->bind( ':name', $this->_params->name );
 			$this->_db->bind( ':device', $this->_params->device );
 			$this->_db->bind( ':type', $this->_params->type );
+      $this->_db->bind( ':active', $this->_params->active );
 			$this->_db->bind( ':start', $this->_params->start );
 			$this->_db->bind( ':end', $this->_params->end );
 			$this->_db->execute();

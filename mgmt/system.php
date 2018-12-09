@@ -12,11 +12,13 @@
 
 	<div id="searchfield" class="row">
 		<div class="col-sm-12">
+      <h3>System</h3>
       <div id="system-pannel"></div>
+      <div id="output"></div>
 			<div id="content">
 		    loading...
 			</div>
-			<div id="result"></div>
+			
 		</div>
 	</div><!-- END row-->
   
@@ -76,7 +78,7 @@
     // shutdown
     
     function systemRead() {
-      let content = "<div> <a href='?action=create'>Create Entry</a><br />\n";
+      let content = "<div> <a href='?action=create'>Create Entry</a><hr />\n";
       let entry = apiJson( controllerName, 'read' ).data;
       if( entry === null || entry.length <= 0 ) {
         target.html( content + ' No Entries.' );
@@ -90,7 +92,7 @@
         content += "<span>Value: " + value.value + "</span><br />\n";
         content += "<span>Updated: " + value.updated + "</span><br />\n";
         content += "<span>Created: " + value.created + "</span><br />\n";
-        content += "<a href='?action=edit&id=" + value.id + "'>Edit</a> <a onclick='return confirm(\"Acknowledge delete Entry " + value.id + " - " + value.name + " - Y/N\")' href='?action=delete&id=" + value.id + "' >Delete</a>";
+        content += "<a href='?action=edit&id=" + value.id + "'>Edit</a> | <a onclick='return confirm(\"Acknowledge delete Entry " + value.id + " - " + value.name + " - Y/N\")' href='?action=delete&id=" + value.id + "' >Delete</a>";
         content += "<div>";
         if( key < total ) content += "<hr /><br />\n";
       });
@@ -116,18 +118,18 @@
       content += "    <input id='name' type='text' name='name' placeholder='" + item.name + "' value='" + item.name + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Value:</label>";
+      content += "    <label for='value'>Value:</label>";
       content += "    <input id='value' type='text' name='value' placeholder='" + item.value + "' value='" + item.value + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Updated:</label>";
+      content += "    <label for='updated'>Updated:</label>";
       content += "    <input id='updated' type='text' name='updated' placeholder='" + item.updated + "' value='" + item.updated + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='name'>Created:</label>";
+      content += "    <label for='created'>Created:</label>";
       content += "    <input id='created' type='text' name='created' placeholder='" + item.created + "' value='" + item.created + "' class='form-control' />";
       content += "  </div>";
-      content += "  <button type='submit' style='margin:15px 0 0;'>Submit</button> <a href='./" + controllerName + ".php'>Show all</a>";
+      content += "  <button type='submit' class='btn btn-primary mb-2'>Submit</button> <a href='./" + controllerName + ".php'>Show all</a>";
       content += "</fieldset>";
       return content;
     }
@@ -176,6 +178,7 @@
     
     // Main caller
     $(document).ready( function() {
+      // $( '#output' ).html( '<h3>' + controllerName + '</h3>' );
       let action = GetURLParameter('action');
       let id = GetURLParameter('id');
       if( action == undefined || action === 'read' ) {
@@ -230,7 +233,7 @@
             erg += "state: " + data.state + "<br />";
             erg += "data: " + JSON.stringify( data.data ) + "<br />";
             
-            $("#result").html( erg )
+            $("#output").html( erg )
             	.fadeIn(300)    // fade in time
             	.delay(10000)   // message appears for X milli seconds
             .fadeOut( "slow" ) ; // fade out effect ( slow, normal, fast )

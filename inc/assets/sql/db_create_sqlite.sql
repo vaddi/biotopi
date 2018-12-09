@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS devices;
 DROP TABLE IF EXISTS protocols;
 DROP TABLE IF EXISTS protocoltypes;
 DROP TABLE IF EXISTS devicetypes;
-DROP TABLE IF EXISTS subtypes;
+DROP TABLE IF EXISTS devicesubtypes;
 DROP TABLE IF EXISTS config;
 DROP TABLE IF EXISTS system;
 DROP VIEW IF EXISTS jobs_v;
@@ -27,7 +27,7 @@ CREATE TABLE config(
   updated	TEXT NULL
 );
 
-CREATE TABLE subtypes(
+CREATE TABLE devicesubtypes(
   id			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   name		TEXT NOT NULL,
   created	TEXT NULL,
@@ -37,10 +37,10 @@ CREATE TABLE subtypes(
 CREATE TABLE devicetypes(
   id				INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   name			TEXT NOT NULL, 
-  subtype		INTEGER NOT NULL,
+  devicesubtypes		INTEGER NOT NULL,
   created		TEXT NULL,
   updated		TEXT NULL,
-  FOREIGN KEY(subtype) REFERENCES subtypes(id)
+  FOREIGN KEY(devicesubtypes) REFERENCES devicesubtypes(id)
 );
 
 CREATE TABLE protocoltypes(

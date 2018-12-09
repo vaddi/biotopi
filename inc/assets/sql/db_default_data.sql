@@ -14,8 +14,8 @@ INSERT INTO protocols VALUES(3, 'cvs', 2);
 INSERT INTO protocols VALUES(4, 'xml', 3);
 
 
-INSERT INTO subtypes VALUES(1, 'analog');
-INSERT INTO subtypes VALUES(2, 'digital');
+INSERT INTO devicesubtypes VALUES(1, 'analog');
+INSERT INTO devicesubtypes VALUES(2, 'digital');
 
 
 INSERT INTO devicetypes VALUES(1, 'sensor', 1);
@@ -53,7 +53,7 @@ INSERT INTO daemons VALUES (5,	'test_daemon',	1,	3,	'0',	NULL,	NULL,	'2018-01-13
 
 -- INSERT INTO jobs VALUES (1,	1,	1,	'2018-01-14 09:00:00',	NULL,	'0000-00-00 00:00:00',	'0000-00-00 00:00:00');
 
-INSERT INTO system VALUES ( 1, "System Test", "0");
+INSERT INTO system VALUES ( 1, "System Test", "0" );
 
 -- 
 -- Sample Queries
