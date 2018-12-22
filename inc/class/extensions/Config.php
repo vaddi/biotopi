@@ -4,6 +4,7 @@
 // path to config file
 //define( 'CONFIGBASE', realpath('./') );
 //require_once( CONFIGBASE . '../inc/config.php' );
+define( 'CONFIGBASE', __DIR__ . "/../../.." );
 
 class Config {
 	
@@ -33,7 +34,7 @@ class Config {
 		$db->execute();
 		
 		if( $db->rowCount( $table ) > 0 ) {
-			$all = $db->resultset()[0];
+			$all = $db->resultset();
 			if( $all !== null && in_array( $key, $all ) ) {
 				// return the value for the entry
 				return $all[ 'value' ];

@@ -205,7 +205,7 @@
       content += "    <input id='js' type='text' name='js' placeholder='" + item.js + "' value='" + item.js + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
-      content += "    <label for='pin'>Pin:</label>";
+      content += "    <label for='pin'>Pin/Adress:</label>";
       content += "    <input id='pin' type='text' name='pin' placeholder='" + item.pin + "' value='" + item.pin + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";

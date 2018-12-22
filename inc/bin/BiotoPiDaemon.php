@@ -193,7 +193,7 @@ if( $pid == -1 ) {
 								//$result = "once " . $name . " -> " . $msg[0];
 							}
 						} else {
-							$result = "Error - Unable to exec " . __DIR__ . "/" . $bin;
+							$result = "Error - Unable to exec " . __DIR__ . "/" . $bin . "::" . $msg[0];
 						}
 					}
 				}
