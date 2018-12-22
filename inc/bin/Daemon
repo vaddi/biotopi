@@ -71,7 +71,7 @@ clean() {
 	echo -n "" > ${LOGFILE}
 	if [ $? -eq 0 ]; then
 	  echo "OK"
-		echo "BiotoPi Daemon Logfile" >> $LOGFILE
+		echo "BiotoPi Daemon Logfile $LOGFILE" >> $LOGFILE
 	else
 	  echo "FAIL"
 	fi

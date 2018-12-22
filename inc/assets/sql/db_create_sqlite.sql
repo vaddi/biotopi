@@ -131,8 +131,8 @@ CREATE VIEW jobs_v AS
 	INNER JOIN daemontypes dt on dt.id = da.id 
 	WHERE active is not null
 		AND active = 1
-		AND end >= strftime('%Y-%m-%d %H-%M','now') 
-		AND start <= strftime('%Y-%m-%d %H-%M','now')
+		AND end >= strftime('%Y-%m-%d %H:%M:%S','now') 
+		AND start <= strftime('%Y-%m-%d %H:%M:%S','now')
 	ORDER BY updated DESC;
 ;
 

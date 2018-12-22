@@ -2,8 +2,8 @@
 
 
 // path to config file
-define( 'CONFIGBASE', realpath('./') );
-require_once( CONFIGBASE . '/inc/config.php' );
+//define( 'CONFIGBASE', realpath('./') );
+//require_once( CONFIGBASE . '../inc/config.php' );
 
 class Config {
 	

@@ -249,7 +249,7 @@
       //let devices = currentDaemons;
       let devices = apiJson( controllerName, 'read', id ).data;
       let total = devices.length -1;
-      let content = "<form id='daemonsform' action='../' method='GET'>";
+      let content = "<form id='daemonsform' action='../' method='POST'>";
       content += "  <input type='hidden' name='controller' value='" + controllerName + "' />";
       content += "  <input type='hidden' name='action' value='update' />";
       $( devices ).each( function( key, value ) {

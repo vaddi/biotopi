@@ -76,7 +76,7 @@ if( $pid == -1 ) {
 	return 0; //success
 } else {
 	//the main process
-	
+
 	// do stuff
 	$table = "jobs_v";
 	require_once( __DIR__ . '/../config.php' );
@@ -84,6 +84,9 @@ if( $pid == -1 ) {
 	$db = new Database( DB );
 	
 	while( true ) {
+    // simple debug running
+    //file_put_contents( $LOG, $date . " Running\n", FILE_APPEND );
+    
 		// new date
 		$date = date( 'Y-m-d H:i:s' );
 		$result = null;
