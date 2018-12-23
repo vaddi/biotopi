@@ -246,7 +246,7 @@ class System extends Base {
 	}
 
 	public function getUptime() {
-		$uptime= shell_exec('uptime -p');
+		$uptime= shell_exec('uptime | cut -f1 -d","');
 		return $uptime;
 	}
 
