@@ -63,6 +63,15 @@ function updateData( $db = null, $id = null, $data = null ) {
 	return (bool) $db->execute();
 }
 
+function writeTBS( $db = null, $id = null, $data = null ) {
+  if( $db === null || $id === null ) return false;
+	$tableTBS = "data";
+	$db->query( "INSERT $tableTBS ( device, data ) VALUES ( :device, :data, )" );
+  $db->bind( ':device', $id );
+	$db->bind( ':data', $data );
+	return (bool) $db->execute();
+}
+
 //fork the process to work in a daemonized environment
 // file_put_contents( $LOG, $DATE . " Starting BiotoPi Daemon\n", FILE_APPEND );
 
@@ -178,10 +187,11 @@ if( $pid == -1 ) {
 						if( $err === 0 ) {
 							// update device data
 							$setData = updateData( $db, $device, $msg[0] );
-							
+							$setTBS = writeTBS( $db, $device, $msg[0] );
+              
 							// only if not once
 							if( $typevalue != 0 ) {
-								if( $setData ) {
+								if( $setData && $setTBS ) {
 									// update deamon running
 									$drunning = updateRunning( $db, $daemon, 1 );
 									if( $drunning ) {

@@ -105,7 +105,7 @@ CREATE TABLE daemons(
 );
 
 CREATE TABLE jobs (
-  id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  id          INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
   id_devices	INTEGER NOT NULL,
   id_daemons	INTEGER NOT NULL,
   start				TEXT NOT NULL,
@@ -116,6 +116,22 @@ CREATE TABLE jobs (
   FOREIGN KEY (id_daemons) REFERENCES daemons (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
+CREATE TABLE system (
+  id      INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  name    TEXT NULL,
+  value   TEXT NOT NULL,
+  created	TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+  updated	TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+);
+
+CREATE TABLE data (
+  id        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  datetime	TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+  device    INTEGER NOT NULL,
+  value     TEXT NOT NULL DEFAULT '{}',
+  FOREIGN KEY (device) REFERENCES devices (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
 CREATE VIEW jobs_v AS 
 	SELECT da.id AS daemon, de.id AS device, da.name AS name, da.type AS dtype, dt.value AS dtypevalue, da.running AS running, da.start AS start, da.end AS end, da.updated AS updated, de.exec AS exec, de.pins AS pins, de.params AS params
 	FROM daemons AS da
@@ -123,8 +139,8 @@ CREATE VIEW jobs_v AS
 	INNER JOIN daemontypes dt on dt.id = da.id 
 	WHERE active is not null
 		AND active = 1
-		AND end >= strftime('%Y-%m-%d %H-%M','now') 
-		AND start <= strftime('%Y-%m-%d %H-%M','now')
+		AND end >= strftime('%Y-%m-%d %H:%M:%S','now') 
+		AND start <= strftime('%Y-%m-%d %H:%M:%S','now')
 	ORDER BY updated DESC;
 ;
 

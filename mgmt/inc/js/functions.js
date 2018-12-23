@@ -158,7 +158,8 @@ function apiJson( controller, action, id ) {
     success: function( response ) {
       // catch API Error messages
       if( typeof( response ) === 'string' ) {
-        console.log( response );
+//        console.log( response );
+        $( '#content' ).html( 'API Message: <br />' + response );
       } else if( response.state === false ) {
         console.log( response.errormsg );
       }

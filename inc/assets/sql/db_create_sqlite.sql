@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS devicetypes;
 DROP TABLE IF EXISTS devicesubtypes;
 DROP TABLE IF EXISTS config;
 DROP TABLE IF EXISTS system;
+DROP TABLE IF EXISTS data;
 DROP VIEW IF EXISTS jobs_v;
 -- END CLEANUP
 
@@ -122,6 +123,14 @@ CREATE TABLE system (
   value TEXT NOT NULL,
   created	TEXT NOT NULL DEFAULT (datetime('now','localtime')),
   updated	TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+);
+
+CREATE TABLE data (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  datetime	TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+  device    INTEGER NOT NULL,
+  value     TEXT NOT NULL DEFAULT '{}',
+  FOREIGN KEY (device) REFERENCES devices (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
 CREATE VIEW jobs_v AS 
