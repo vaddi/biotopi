@@ -156,42 +156,48 @@ echo -n "Set Main permissions: "
 find . -type d -exec chmod 0755 {} \;
 check_input $?
 
-#echo -n "Chown Cache-Folder to Webserver-User: " 
-#chown -R "$WSUSER" application/cache
-#check_input $?
+echo
+echo -n "Chown Database Folder Permissions: "
+chown -R "$WSUSER" inc/db
+check_input $?
 
-#echo -n "Chown Log-Folder to Webserver-User: " 
-#chown -R "$WSUSER" application/logs
-#check_input $?
+file="/etc/apache2/sites-available/biotopi.conf"
+if [ ! -e "$file" ]
+then
+  echo -n "Copy $file to old_$file: "
+  cp "inc/assets/installation/apache2_biotopi.conf" "$file"
+  check_input $?
+  echo -n "Enable Site: "
+  a2ensite biotopi
+  echo -n "Disable Default Apache Site: "
+  a2dissite 000-default
+  # THIS SHOULD ONLY DONE ONCE
+  echo -n "Set Apache ServerName: "
+  echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
+  check_input $?
+fi
 
+file="inc/config.php"
+if [ ! -e "$file" ]
+then
+  echo -n "Copy ${file}.example to $file: "
+  cp "${file}.example" "$file"
+  check_input $?
+fi
 
-# remove recursive gitignore & ~ files
-#echo -n "Remove recursive all gitignore & ~ Files: " 
-#find . -name \*.gitignore -exec rm -v '{}' \;
-#check_input $?
-
-
-# remove my joe backups
-#echo -n "Remove all joe Backupfiles: " 
-#find . -name \*~ -exec rm -v '{}' \;
-#check_input $?
-
-
-# remove some files (git, kohana, default Readme, etc.)
-#for REMOVE in .git build.xml composer.json CONTRIBUTING.md README.md .gitmodules .gitmodules-dev .travis.yml 
-#do
-#	if [ -e "$REMOVE" ]
-#	then
-#		echo "$REMOVE removed"
-#		rm -r "$REMOVE"
-#	fi
-#done
+file="inc/db/database.db"
+if [ ! -e "$file" ]
+then
+  echo -n "Copy ${file}.example to $file: "
+  cp "${file}.example" "$file"
+  check_input $?
+fi
 
 # copy the .htacces file
 file="example.htaccess"
 if [ -e "$file" ]
 then
-  echo -n "Rename $file to .htaccess:"
+  echo -n "Rename $file to .htaccess: "
   mv "$file" ".htaccess"
   check_input $?
 fi
@@ -222,6 +228,15 @@ else
     echo -e "$FAIL couldn't run \"apt-get upgrade\""
 fi
 
+echo
+echo -n "Create Tables: "
+sqlite3 inc/db/database.db < inc/assets/sql/db_create_sqlite.sql
+check_input $?
+
+echo
+echo -n "Insert Some Default Data; "
+sqlite3 inc/db/database.db < inc/assets/sql/db_default_data.sql
+check_input $?
 
 # install Pkgs
 echo
@@ -318,56 +333,10 @@ done
 #   check_input $?
 # fi
 
-file="/etc/apache2/sites-available/biotopi.conf"
-if [ ! -e "$file" ]
-then
-  echo -n "Copy $file to old_$file: "
-  cp "inc/assets/installation/apache2_biotopi.conf" "$file"
-  check_input $?
-  echo -n "Enable Site: "
-  a2ensite biotopi
-  echo -n "Disable Default Apache Site: "
-  a2dissite 000-default
-  # THIS SHOULD ONLY DONE ONCE
-  echo -n "Set Apache ServerName: "
-  echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
-  check_input $?
-fi
-
-file="inc/config.php"
-if [ ! -e "$file" ]
-then
-  echo -n "Copy ${file}.example to $file: "
-  cp "${file}.example" "$file"
-  check_input $?
-fi
-
-file="inc/db/database.db"
-if [ ! -e "$file" ]
-then
-  echo -n "Copy ${file}.example to $file: "
-  cp "${file}.example" "$file"
-  check_input $?
-fi
 
 echo
-echo -n "Chown Database Folder: "
-chown -R "$WSUSER" inc/db
-check_input $?
-
-echo
-echo -n "Create Tables: "
-sqlite3 inc/db/database.db < inc/assets/sql/db_create_sqlite.sql
-check_input $?
-
-echo
-echo -n "Insert Some Default Data; "
-sqlite3 inc/db/database.db < inc/assets/sql/db_default_data.sql
-check_input $?
-
-echo
-echo -n "Enable php5enmod mcrypt: "
-php5enmod mcrypt
+echo -n "Enable phpenmod mcrypt: "
+phpenmod mcrypt
 check_input $?
 
 echo 

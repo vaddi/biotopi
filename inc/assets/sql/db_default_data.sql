@@ -13,11 +13,6 @@ INSERT INTO protocols VALUES ( 3, 'csv', 3, '2022-01-15 22:41:00', '2022-01-15 2
 INSERT INTO protocols VALUES ( 4, 'xml', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 INSERT INTO protocols VALUES ( 5, 'soap', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
-INSERT INTO protocols VALUES(1, 'raw', 1, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
-INSERT INTO protocols VALUES(2, 'json', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
-INSERT INTO protocols VALUES(3, 'cvs', 2, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
-INSERT INTO protocols VALUES(4, 'xml', 3, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
-
 INSERT INTO devicesubtypes VALUES(1, 'analog', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 INSERT INTO devicesubtypes VALUES(2, 'digital', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
