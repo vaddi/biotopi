@@ -2,27 +2,29 @@
 -- BiotoPi SQLite3 TEST Database
 --
 
-INSERT INTO protocoltypes VALUES(1, 'i2c', '');
-INSERT INTO protocoltypes VALUES(2, 'spi', '');
-INSERT INTO protocoltypes VALUES(3, 'soap', '');
-INSERT INTO protocoltypes VALUES(4, 'json', '');
+INSERT INTO protocoltypes VALUES(1, 'raw', '');
+INSERT INTO protocoltypes VALUES(2, 'i2c', '');
+INSERT INTO protocoltypes VALUES(3, 'spi', '');
+INSERT INTO protocoltypes VALUES(4, 'exec', '');
 
+INSERT INTO protocols VALUES ( 1, 'raw', 1, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES ( 2, 'json', 2, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES ( 3, 'csv', 3, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES ( 4, 'xml', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES ( 4, 'soap', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
 INSERT INTO protocols VALUES(1, 'raw', 1);
 INSERT INTO protocols VALUES(2, 'json', 4);
 INSERT INTO protocols VALUES(3, 'cvs', 2);
 INSERT INTO protocols VALUES(4, 'xml', 3);
 
-
 INSERT INTO devicesubtypes VALUES(1, 'analog');
 INSERT INTO devicesubtypes VALUES(2, 'digital');
-
 
 INSERT INTO devicetypes VALUES(1, 'sensor', 1);
 INSERT INTO devicetypes VALUES(2, 'sensor', 2);
 INSERT INTO devicetypes VALUES(3, 'akteur', 1);
 INSERT INTO devicetypes VALUES(4, 'akteur', 2);
-
 
 INSERT INTO daemontypes VALUES(1, 'once', '2017-11-19 10:44:29.937');
 INSERT INTO daemontypes VALUES(2, 'secondly', '2017-11-19 10:45:29.937');
@@ -55,42 +57,38 @@ INSERT INTO daemons VALUES (5,	'test_daemon',	1,	3,	'0',	NULL,	NULL,	'2018-01-13
 
 INSERT INTO system VALUES ( 1, "System Test", "0" );
 
--- 
--- Sample Queries
--- 
-
--- get the protocol name and type, for the device who has 'test' in the name
-SELECT d.id AS id, d.name AS device, pt.name AS type, p.name AS protocol, pins, exec, params
-FROM protocols AS p
-INNER JOIN devices d on d.protocol = p.id
-INNER JOIN protocoltypes pt on pt.id = p.id
--- WHERE d.name LIKE '%test%';
-
-
--- get protocol name and type, for active daemons
-SELECT d.id AS id, d.name AS device, da.active AS active, pt.name AS type, p.name AS protocol, pins, exec, params
--- SELECT * 
-FROM devices AS d
-INNER JOIN daemons da on d.id = da.id
-INNER JOIN protocols p on d.protocol = p.id
-INNER JOIN protocoltypes pt on pt.id = p.id
-WHERE da.active = 1;
-
--- jobs_v query
-SELECT * FROM daemons da
-INNER JOIN devices de on de.id = da.id 
-	WHERE active not null
-	AND active = 1
-	AND end >= NOW() 
-	AND start <= NOW() 
-	ORDER BY updated DESC;
-
-
--- Update the 'exec' field on the device which id has the value 1
-UPDATE devices
-SET exec = '/bin/bash'
-WHERE status = 0;
-
-
-
-
+-- --
+-- -- Sample Queries
+-- --
+--
+-- -- get the protocol name and type, for the device who has 'test' in the name
+-- SELECT d.id AS id, d.name AS device, pt.name AS type, p.name AS protocol, pins, exec, params
+-- FROM protocols AS p
+-- INNER JOIN devices d on d.protocol = p.id
+-- INNER JOIN protocoltypes pt on pt.id = p.id
+-- -- WHERE d.name LIKE '%test%';
+--
+--
+-- -- get protocol name and type, for active daemons
+-- SELECT d.id AS id, d.name AS device, da.active AS active, pt.name AS type, p.name AS protocol, pins, exec, params
+-- -- SELECT *
+-- FROM devices AS d
+-- INNER JOIN daemons da on d.id = da.id
+-- INNER JOIN protocols p on d.protocol = p.id
+-- INNER JOIN protocoltypes pt on pt.id = p.id
+-- WHERE da.active = 1;
+--
+-- -- jobs_v query
+-- SELECT * FROM daemons da
+-- INNER JOIN devices de on de.id = da.id
+--   WHERE active not null
+--   AND active = 1
+--   AND end >= NOW()
+--   AND start <= NOW()
+--   ORDER BY updated DESC;
+--
+--
+-- -- Update the 'exec' field on the device which id has the value 1
+-- UPDATE devices
+-- SET exec = '/bin/bash'
+-- WHERE status = 0;

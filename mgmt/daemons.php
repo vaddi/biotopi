@@ -226,21 +226,30 @@
       content += "  <div class='form-group'>";
       content += "    <label for='start'>Start:</label>";
       content += "    <input id='start' type='text' name='start' placeholder='" + item.start + "' value='" + item.start + "' class='form-control' />";
+      content += '  ';
+      content += '  ';
+      content += '  ';
       content += "  </div>";
       content += "  <div class='form-group'>";
       content += "    <label for='end'>End:</label>";
-      content += "    <input id='end' type='text' name='end' placeholder='" + item.end + "' value='" + item.end + "' class='form-control' />";
+      content += "    <input id='end' type='datetime' name='end' placeholder='" + item.end + "' value='" + item.end + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
       content += "    <label for='updated'>Updated:</label>";
-      content += "    <input id='updated' type='text' name='updated' placeholder='" + item.updated + "' value='" + item.updated + "' class='form-control' />";
+      content += "    <input id='updated' type='datetime' name='updated' placeholder='" + item.updated + "' value='" + item.updated + "' class='form-control' />";
       content += "  </div>";
       content += "  <div class='form-group'>";
       content += "    <label for='created'>Created:</label>";
-      content += "    <input id='created' type='text' name='created' placeholder='" + item.created + "' value='" + item.created + "' class='form-control' />";
+      content += "    <input id='created' type='datetime' name='created' placeholder='" + item.created + "' value='" + item.created + "' class='form-control' />";
       content += "  </div>";
       content += "  <button type='submit' class='btn btn-primary mb-2'>Submit</button> <a href='./" + controllerName + ".php'>Show all</a>";
       content += "</fieldset>";
+      let dateTypes = [ 'updated', 'created', 'datetime', 'end' ];
+      $(document).ready( function() {
+        $( dateTypes ).each( function( key, value ) {
+          $('#' + value ).datetimepicker({ autoclose: true, language: 'de-DE', format: 'yyyy-mm-dd hh:ii:ss' });
+        });
+      });
       return content;
     }
     

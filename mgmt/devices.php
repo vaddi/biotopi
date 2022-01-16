@@ -236,6 +236,12 @@
       content += "  </div>";
       content += "  <button type='submit' class='btn btn-primary mb-2'>Submit</button> <a href='./" + controllerName + ".php'>Show all</a>";
       content += "</fieldset>";
+      let dateTypes = [ 'updated', 'created' ];
+      $(document).ready( function() {
+        $( dateTypes ).each( function( key, value ) {
+          $('#' + value ).datetimepicker({ autoclose: true, language: 'de-DE', format: 'yyyy-mm-dd hh:ii:ss' });
+        });
+      });
       return content;
     }
     
@@ -335,7 +341,7 @@
         var actionurl = ( e.currentTarget.action !== undefined || e.currentTarget.action !== "" ) ? e.currentTarget.action : window.location; // default action
 				var method = ( e.currentTarget.method !== undefined || e.currentTarget.method !== "" ) ? e.currentTarget.method : 'post'; // default method
 				var datatype = ( e.currentTarget.datatype !== undefined || e.currentTarget.datatype !== "" ) ? e.currentTarget.datatype : 'json'; // default data type
-		
+
         // do the request
         $.ajax({
           url: actionurl,

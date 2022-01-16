@@ -2,7 +2,7 @@
 
 // Redirect if there is any script in the url
 $currentURL = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-if( strpos( $currentURL, SCRIPT ) !== false ) {
+if( strpos( $currentURL, 'SCRIPT' ) !== false ) {
 	header("Location: " . str_replace( SCRIPT, '', $currentURL ) ); /* Browser umleiten */
 	exit;
 }

@@ -52,7 +52,6 @@ CREATE TABLE protocoltypes(
   updated TEXT NULL
 );
 
-
 CREATE TABLE protocols(
   id			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   name		TEXT NOT NULL, 
@@ -62,7 +61,6 @@ CREATE TABLE protocols(
   FOREIGN KEY(type) REFERENCES protocoltypes(id)
 );
 
-DROP TABLE IF EXISTS devices;
 CREATE TABLE devices(
   id				INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
   name			TEXT NOT NULL,

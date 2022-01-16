@@ -122,16 +122,22 @@ class Protocols implements CRUD {
 		try {
 			// this params needs to be setted, so validate them
 			$this->_validateParam( 'id' );
-			// run Database stuff	
-			$this->_db->query( "DELETE FROM $this->_dbTable WHERE id = :id" );
-			$this->_db->bind( ':id', $this->_params->id );
-			$this->_db->execute();
-			// get our result
-			if( $this->_db->rowCount( $this->_dbTable ) > 0 ) {
-				$result = true;
-			} else {
-				$result = false;
-			}
+      $element = $this->read();
+      if( count( $element ) == 0 ) { // no element found
+        $result = false;
+      } else {
+  			// remove DB request
+  			$this->_db->query( "DELETE FROM $this->_dbTable WHERE id = :id" );
+  			$this->_db->bind( ':id', $this->_params->id );
+  			$this->_db->execute();
+        // validate removing
+        $element = $this->read();
+        if( count( $element ) > 0 ) {
+          $result = false;
+        } else {
+          $result = true;
+        }
+      }
 		} catch( Exception $e ) {
 			if( ENV == 'prod' ) throw new Exception( $e->getMessage() );
 				else throw new Exception( __CLASS__ . '::' . __FUNCTION__ . ' throw ' . $e->getMessage() );
@@ -154,7 +160,7 @@ class Protocols implements CRUD {
 			if( null !== $this->_params->id ) {
 				// update a entry
 				$this->_validateParam( 'id' );
-				$this->_db->query( "UPDATE $this->_dbTable SET name = :name, type = : type, updated = :updated WHERE id = :id;" );
+				$this->_db->query( "UPDATE $this->_dbTable SET name = :name, type = :type, updated = :updated WHERE id = :id;" );
 				$this->_db->bind( ':id', $this->_params->id );
 				$this->_db->bind( ':updated', date( 'Y-m-d H:i:s' ) );
 				$lastid = $this->_params->id;

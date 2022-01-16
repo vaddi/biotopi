@@ -163,6 +163,7 @@
         content = "<input type='hidden' name='id' value='" + item.id + "' />";
       }
       content += "<fieldset>";
+      content += "  <legend>" + item.id + "</legend>";
       content += "  <div class='form-group'>";
       content += "    <label for='id_devices'>Device:</label>";
       content += "    " + renderDevicesSelector();
@@ -190,6 +191,22 @@
       content += "  <button type='submit' class='btn btn-primary mb-2'>Submit</button> <a href='./" + controllerName + ".php'>Show all</a>";
       content += "</fieldset>";
       return content;
+    }
+
+    function jobsShow( id ) {
+      //console.log( 'controller: ' + controllerName + ', action: ' + action + ', id: ' + id );
+      let jobs = apiJson( controllerName, 'read', id ).data;
+      let total = jobs.length -1;
+      let content = "<div id='jobsform'>";
+      content += "  <input type='hidden' name='controller' value='" + controllerName + "' />";
+      content += "  <input type='hidden' name='action' value='show' />";
+      $( jobs ).each( function( key, value ) {
+        currentDevice = value.id_devices;
+        currentDaemon = value.id_daemons;
+        content += jobsFormFields( value );
+      });
+      content += "</div><br />";
+      target.html( content );
     }
 
     function jobsEdit( id ) {
@@ -255,6 +272,9 @@
           // editing an entry
           jobsEdit( id );
         }
+      } else if( action === 'show' ) {
+        // editing an entry
+        jobsShow( id );
       } else if( action === 'create' ) {
         // editing an entry
         jobsCreate();
@@ -284,7 +304,7 @@
         var actionurl = ( e.currentTarget.action !== undefined || e.currentTarget.action !== "" ) ? e.currentTarget.action : window.location; // default action
 				var method = ( e.currentTarget.method !== undefined || e.currentTarget.method !== "" ) ? e.currentTarget.method : 'post'; // default method
 				var datatype = ( e.currentTarget.datatype !== undefined || e.currentTarget.datatype !== "" ) ? e.currentTarget.datatype : 'json'; // default data type
-		
+        console.log( actionurl );
         // do the request
         $.ajax({
           url: actionurl,

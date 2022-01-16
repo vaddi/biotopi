@@ -120,16 +120,22 @@ class Daemontypes implements CRUD {
 		try {
 			// this params needs to be setted, so validate them
 			$this->_validateParam( 'id' );
-			// run Database stuff	
-			$this->_db->query( "DELETE FROM $this->_dbTable WHERE id = :id" );
-			$this->_db->bind( ':id', $this->_params->id );
-			$this->_db->execute();
-			// get our result
-			if( $this->_db->rowCount( $this->_dbTable ) > 0 ) {
-				$result = true;
-			} else {
-				$result = false;
-			}
+      $element = $this->read();
+      if( count( $element ) == 0 ) { // no element found
+        $result = false;
+      } else {
+  			// remove DB request
+  			$this->_db->query( "DELETE FROM $this->_dbTable WHERE id = :id" );
+  			$this->_db->bind( ':id', $this->_params->id );
+  			$this->_db->execute();
+        // validate removing
+        $element = $this->read();
+        if( count( $element ) > 0 ) {
+          $result = false;
+        } else {
+          $result = true;
+        }
+      }
 		} catch( Exception $e ) {
 			if( ENV == 'prod' ) throw new Exception( $e->getMessage() );
 				else throw new Exception( __CLASS__ . '::' . __FUNCTION__ . ' throw ' . $e->getMessage() );
@@ -159,7 +165,7 @@ class Daemontypes implements CRUD {
 			} else {
 				// insert a new entry (define neccessary params)
 				$this->_validateParam( 'name' );
-				$this->_validateParam( 'type' );
+        // $this->_validateParam( 'type' );
 				$this->_db->query( "INSERT INTO $this->_dbTable ( name, created ) VALUES ( :name, :created )" );
 				$this->_db->bind( ':created', date( 'Y-m-d H:i:s' ) );
 			}
