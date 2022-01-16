@@ -20,25 +20,25 @@ WIRINGDIR="/root" # wiringPi install directory
 APPNAME="BiotoPi"		# Application Name
 
 # Pkg Array, all of this Pkgs will be installed in this order
-PKGS=(	mysql-server 
-				apache2 
-				php 
-				php-mysql 
-				php-http 
-				php-dev 
+PKGS=(	mysql-server
+				apache2
+				curl
+				libcurl3
 				libcurl4-openssl-dev
-				libmagic-dev 
-				php-pear 
-				curl 
-				libcurl3 
-				php-curl 
-				php-mcrypt 
+				libmagic-dev
+        libi2c-dev
+				php
+				php-mysql
+				php-http
+				php-dev
+				php-pear
+				php-curl
+				php-mcrypt
 				php-gd
-				daemon
+        daemon
 				htop
 				iftop
 				vim
-				libi2c-dev
 				git-core
 				bc)
 
