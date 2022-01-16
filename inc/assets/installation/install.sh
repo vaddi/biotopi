@@ -23,6 +23,7 @@ APPNAME="BiotoPi"		# Application Name
 PKGS=(	mysql-server
 				apache2
 				curl
+        sqlite3
 				libcurl3
 				libcurl4-openssl-dev
 				libmagic-dev
@@ -195,70 +196,70 @@ then
   check_input $?
 fi
 
-# # rename the install.php file, should occure after you have visite the backend
-# file="install.php"
-# if [ -e "$file" ]
-# then
-#   echo -n "Rename $file to old_$file: "
-#   mv "$file" "old_$file"
-#   check_input $?
-# fi
+# rename the install.php file, should occure after you have visite the backend
+file="install.php"
+if [ -e "$file" ]
+then
+  echo -n "Rename $file to old_$file: "
+  mv "$file" "old_$file"
+  check_input $?
+fi
 
-# # prepare to install PKGs
-# echo -n "Update Sources: "
-# apt-get -qq -y update &> /dev/null
-# if [ $? -eq 0 ]; then
-#   echo -e "$OK"
-# else
-#   echo -e "$FAIL couldn't run \"apt-get update\""
-# fi
-#
-# echo -n "Upgrade Packages: "
-# apt-get -qq -y upgrade &> /dev/null
-# if [ $? -eq 0 ]; then
-#   echo -e "$OK"
-# else
-#     echo -e "$FAIL couldn't run \"apt-get upgrade\""
-# fi
-#
-#
-# # install Pkgs
-# echo
-# echo "Check for PKGs (Be patient, this will take some time!): "
-# for PKG in "${PKGS[@]}"
-# do
-#   # check if pkg is allready installed
-#   PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $PKG|grep "install ok installed")
-#
-#   case $PKG_OK in
-#     "install ok installed")
-#       echo -e "$PKG: $OK"
-#       ;;
-#     *)
-#       echo -en "$PKG \033[1;31mnot found\033[0;37m"
-#       echo -n " try to install: "
-#       apt-get -qq -y install "$PKG" &> /dev/null
-#       check_input $?
-#       ;;
-#   esac
-# done
-
-# install pecl 
-echo 
-echo -n "Check for pecl_http-1.7.6: "
-PECLINST=$(yes '' | sudo pecl install -s -a pecl_http-1.7.6 | tail -n1) 
-if [ "$PECLINST" == "install failed" ]; then
+# prepare to install PKGs
+echo -n "Update Sources: "
+apt-get -qq -y update &> /dev/null
+if [ $? -eq 0 ]; then
   echo -e "$OK"
 else
-#	echo -n "Try to install via pecl install: "
-#	yes '' | pecl install -s -a pecl_http-1.7.6 &> /dev/null
-#	if [ $? -eq 0 ]; then
-#    echo -e "$OK"
-#	else
-		echo -e "$FAIL"
-		echo "Run manualy: pecl install pecl_http-1.7.6"
-#	fi
+  echo -e "$FAIL couldn't run \"apt-get update\""
 fi
+
+echo -n "Upgrade Packages: "
+apt-get -qq -y upgrade &> /dev/null
+if [ $? -eq 0 ]; then
+  echo -e "$OK"
+else
+    echo -e "$FAIL couldn't run \"apt-get upgrade\""
+fi
+
+
+# install Pkgs
+echo
+echo "Check for PKGs (Be patient, this will take some time!): "
+for PKG in "${PKGS[@]}"
+do
+  # check if pkg is allready installed
+  PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $PKG|grep "install ok installed")
+
+  case $PKG_OK in
+    "install ok installed")
+      echo -e "$PKG: $OK"
+      ;;
+    *)
+      echo -en "$PKG \033[1;31mnot found\033[0;37m"
+      echo -n " try to install: "
+      apt-get -qq -y install "$PKG" &> /dev/null
+      check_input $?
+      ;;
+  esac
+done
+
+# # install pecl
+# echo
+# echo -n "Check for pecl_http-1.7.6: "
+# PECLINST=$(yes '' | sudo pecl install -s -a pecl_http-1.7.6 | tail -n1)
+# if [ "$PECLINST" == "install failed" ]; then
+#   echo -e "$OK"
+# else
+# #  echo -n "Try to install via pecl install: "
+# #  yes '' | pecl install -s -a pecl_http-1.7.6 &> /dev/null
+# #  if [ $? -eq 0 ]; then
+# #    echo -e "$OK"
+# #  else
+#     echo -e "$FAIL"
+#     echo "Run manualy: pecl install pecl_http-1.7.6"
+# #  fi
+# fi
 
 # install pear Mail
 #echo 
@@ -267,21 +268,21 @@ fi
 #MAILINST=$(pear install Mail)
 #SMPTINST=$(pear install Net_SMTP)
 
-# install wiringPi
-echo 
-echo -n "Check for wiringPi: "
-OLDDIR=`pwd`
-cd $WIRINGDIR
-if [ ! -d "$WIRINGDIR/WiringPi" ]; then
-	git clone https://github.com/WiringPi/WiringPi.git
-fi
-cd WiringPi
-git pull origin &> /dev/null
-./build &> /dev/null
-# verify installation
-command -v gpio &> /dev/null
-check_input $?
-cd $ODLDIR
+# # install wiringPi
+# echo
+# echo -n "Check for wiringPi: "
+# OLDDIR=`pwd`
+# cd $WIRINGDIR
+# if [ ! -d "$WIRINGDIR/WiringPi" ]; then
+#   git clone https://github.com/WiringPi/WiringPi.git
+# fi
+# cd WiringPi
+# git pull origin &> /dev/null
+# ./build &> /dev/null
+# # verify installation
+# command -v gpio &> /dev/null
+# check_input $?
+# cd $ODLDIR
 
 # # Enable kernel modules
 # for modul in "${modules[@]}"
@@ -317,32 +318,51 @@ cd $ODLDIR
 #   check_input $?
 # fi
 
-echo
-echo -n "Copy Apache Config: "
-cp inc/assets/installation/apache2_biotopi.conf /etc/apache2/sites-available/biotopi.conf
-check_input $?
-echo -n "Enable Site: "
-a2ensite biotopi
-echo -n "Disable Default Apache Site: "
-a2dissite 000-default
-# THIS SHOULD ONLY DONE ONCE
-echo -n "Set Apache ServerName: "
-echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
-check_input $?
+file="/etc/apache2/sites-available/biotopi.conf"
+if [ ! -e "$file" ]
+then
+  echo -n "Copy $file to old_$file: "
+  cp "inc/assets/installation/apache2_biotopi.conf" "$file"
+  check_input $?
+  echo -n "Enable Site: "
+  a2ensite biotopi
+  echo -n "Disable Default Apache Site: "
+  a2dissite 000-default
+  # THIS SHOULD ONLY DONE ONCE
+  echo -n "Set Apache ServerName: "
+  echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
+  check_input $?
+fi
 
-echo
-echo -n "Copy Biotopy Default Config into Place: "
-cp inc/config.php.example inc/config.php
-check_input $?
+file="inc/config.php"
+if [ ! -e "$file" ]
+then
+  echo -n "Copy ${file}.example to $file: "
+  cp "${file}.example" "$file"
+  check_input $?
+fi
 
-echo
-echo -n "Copy Biotopy Database into Place: "
-cp inc/db/database.db.example inc/db/database.db
-check_input $?
+file="inc/db/database.db"
+if [ ! -e "$file" ]
+then
+  echo -n "Copy ${file}.example to $file: "
+  cp "${file}.example" "$file"
+  check_input $?
+fi
 
 echo
 echo -n "Chown Database Folder: "
 chown -R "$WSUSER" inc/db
+check_input $?
+
+echo
+echo -n "Create Tables: "
+sqlite3 inc/db/database.db < inc/assets/sql/db_create_sqlite.sql
+check_input $?
+
+echo
+echo -n "Insert Some Default Data; "
+sqlite3 inc/db/database.db < inc/assets/sql/db_default_data.sql
 check_input $?
 
 echo

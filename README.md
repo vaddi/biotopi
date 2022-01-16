@@ -41,7 +41,13 @@ Prepare the RaspberryPi and install all necessary Packages and Setup the I2C, SP
 
 	./inc/assets/installation/install.sh
 
-¹ Keep in mind this will take some time to install all Pakages.
+Keep in mind this will take some Time, the Skript does the following:
+
+- update the system pakages
+- install all neccessary pakages
+- Setup Permissions
+- Do some Basic File Copy Operations
+- Restart Apache Webserver
 
 After Installation you should also went back into the filesystem
 

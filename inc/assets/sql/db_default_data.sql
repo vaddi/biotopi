@@ -2,39 +2,39 @@
 -- BiotoPi SQLite3 TEST Database
 --
 
-INSERT INTO protocoltypes VALUES(1, 'raw', '');
-INSERT INTO protocoltypes VALUES(2, 'i2c', '');
-INSERT INTO protocoltypes VALUES(3, 'spi', '');
-INSERT INTO protocoltypes VALUES(4, 'exec', '');
+INSERT INTO protocoltypes VALUES(1, 'raw', '', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocoltypes VALUES(2, 'i2c', '', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocoltypes VALUES(3, 'spi', '', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocoltypes VALUES(4, 'exec', '', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
 INSERT INTO protocols VALUES ( 1, 'raw', 1, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 INSERT INTO protocols VALUES ( 2, 'json', 2, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 INSERT INTO protocols VALUES ( 3, 'csv', 3, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 INSERT INTO protocols VALUES ( 4, 'xml', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
-INSERT INTO protocols VALUES ( 4, 'soap', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES ( 5, 'soap', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
-INSERT INTO protocols VALUES(1, 'raw', 1);
-INSERT INTO protocols VALUES(2, 'json', 4);
-INSERT INTO protocols VALUES(3, 'cvs', 2);
-INSERT INTO protocols VALUES(4, 'xml', 3);
+INSERT INTO protocols VALUES(1, 'raw', 1, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES(2, 'json', 4, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES(3, 'cvs', 2, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO protocols VALUES(4, 'xml', 3, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
-INSERT INTO devicesubtypes VALUES(1, 'analog');
-INSERT INTO devicesubtypes VALUES(2, 'digital');
+INSERT INTO devicesubtypes VALUES(1, 'analog', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO devicesubtypes VALUES(2, 'digital', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
-INSERT INTO devicetypes VALUES(1, 'sensor', 1);
-INSERT INTO devicetypes VALUES(2, 'sensor', 2);
-INSERT INTO devicetypes VALUES(3, 'akteur', 1);
-INSERT INTO devicetypes VALUES(4, 'akteur', 2);
+INSERT INTO devicetypes VALUES(1, 'sensor', 1, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO devicetypes VALUES(2, 'sensor', 2, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO devicetypes VALUES(3, 'akteur', 1, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO devicetypes VALUES(4, 'akteur', 2, '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
-INSERT INTO daemontypes VALUES(1, 'once', '2017-11-19 10:44:29.937');
-INSERT INTO daemontypes VALUES(2, 'secondly', '2017-11-19 10:45:29.937');
-INSERT INTO daemontypes VALUES(3, 'minutly', '2017-11-19 10:46:29.937');
-INSERT INTO daemontypes VALUES(4, 'hourly', '2017-11-19 10:47:29.937');
-INSERT INTO daemontypes VALUES(5, 'daily', '2017-11-19 10:47:39.937');
-INSERT INTO daemontypes VALUES(6, 'weekly', '2017-11-19 10:47:49.937');
-INSERT INTO daemontypes VALUES(7, 'monthly', '2017-11-19 10:47:59.937');
-INSERT INTO daemontypes VALUES(8, 'quartly', '2017-11-19 10:48:29.937');
-INSERT INTO daemontypes VALUES(9, 'yearly', '2017-11-19 10:48:57.937');
+INSERT INTO daemontypes VALUES(1, 'once', '2017-11-19 10:44:29.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(2, 'secondly', '2017-11-19 10:45:29.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(3, 'minutly', '2017-11-19 10:46:29.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(4, 'hourly', '2017-11-19 10:47:29.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(5, 'daily', '2017-11-19 10:47:39.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(6, 'weekly', '2017-11-19 10:47:49.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(7, 'monthly', '2017-11-19 10:47:59.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(8, 'quartly', '2017-11-19 10:48:29.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
+INSERT INTO daemontypes VALUES(9, 'yearly', '2017-11-19 10:48:57.937', '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
 -- 
 -- Testdata
@@ -55,7 +55,7 @@ INSERT INTO daemons VALUES (5,	'test_daemon',	1,	3,	'0',	NULL,	NULL,	'2018-01-13
 
 -- INSERT INTO jobs VALUES (1,	1,	1,	'2018-01-14 09:00:00',	NULL,	'0000-00-00 00:00:00',	'0000-00-00 00:00:00');
 
-INSERT INTO system VALUES ( 1, "System Test", "0" );
+INSERT INTO system VALUES ( 1, "System Test", "0", '2022-01-15 22:41:00', '2022-01-15 22:42:00' );
 
 -- --
 -- -- Sample Queries
