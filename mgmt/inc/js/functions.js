@@ -188,7 +188,7 @@ function apiJson( controller, action, id ) {
         $( '#content' ).html( 'API Message: <br />' + response );
       } else if( response.state === false ) {
         console.log( response.errormsg );
-        showMsg( 'danger', 'Failed', error );
+        showMsg( 'danger', 'Failed', response.errormsg );
       }
     },
     error: function( error ) {

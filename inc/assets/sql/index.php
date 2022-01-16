@@ -17,3 +17,4 @@ function adminer_object() {
 }
 
 include "./adminer.php";
+// ../../db/database.db

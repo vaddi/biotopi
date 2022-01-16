@@ -175,10 +175,10 @@ function typesForm( typesName, action, id ) {
         } else {
           content += "  <div class='form-group'>";
           content += "    <label for='" + index + "'>" + index + ":</label>";
-          content += "    <input id='" + index + "' type='" + datatype.type + "' name='" + index + "' " + ( datatype.placeholder != undefined ? 'placeholder="' + datatype.placeholder + '"' : index ) + "' value='" + entry + "' class='form-control " + index + "'";
-          if( datatype == "datetime" ) {
+          content += "    <input id='" + index + "' type='" + datatype.type + "' name='" + index + "' " + ( datatype.placeholder != undefined ? 'placeholder="' + datatype.placeholder + '"' : index ) + "' value='" + entry + "' class='" + index + " form-control'";
+          if( datatype.type == "datetime" ) {
             dateTypes.push( index ); // remember all id's, to add javascript later
-            content += " data-format=\"yyyy-mm-dd hh:ii:ss\"";
+            content += ' data-format="yyyy-mm-dd hh:ii:ss"';
           }
           content += " />";
           content += "  </div>";
@@ -187,7 +187,7 @@ function typesForm( typesName, action, id ) {
     } else if( action != undefined && action == 'create' ) {
       $.each( value, function( index, type ) {
         let datatype = defaultStruct( index );
-        if( type.hidden ) {
+        if( datatype.hidden ) {
           if( index === "id" ) {
             // do nothing, we have no id on create and dont need a field (only all other datafields)
           } else {
@@ -196,15 +196,16 @@ function typesForm( typesName, action, id ) {
         } else if( datatype.type == "dropdown" ) {
           content += "  <div class='form-group'>";
           content += "    <label for='" + index + "'>" + index + ":</label>";
-          content += renderSelector( index, datatype.ddd );
+          console.log( datatype.ddd );
+          content += renderSelector( index, datatype.ddd, index );
           content += "  </div>";
         } else {
           content += "  <div class='form-group'>";
           content += "    <label for='" + index + "'>" + index + ":</label>";
-          content += "    <input id='" + index + "' type='" + type.type + "' name='" + index + "' " + ( type.placeholder != undefined ? 'placeholder="' + type.placeholder + '"' : index ) + "' class='form-control " + index + "'";
-          if( datatype == "datetime" ) {
+          content += "    <input id='" + index + "' type='" + datatype.type + "' name='" + index + "' " + ( datatype.placeholder != undefined ? 'placeholder="' + datatype.placeholder + '"' : index ) + "' class='" + index + " form-control'";
+          if( datatype.type == "datetime" ) {
             dateTypes.push( index );
-            content += " data-format=\"yyyy-mm-dd hh:ii:ss\"";
+            content += ' data-format="yyyy-mm-dd hh:ii:ss"';
           }
           content += " />";
           content += "  </div>";

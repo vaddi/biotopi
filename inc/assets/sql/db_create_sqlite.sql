@@ -104,7 +104,7 @@ CREATE TABLE daemons(
 );
 
 CREATE TABLE jobs (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   id_devices	INTEGER NOT NULL,
   id_daemons	INTEGER NOT NULL,
   start				TEXT NOT NULL,
@@ -116,15 +116,15 @@ CREATE TABLE jobs (
 );
 
 CREATE TABLE system (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  name TEXT NULL,
-  value TEXT NOT NULL,
+  id      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name    TEXT NULL,
+  value   TEXT NOT NULL,
   created	TEXT NOT NULL DEFAULT (datetime('now','localtime')),
   updated	TEXT NOT NULL DEFAULT (datetime('now','localtime'))
 );
 
 CREATE TABLE data (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   datetime	TEXT NOT NULL DEFAULT (datetime('now','localtime')),
   device    INTEGER NOT NULL,
   value     TEXT NOT NULL DEFAULT '{}',
@@ -132,15 +132,26 @@ CREATE TABLE data (
 );
 
 CREATE VIEW jobs_v AS 
-	SELECT da.id AS daemon, de.id AS device, da.name AS name, da.type AS dtype, da.start AS start, da.end AS end, da.updated AS updated, de.exec AS exec, de.pins AS pins, de.params AS params
-	FROM daemons AS da
-	INNER JOIN devices de on de.id = da.device 
-	INNER JOIN daemontypes dt on dt.id = da.id 
-	WHERE active is not null
-		AND active = 1
-		AND end >= strftime('%Y-%m-%d %H:%M:%S','now') 
-		AND start <= strftime('%Y-%m-%d %H:%M:%S','now')
-	ORDER BY updated DESC;
+  SELECT da.id AS daemon, 
+    de.id AS device, 
+    da.name AS name, 
+    da.type AS dtype, 
+    da.start AS start, 
+    da.end AS end, 
+    da.updated AS updated,
+    da.created AS created, 
+    de.exec AS exec, 
+    de.pins AS pins, 
+    de.params AS params
+  FROM daemons AS da
+  INNER JOIN devices de on de.id = da.device
+  INNER JOIN daemontypes dt on dt.id = da.type
+  WHERE active is not null
+    AND active = 1
+    AND strftime( '%s', end ) >= strftime('%s','now')
+    OR strftime( '%s', start ) >= strftime('%s','now')
+  -- strftime('%Y-%m-%d %H:%M:%S','now')
+  ORDER BY updated DESC
 ;
 
 

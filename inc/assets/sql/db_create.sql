@@ -12,8 +12,10 @@ DROP TABLE IF EXISTS devices;
 DROP TABLE IF EXISTS protocols;
 DROP TABLE IF EXISTS protocoltypes;
 DROP TABLE IF EXISTS devicetypes;
-DROP TABLE IF EXISTS subtypes;
+DROP TABLE IF EXISTS devicesubtypes;
 DROP TABLE IF EXISTS config;
+DROP TABLE IF EXISTS system;
+DROP TABLE IF EXISTS data;
 DROP VIEW IF EXISTS jobs_v;
 -- END CLEANUP
 
@@ -23,23 +25,23 @@ CREATE TABLE config(
 	value		TEXT NOT NULL,
 	comment	TEXT NULL,
   created	TEXT NULL,
-  updated	TEXT NULL,
+  updated	TEXT NULL
 );
 
-CREATE TABLE subtypes(
+CREATE TABLE devicesubtypes(
   id			INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
   name		TEXT NOT NULL,
   created	TEXT NULL,
-  updated TEXT NULL,
+  updated TEXT NULL
 );
 
 CREATE TABLE devicetypes(
   id				INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
   name			TEXT NOT NULL, 
-  subtype		INTEGER NOT NULL,
+  devicesubtypes		INTEGER NOT NULL,
   created		TEXT NULL,
   updated		TEXT NULL,
-  FOREIGN KEY(subtype) REFERENCES subtypes(id)
+  FOREIGN KEY(devicesubtypes) REFERENCES devicesubtypes(id)
 );
 
 CREATE TABLE protocoltypes(
@@ -47,9 +49,8 @@ CREATE TABLE protocoltypes(
   name		TEXT NOT NULL, 
   data		TEXT,
   created TEXT NULL,
-  updated TEXT NULL,
+  updated TEXT NULL
 );
-
 
 CREATE TABLE protocols(
   id			INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -60,7 +61,6 @@ CREATE TABLE protocols(
   FOREIGN KEY(type) REFERENCES protocoltypes(id)
 );
 
-DROP TABLE IF EXISTS devices;
 CREATE TABLE devices(
   id				INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
   name			TEXT NOT NULL,
@@ -84,9 +84,9 @@ CREATE TABLE devices(
 CREATE TABLE daemontypes(
   id			INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
   name		TEXT NOT NULL,
-  value   TEXT NULL,
+  value   TEXT NOT NULL,
   created	TEXT NULL,
-  updated	TEXT NULL,
+  updated	TEXT NULL
 );
 
 CREATE TABLE daemons(
@@ -95,7 +95,6 @@ CREATE TABLE daemons(
   type		INTEGER NOT NULL,
   device	INTEGER NOT NULL,
   active	INTEGER NOT NULL DEFAULT 0,
-  running INTEGER NOT NULL DEFAULT 0,
   start		TEXT NULL,
   end			TEXT NULL,
   created	TEXT NULL,
@@ -133,15 +132,26 @@ CREATE TABLE data (
 );
 
 CREATE VIEW jobs_v AS 
-	SELECT da.id AS daemon, de.id AS device, da.name AS name, da.type AS dtype, dt.value AS dtypevalue, da.running AS running, da.start AS start, da.end AS end, da.updated AS updated, de.exec AS exec, de.pins AS pins, de.params AS params
-	FROM daemons AS da
-	INNER JOIN devices de on de.id = da.device 
-	INNER JOIN daemontypes dt on dt.id = da.id 
-	WHERE active is not null
-		AND active = 1
-		AND end >= strftime('%Y-%m-%d %H:%M:%S','now') 
-		AND start <= strftime('%Y-%m-%d %H:%M:%S','now')
-	ORDER BY updated DESC;
+  SELECT da.id AS daemon, 
+    de.id AS device, 
+    da.name AS name, 
+    da.type AS dtype, 
+    da.start AS start, 
+    da.end AS end, 
+    da.updated AS updated,
+    da.created AS created, 
+    de.exec AS exec, 
+    de.pins AS pins, 
+    de.params AS params
+  FROM daemons AS da
+  INNER JOIN devices de on de.id = da.device
+  INNER JOIN daemontypes dt on dt.id = da.type
+  WHERE active is not null
+    AND active = 1
+    AND strftime( '%s', end ) >= strftime('%s','now')
+    OR strftime( '%s', start ) >= strftime('%s','now')
+  -- strftime('%Y-%m-%d %H:%M:%S','now')
+  ORDER BY updated DESC
 ;
 
 

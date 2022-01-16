@@ -7,20 +7,32 @@ The Backend for the BiotoPi Project. A simple PHP Based API class build to easil
 
 A Simple Step by Step Guide to install the BiotoPi onto a RaspberryPi (Version 2 or 3). Run this from `/var/www`. Later we setup a simple PHP Webserver (Apache) to server our Application.
 
+First - of all, be up 2 date:
+
+	sudo apt update
+	sudo apt upgrade
+
+Second - Install some Pakets
+
+	sudo apt install vim git
+
 
 ### Get the Sourcecode
 
-We use `/var/www/` for example:
+We use `/var/www/` for example, here on a fresh installed Raspian as pi User:
 
-	cd /var/www/
-	git clone https://github.com/vaddi/biotopi.git
+	cd /var
+	sudo mkdir www
+	cd www
+	sudo git clone https://github.com/vaddi/biotopi.git
 
 
 ### Prepare the System
 
 Once we have checkout, we can change into the desired Directory, We will do all Stuff from here in the later Instructions:
 
-	cd biotopi
+	sudo su
+	cd /var/www/biotopi
 
 
 #### Helper Skript
@@ -29,6 +41,7 @@ Prepare the RaspberryPi and install all necessary Packages and Setup the I2C, SP
 
 	./inc/assets/installation/install.sh
 
+¹ Keep in mind this will take some time to install all Pakages.
 
 After Installation you should also went back into the filesystem
 
@@ -74,6 +87,8 @@ SQLite
 The Application need the PHP Language, which musst be served from a Webserver. Feel free to add nginx or other Webserver. I prefeer Apache. 
 
 There can be found some apache config examples under `inc/assets/installation/` Directory.
+
+	cp inc/assets/installation/apache2_biotopi.conf /etc/apache2/sites-available/biotopi.conf
 
 
 ## Ready to use

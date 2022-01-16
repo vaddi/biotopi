@@ -28,6 +28,7 @@ PKGS=(	mysql-server
 				libmagic-dev
         libi2c-dev
 				php
+        php-sqlite3
 				php-mysql
 				php-http
 				php-dev
@@ -147,7 +148,7 @@ fi
 printf  "\033cInstalling \033[0;34m$APPNAME\033[0;37m Application on a \033[1;34m$SYSTEM\033[0;37m System\n\n"
 
 # change into main folder
-cd ../../../
+#cd ../../../
 
 # Set permissions
 echo -n "Set Main permissions: " 
@@ -194,58 +195,58 @@ then
   check_input $?
 fi
 
-# rename the install.php file
-file="install.php"
-if [ -e "$file" ]
-then
-  echo -n "Rename $file to old_$file: "
-  mv "$file" "old_$file"
-  check_input $?
-fi
+# # rename the install.php file, should occure after you have visite the backend
+# file="install.php"
+# if [ -e "$file" ]
+# then
+#   echo -n "Rename $file to old_$file: "
+#   mv "$file" "old_$file"
+#   check_input $?
+# fi
 
-# prepare to install PKGs
-echo -n "Update Sources: "
-apt-get -qq -y update &> /dev/null
-if [ $? -eq 0 ]; then
-  echo -e "$OK"
-else
-	echo -e "$FAIL couldn't run \"apt-get update\""
-fi
-
-echo -n "Upgrade Packages: "
-apt-get -qq -y upgrade &> /dev/null
-if [ $? -eq 0 ]; then
-  echo -e "$OK"
-else
-	  echo -e "$FAIL couldn't run \"apt-get upgrade\""
-fi
-
-
-# install Pkgs
-echo 
-echo "Check for PKGs: "
-for PKG in "${PKGS[@]}"
-do
-	# check if pkg is allready installed
-	PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $PKG|grep "install ok installed")
-	
-	case $PKG_OK in
-		"install ok installed") 
-			echo -e "$PKG: $OK"
-			;;
-		*)
-			echo -en "$PKG \033[1;31mnot found\033[0;37m"
-			echo -n " try to install: "
-			apt-get -qq -y install "$PKG" &> /dev/null
-			check_input $?
-			;;
-	esac
-done
+# # prepare to install PKGs
+# echo -n "Update Sources: "
+# apt-get -qq -y update &> /dev/null
+# if [ $? -eq 0 ]; then
+#   echo -e "$OK"
+# else
+#   echo -e "$FAIL couldn't run \"apt-get update\""
+# fi
+#
+# echo -n "Upgrade Packages: "
+# apt-get -qq -y upgrade &> /dev/null
+# if [ $? -eq 0 ]; then
+#   echo -e "$OK"
+# else
+#     echo -e "$FAIL couldn't run \"apt-get upgrade\""
+# fi
+#
+#
+# # install Pkgs
+# echo
+# echo "Check for PKGs (Be patient, this will take some time!): "
+# for PKG in "${PKGS[@]}"
+# do
+#   # check if pkg is allready installed
+#   PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $PKG|grep "install ok installed")
+#
+#   case $PKG_OK in
+#     "install ok installed")
+#       echo -e "$PKG: $OK"
+#       ;;
+#     *)
+#       echo -en "$PKG \033[1;31mnot found\033[0;37m"
+#       echo -n " try to install: "
+#       apt-get -qq -y install "$PKG" &> /dev/null
+#       check_input $?
+#       ;;
+#   esac
+# done
 
 # install pecl 
 echo 
 echo -n "Check for pecl_http-1.7.6: "
-PECLINST=$(yes '' | pecl install -s -a pecl_http-1.7.6 | tail -n1) 
+PECLINST=$(yes '' | sudo pecl install -s -a pecl_http-1.7.6 | tail -n1) 
 if [ "$PECLINST" == "install failed" ]; then
   echo -e "$OK"
 else
@@ -271,10 +272,10 @@ echo
 echo -n "Check for wiringPi: "
 OLDDIR=`pwd`
 cd $WIRINGDIR
-if [ ! -d "$WIRINGDIR/wiringPi" ]; then
-	git clone git://git.drogon.net/wiringPi
+if [ ! -d "$WIRINGDIR/WiringPi" ]; then
+	git clone https://github.com/WiringPi/WiringPi.git
 fi
-cd wiringPi
+cd WiringPi
 git pull origin &> /dev/null
 ./build &> /dev/null
 # verify installation
@@ -282,40 +283,67 @@ command -v gpio &> /dev/null
 check_input $?
 cd $ODLDIR
 
-# Enable kernel modules
-for modul in "${modules[@]}"
-do
-	modname=${modul//[-]/_}
-	if [ "$modul" = "w1-gpio" ]; then
-		cmd=`lsmod | grep "$modname" | wc -l`
-		if [ $cmd -eq 0 ]; then 
-			echo -n "Enable kernel module $modul (pullup=1): "; modprobe $modname pullup=1; check_input $?; 
-		fi	
-	else
-		cmd=`lsmod | grep "$modname" | wc -l`
-		if [ $cmd -eq 0 ]; then 
-			echo -n "Enable kernel module $modul: "; modprobe $modname; check_input $?; 
-		fi
-	fi
-done
+# # Enable kernel modules
+# for modul in "${modules[@]}"
+# do
+#   modname=${modul//[-]/_}
+#   if [ "$modul" = "w1-gpio" ]; then
+#     cmd=`lsmod | grep "$modname" | wc -l`
+#     if [ $cmd -eq 0 ]; then
+#       echo -n "Enable kernel module $modul (pullup=1): "; modprobe $modname pullup=1; check_input $?;
+#     fi
+#   else
+#     cmd=`lsmod | grep "$modname" | wc -l`
+#     if [ $cmd -eq 0 ]; then
+#       echo -n "Enable kernel module $modul: "; modprobe $modname; check_input $?;
+#     fi
+#   fi
+# done
+#
+# # write kernel modules to cofigs
+# if [ ! `grep dtoverlay /boot/config.txt | wc -l` -gt 0 ]; then
+#   echo -n "Add dtoverlay to /boot/config.txt: "
+#   echo -e "\ndtoverlay=w1-gpio,gpiopin=4,pullup=on" >> /boot/config.txt
+#   check_input $?
+# fi
+# if [ ! `grep "i2c-" /etc/modules | wc -l` -gt 0 ]; then
+#   echo -n "Add i2c modules to /etc/modules: "
+#   echo -e "\n# i2c bus \ni2c-dev \ni2c-bcm2708" >> /etc/modules
+#   check_input $?
+# fi
+# if [ ! `grep "w1-" /etc/modules | wc -l` -gt 0 ]; then
+#   echo -n "Add ds18b20 modules to /etc/modules: "
+#   echo -e "\n# ds18b20 temperature on OneWire \nw1-gpio pullup=1 \nw1-therm" >> /etc/modules
+#   check_input $?
+# fi
 
-# write kernel modules to cofigs
-if [ ! `grep dtoverlay /boot/config.txt | wc -l` -gt 0 ]; then 
-	echo -n "Add dtoverlay to /boot/config.txt: "
-	echo -e "\ndtoverlay=w1-gpio,gpiopin=4,pullup=on" >> /boot/config.txt
-	check_input $?
-fi
-if [ ! `grep "i2c-" /etc/modules | wc -l` -gt 0 ]; then
-	echo -n "Add i2c modules to /etc/modules: "
-	echo -e "\n# i2c bus \ni2c-dev \ni2c-bcm2708" >> /etc/modules
-	check_input $?
-fi
-if [ ! `grep "w1-" /etc/modules | wc -l` -gt 0 ]; then
-	echo -n "Add ds18b20 modules to /etc/modules: "
-	echo -e "\n# ds18b20 temperature on OneWire \nw1-gpio pullup=1 \nw1-therm" >> /etc/modules
-	check_input $?
-fi
+echo
+echo -n "Copy Apache Config: "
+cp inc/assets/installation/apache2_biotopi.conf /etc/apache2/sites-available/biotopi.conf
+check_input $?
+echo -n "Enable Site: "
+a2ensite biotopi
+echo -n "Disable Default Apache Site: "
+a2dissite 000-default
+# THIS SHOULD ONLY DONE ONCE
+echo -n "Set Apache ServerName: "
+echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf
+check_input $?
 
+echo
+echo -n "Copy Biotopy Default Config into Place: "
+cp inc/config.php.example inc/config.php
+check_input $?
+
+echo
+echo -n "Copy Biotopy Database into Place: "
+cp inc/db/database.db.example inc/db/database.db
+check_input $?
+
+echo
+echo -n "Chown Database Folder: "
+chown -R "$WSUSER" inc/db
+check_input $?
 
 echo
 echo -n "Enable php5enmod mcrypt: "
@@ -332,6 +360,9 @@ echo -n "Restart Apache Webserver: "
 # restart apache webserver
 apachectl -k restart
 check_input $?
+
+# copy sqlite database file into place and set right owner & mod
+
 
 echo 
 echo "All Done. Run ./install.sh uninstall if you wish to remove all changes."
