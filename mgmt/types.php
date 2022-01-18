@@ -402,8 +402,8 @@ $(function() {
           // show message and redirect
           let msg = 'Successfull ' + GetURLParameter( 'action' ) + ' id ' + GetURLParameter( 'id' ) + ' of ' + GetURLParameter( 'type' );
           showMsg( 'success', GetURLParameter( 'action' ), msg, timeout );
-          // let url = window.location.origin + window.location.pathname + '?action=show&type=' + GetURLParameter('type');
-          // redirect( url, timeout );
+          let url = window.location.origin + window.location.pathname + '?action=show&type=' + GetURLParameter('type');
+          redirect( url, timeout );
         }
       },
       fail: function( err ) {
