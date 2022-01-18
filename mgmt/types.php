@@ -50,7 +50,7 @@ const structure = {
     'name': { type: 'text', hidden: false, placeholder: 'Device Name' },
     'js': { type: 'text', hidden: false, placeholder: 'Device JavaScript' },
     'html': { type: 'text', hidden: false, placeholder: 'Device HTML' },
-    'status': { type: 'number', hidden: false },
+    'status': { type: 'checkbox', hidden: false },
     'type': { type: 'dropdown', ddd: 'devicetypes', hidden: false },
     'threshold': { type: 'text', hidden: false, placeholder: 'Device Threshold' },
     'protocol': { type: 'dropdown', ddd: 'protocols', hidden: false },
@@ -175,7 +175,7 @@ function typesForm( typesName, action, id ) {
         } else {
           content += "  <div class='form-group'>";
           content += "    <label for='" + index + "'>" + index + ":</label>";
-          content += "    <input id='" + index + "' type='" + datatype.type + "' name='" + index + "' " + ( datatype.placeholder != undefined ? 'placeholder="' + datatype.placeholder + '"' : index ) + "' value='" + entry + "' class='" + index + " form-control'";
+          content += "    <input id='" + index + "' type='" + datatype.type + "' name='" + index + "' value='" + entry + "' class='" + index + " form-control' " + ( datatype.placeholder != undefined ? 'placeholder="' + datatype.placeholder + '" ' : index );
           if( datatype.type == "datetime" ) {
             dateTypes.push( index ); // remember all id's, to add javascript later
             content += ' data-format="yyyy-mm-dd hh:ii:ss"';
@@ -202,7 +202,7 @@ function typesForm( typesName, action, id ) {
         } else {
           content += "  <div class='form-group'>";
           content += "    <label for='" + index + "'>" + index + ":</label>";
-          content += "    <input id='" + index + "' type='" + datatype.type + "' name='" + index + "' " + ( datatype.placeholder != undefined ? 'placeholder="' + datatype.placeholder + '"' : index ) + "' class='" + index + " form-control'";
+          content += "    <input id='" + index + "' type='" + datatype.type + "' name='" + index + "' " + ( datatype.placeholder != undefined ? 'placeholder="' + datatype.placeholder + '"' : '' ) + "' class='" + index + " form-control'";
           if( datatype.type == "datetime" ) {
             dateTypes.push( index );
             content += ' data-format="yyyy-mm-dd hh:ii:ss"';
@@ -358,28 +358,51 @@ $(document).ready( function() {
     $( '#content' ).html( 'Unknown action "' + action + '"' );
   }
 
+  // checkboxes (onload set checkboxfields to set if value is 1)
+  $("input[type=checkbox]").each( function( key, value ) {
+    if( value.value == 1 ) {
+      $( '.' + value.name ).prop('checked','checked' );
+    }
+  });
+
 });
 
 $(function() {
+  
+  let pageForm = $("#typesform");
+  
   // event for form submit
-  $("#typesform").submit( function(e) {
+  pageForm.submit( function(e) {
 
     // prevent Default
     e.preventDefault();
 
     // get form attribute or set default value if not set
     //let actionurl = ( e.currentTarget.action !== undefined || e.currentTarget.action !== "" ) ? e.currentTarget.action : window.location; // default action
-    let actionurl = ( $("#typesform").attr('action') !== undefined || $("#typesform").attr('action') !== "" ) ? $("#typesform").attr('action') : window.location + '../'; // this should point allways to the API
+    let actionurl = ( pageForm.attr('action') !== undefined || pageForm.attr('action') !== "" ) ? pageForm : window.location + '../'; // this should point allways to the API
 		let method = ( e.currentTarget.method !== undefined || e.currentTarget.method !== "" ) ? e.currentTarget.method : 'post'; // default method
 		let datatype = ( e.currentTarget.datatype !== undefined || e.currentTarget.datatype !== "" ) ? e.currentTarget.datatype : 'json'; // default data type
     if( datatype === undefined ) datatype = 'json';
+
+    // checkboxes (set values depending on the current checked state))
+    checkboxes = '';
+    $("input[type=checkbox]").each( function( key, value ) {
+      checkboxes += value.name + '=';
+      element = $( '#' + pageForm.attr('id') + ' .' + value.name );
+      console.log( pageForm.serialize() );
+      if( element.is(':checked') ) {
+        checkboxes += '1';
+      } else {
+        checkboxes += '0';
+      }
+    });
 
     // do the request
     $.ajax({
       url: actionurl,
       type: method,
       dataType: datatype,
-      data: $("#typesform").serialize(),
+      data: pageForm.serialize() + '&' + checkboxes,
       success: function( data ) {
       	// handle the results
 				let erg = "Response: <br />";
