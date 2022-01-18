@@ -22,15 +22,5 @@
 
 </div><!-- END container-->
 
-<!-- 
-DB Tables
-config         devices        jobs_v         subtypes
-daemons        devicetypes    protocols      system
-daemontypes    jobs           protocoltypes
-
-Pages
-devices   daemons   system    
--->
-
 </body>
 </html>

@@ -368,7 +368,8 @@ $(function() {
     e.preventDefault();
 
     // get form attribute or set default value if not set
-    let actionurl = ( e.currentTarget.action !== undefined || e.currentTarget.action !== "" ) ? e.currentTarget.action : window.location; // default action
+    //let actionurl = ( e.currentTarget.action !== undefined || e.currentTarget.action !== "" ) ? e.currentTarget.action : window.location; // default action
+    let actionurl = ( $("#typesform").attr('action') !== undefined || $("#typesform").attr('action') !== "" ) ? $("#typesform").attr('action') : window.location + '../'; // this should point allways to the API
 		let method = ( e.currentTarget.method !== undefined || e.currentTarget.method !== "" ) ? e.currentTarget.method : 'post'; // default method
 		let datatype = ( e.currentTarget.datatype !== undefined || e.currentTarget.datatype !== "" ) ? e.currentTarget.datatype : 'json'; // default data type
     if( datatype === undefined ) datatype = 'json';
@@ -401,8 +402,8 @@ $(function() {
           // show message and redirect
           let msg = 'Successfull ' + GetURLParameter( 'action' ) + ' id ' + GetURLParameter( 'id' ) + ' of ' + GetURLParameter( 'type' );
           showMsg( 'success', GetURLParameter( 'action' ), msg, timeout );
-          let url = window.location.origin + window.location.pathname + '?action=show&type=' + GetURLParameter('type');
-          redirect( url, timeout );
+          // let url = window.location.origin + window.location.pathname + '?action=show&type=' + GetURLParameter('type');
+          // redirect( url, timeout );
         }
       },
       fail: function( err ) {

@@ -194,11 +194,11 @@ then
 fi
 
 # copy the .htacces file
-file="example.htaccess"
-if [ -e "$file" ]
+file=".htaccess"
+if [ ! -e "$file" ]
 then
   echo -n "Rename $file to .htaccess: "
-  mv "$file" ".htaccess"
+  cp "example${file}" ".htaccess"
   check_input $?
 fi
 
@@ -227,16 +227,6 @@ if [ $? -eq 0 ]; then
 else
     echo -e "$FAIL couldn't run \"apt-get upgrade\""
 fi
-
-echo
-echo -n "Create Tables: "
-sqlite3 inc/db/database.db < inc/assets/sql/db_create_sqlite.sql
-check_input $?
-
-echo
-echo -n "Insert Some Default Data; "
-sqlite3 inc/db/database.db < inc/assets/sql/db_default_data.sql
-check_input $?
 
 # install Pkgs
 echo
@@ -333,13 +323,19 @@ done
 #   check_input $?
 # fi
 
+echo
+echo -n "Create Tables: "
+sqlite3 inc/db/database.db < inc/assets/sql/db_create_sqlite.sql
+check_input $?
+echo -n "Insert Some Default Data; "
+sqlite3 inc/db/database.db < inc/assets/sql/db_default_data.sql
+check_input $?
 
 echo
 echo -n "Enable phpenmod mcrypt: "
 phpenmod mcrypt
 check_input $?
 
-echo 
 echo -n "Reload Apache Module: "
 # load apache rewrite module
 a2enmod -q rewrite
