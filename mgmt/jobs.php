@@ -63,7 +63,7 @@ function jobsRead( jobsName ) {
 $(document).ready( function() {
 
 
-    jobsRead( controllerName + '_v' );
+    jobsRead( controllerName + '_V' );
 
 
 });

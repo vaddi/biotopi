@@ -77,7 +77,7 @@ function writeTBS( $db = null, $id = null, $data = null ) {
 
 // on osx you need to add pdntl. brew install pcntl
 if( ! function_exists( 'pcntl_fork' ) ) die( 'PCNTL functions not available on this PHP installation' );
-$pid = pcntl_fork();
+  $pid = pcntl_fork();
 if( $pid == -1 ) {
 	file_put_contents( $LOG, $date . " [Error] could not daemonize process\n", FILE_APPEND );
 	return 1; //error
@@ -135,9 +135,9 @@ if( $pid == -1 ) {
 				$params = $job['params'];
 				$name = $job['name'];
 				$type = $job['dtype'];
-				$typevalue = $job['dtypevalue'];
+				$typevalue = isset( $job['dtypevalue'] ) && $job['dtypevalue'] != null && $job['dtypevalue'] != "" ? $job['dtypevalue'] : '';
 				// typevalue 60 (minutly) -> ( start - now ) > typevalue
-				$running = (int) $job['running'];
+				$running = (int) ( isset( $job['running'] ) && $job['running'] != null && $job['running'] != "" ? $job['running'] : 0 );
 				
 				/*switch( $typevalue ) {
 					case 1:

@@ -5,21 +5,46 @@ The Backend for the BiotoPi Project. A simple PHP Based API class build to easil
 
 ## Installation
 
-A Simple Step by Step Guide to install the BiotoPi onto a RaspberryPi (Version 2 or 3). Run this from `/var/www`. Later we setup a simple PHP Webserver (Apache) to server our Application.
+A Simple Step by Step Guide to install the BiotoPi onto a RaspberryPi (Version 2 or 3). Run this from `/var/www`. Later we setup a simple PHP Webserver (we run here Apache2) to serve our Web Application.
 
-First - of all, be up 2 date:
+First - of all, Setup your RaspberryPi (You need a running Network, change the pi User Password, setup a Hostname and System locales):
 
-	sudo apt update
-	sudo apt upgrade
+	sudo raspi-config
 
-Second - Install some Pakets
+1. Change User Password Change password for the current user.
+2. Network Options:
+   N1 Hostname -> Give your System a nice Hostname to `biotopi` or something you like.  
+   *Depending on how you will access to the Pi, Setup the Wifi (N2) or setup a LAN device (this have to be done manualy under the dhcpcd `/etc/dhcpcd.conf`)
+3. Boot Options - Setup `B1 Desktop / CLI` to `B1 Console`, we dont need a Desktop Enviroment for a Web Service.
+4. Localisation Options  
+   I1 Change Locale  
+   I2 Change Timezone  
+   I3 Change Keyboard Layout
+5. Interfacing Options - Enable the Following Options  
+   P2 SSH  
+   P4 SPI  
+   P5 I2C  
+   P7 1-Wire
+
+
+Second - Install some basic Pakets (I prefer vim, feel free to use another Text Editor), git is essentiell to install and update later:
 
 	sudo apt install vim git
+
+Third - You have to allow the webserver user to restart/shutdown the System, to use this commands from the Website, place the following inside your sudoers file:
+
+	sudo visudo
+
+...  
+www-data ALL=(ALL) NOPASSWD: /sbin/shutdown  
+...  
+
+Now you can shutdown or restart the RaspberrryPi from the Website. 
 
 
 ### Get the Sourcecode
 
-We use `/var/www/` for example, here on a fresh installed Raspian as pi User:
+We use `/var/www/` as install Directory, here on a fresh installed Raspian as the pi User:
 
 	cd /var
 	sudo mkdir www
@@ -29,7 +54,7 @@ We use `/var/www/` for example, here on a fresh installed Raspian as pi User:
 
 ### Prepare the System
 
-Once we have checkout, we can change into the desired Directory, We will do all Stuff from here in the later Instructions:
+Once we have checkout, we can change into the desired Directory, We will do all Steps from here in this Instruction:
 
 	sudo su
 	cd /var/www/biotopi
@@ -44,8 +69,8 @@ Prepare the RaspberryPi and install all necessary Packages and Setup the I2C, SP
 Keep in mind this will take some Time, the Skript does the following:
 
 - update the system pakages
-- install all neccessary pakages
-- Setup Permissions
+- check for essentially Packages and install them if there are not installed
+- Set Folder and File Permissions
 - Do some Basic File Copy Operations
 - Restart Apache Webserver
 
@@ -106,3 +131,9 @@ Use you prefeered Webbrowser to open the Mainpage by the Hostname of your Raspbe
 	http://RASPBERRYPI/
 
 
+
+
+
+
+
+Log Verzeichniss muss dem webserver user gehören, quasi wie bei dem db file.

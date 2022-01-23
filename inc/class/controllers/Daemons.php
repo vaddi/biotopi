@@ -272,30 +272,31 @@ class Daemons extends Base implements CRUD {
 		$bin = $this->_bin;
 		$msg = null;
 		$err = 0;
+    
 		switch( $this->_params->cmd ) {
 			case 'clean':
-				exec( 'cd ' . $path . ' && sudo ./' . $bin . ' clean', $msg, $err );
+				exec( 'cd ' . $path . ' && ./' . $bin . ' clean', $msg, $err );
 				break;
 			case 'status':
-				exec( 'cd ' . $path . ' && sudo ./' . $bin . ' status', $msg, $err );
+				exec( 'cd ' . $path . ' && ./' . $bin . ' status', $msg, $err );
 				break;
 			case 'start':
-				exec( 'cd ' . $path . ' && sudo ./' . $bin . ' start', $msg, $err );
+				exec( 'cd ' . $path . ' && ./' . $bin . ' start', $msg, $err );
 				break;
 			case 'stop':
-				exec( 'cd ' . $path . ' && sudo ./' . $bin . ' stop', $msg, $err );
+				exec( 'cd ' . $path . ' && ./' . $bin . ' stop', $msg, $err );
 				break;
 			case 'restart':
-				exec( 'cd ' . $path . ' && sudo ./' . $bin . ' stop', $msg, $err );
+				exec( 'cd ' . $path . ' && ./' . $bin . ' stop', $msg, $err );
 				sleep( 1 );
-				exec( 'cd ' . $path . ' && sudo ./' . $bin . ' start', $msg, $err );
+				exec( 'cd ' . $path . ' && ./' . $bin . ' start', $msg, $err );
 				break;
 			case 'log':
 				$log = realpath( './' ) . $this->_log;
 				exec( 'tail ' . $log, $msg, $err );
 				break;
 			default:
-				exec( 'cd ' . $path . ' && sudo ./' . $bin , $msg, $err );
+				exec( 'cd ' . $path . ' && ./' . $bin , $msg, $err );
 				$msg[0] = substr( $msg[0], 17, -1);
 				break;
 		}

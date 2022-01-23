@@ -196,7 +196,7 @@ function typesForm( typesName, action, id ) {
         } else if( datatype.type == "dropdown" ) {
           content += "  <div class='form-group'>";
           content += "    <label for='" + index + "'>" + index + ":</label>";
-          console.log( datatype.ddd );
+//          console.log( datatype.ddd );
           content += renderSelector( index, datatype.ddd, index );
           content += "  </div>";
         } else {
@@ -311,7 +311,7 @@ function typeDelete( type, id ) {
   //$( '#highlight' ).html( 'Delete ID ' + id + ' of <span style="color:#aaa">' + type + '</span>' );
   let result = apiJson( type, 'delete', id );
   if( result.state ) {
-    console.log( result );
+//    console.log( result );
     if( result.data != undefined && result.data ) {
       let msg = 'Successfull ' + GetURLParameter( 'action' ) + ' id ' + GetURLParameter( 'id' ) + ' of ' + GetURLParameter( 'type' ) + result.data;
       showMsg( 'success', GetURLParameter( 'action' ), msg );
@@ -379,7 +379,7 @@ $(function() {
 
     // get form attribute or set default value if not set
     //let actionurl = ( e.currentTarget.action !== undefined || e.currentTarget.action !== "" ) ? e.currentTarget.action : window.location; // default action
-    let actionurl = ( pageForm.attr('action') !== undefined || pageForm.attr('action') !== "" ) ? pageForm : window.location + '../'; // this should point allways to the API
+    let actionurl = ( pageForm.attr('action') !== undefined || pageForm.attr('action') !== "" ) ? pageForm.attr('action') : window.location + '../'; // this should point allways to the API
 		let method = ( e.currentTarget.method !== undefined || e.currentTarget.method !== "" ) ? e.currentTarget.method : 'post'; // default method
 		let datatype = ( e.currentTarget.datatype !== undefined || e.currentTarget.datatype !== "" ) ? e.currentTarget.datatype : 'json'; // default data type
     if( datatype === undefined ) datatype = 'json';
@@ -389,13 +389,14 @@ $(function() {
     $("input[type=checkbox]").each( function( key, value ) {
       checkboxes += value.name + '=';
       element = $( '#' + pageForm.attr('id') + ' .' + value.name );
-      console.log( pageForm.serialize() );
       if( element.is(':checked') ) {
         checkboxes += '1';
       } else {
         checkboxes += '0';
       }
     });
+
+//    console.log( pageForm.serialize() ) + '&' + checkboxes;
 
     // do the request
     $.ajax({

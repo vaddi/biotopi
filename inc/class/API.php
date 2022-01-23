@@ -54,7 +54,8 @@ class API {
 			if( ( $_GET == null && $_POST == null ) /* || ( $_POST == null && $_POST == null ) */ ) {
 
 				// no parameters given, just return the version number
-				$result['data'] = 'BiotoPi API ' . 'v1 '; // Helper::getVersion();
+        $initial = 'BiotoPi API ' . 'v1 '; // Helper::getVersion();
+				$result['data'] = $initial;
 				$result['state'] = true;
 
 				// TODO, $_REQUEST is never empty, use $_POST & $_GET instead!!
@@ -72,14 +73,18 @@ class API {
 
 				} else if( ENV == 'prod' && ( ! isset( $_SESSION['eingeloggt'] ) || $_SESSION['eingeloggt'] != 1 ) ) {
 
+          // we need a Users Backend and Frontend
+          // Login, Register (contains send E-Mail with tokenized Link)
+          // Overview for Admins (we need also Groups for this: Admin and User should be enough) 
+
 					// unauthorized requests redirect or notify?
-					if( Config::get( 'apiredirect' ) ) {
-						// Redirect to loginpage
-						header ( "Location: index.php" );
-					} else {
+          // if( Config::get( 'apiredirect' ) ) {
+          //   // Redirect to loginpage
+            // header ( "Location: ./mgmt" );
+          // } else {
 						// Returns a Message
-						throw new Exception( 'Please login to use this service!' );
-					}
+            throw new Exception( 'Please login to use this service!' );
+          // }
 
 				}
 
@@ -91,7 +96,8 @@ class API {
 				if( $actionName === null ) throw new Exception( 'No Action given, aborted!' );
 
 				// Controller allways are lowercase only the first Character is Uppercase
-				$controllerName = ucfirst( strtolower( $controllerName ) );
+				// $controllerName = ucfirst( strtolower( $controllerName ) );
+        $controllerName = ucfirst( $controllerName );
 
 				// use PHP reflectionAPI to get result
 				$controller = self::createController( $controllerName );
@@ -116,6 +122,9 @@ class API {
 			//var_dump( $result );
 			echo "</pre>";
 		} else if ( $result ) {
+      // if( $result['data'] === $initial ) {
+      //   // we are on an initial request
+      // }
       // return our json encoded result to the requester
       header( 'Cache-Control: no-cache, must-revalidate' );
 			header( "Access-Control-Allow-Origin: *" );
